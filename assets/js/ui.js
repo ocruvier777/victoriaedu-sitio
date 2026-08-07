@@ -76,10 +76,10 @@
   }
 
   function panelLista(hijos, actual) {
-    return '<div class="vic-drop">' + hijos.map(function (h) {
+    return '<div class="vic-nav-lista">' + hijos.map(function (h) {
       return '<a href="' + h.href + '"' + (h.href === actual ? ' aria-current="page"' : '') + '>' +
-        '<span class="vic-drop__tit">' + escapar(h.titulo) + '</span>' +
-        '<span class="vic-drop__desc">' + escapar(h.desc) + '</span>' +
+        '<span class="vic-nav-lista__tit">' + escapar(h.titulo) + '</span>' +
+        '<span class="vic-nav-lista__desc">' + escapar(h.desc) + '</span>' +
       '</a>';
     }).join('') + '</div>';
   }

@@ -355,21 +355,23 @@ img { max-width: 100%; }
 }
 .vic-nav-item.is-open > .vic-nav-panel { opacity: 1; visibility: visible; transform: none; }
 
-/* Lista simple */
-.vic-drop {
+/* Lista simple del menú. OJO: no llamarla .vic-drop — ese nombre ya lo usa
+   la zona de subir comprobante, y sus estilos (borde punteado, texto
+   centrado, fondo azul al pasar) se colaban en el desplegable. */
+.vic-nav-lista {
   min-width: 320px; background: var(--vic-blanco); border-radius: var(--vic-radius-lg);
   box-shadow: var(--vic-shadow-xl); border: 1px solid var(--vic-border);
   padding: 10px; margin-top: 10px; display: grid; gap: 2px;
 }
 .vic-nav-item:not(.vic-nav-item--mega) > .vic-nav-panel { left: 0; }
-.vic-drop a {
+.vic-nav-lista a {
   display: grid; gap: 3px; padding: 12px 14px; border-radius: var(--vic-radius-sm);
   color: var(--vic-text-strong);
 }
-.vic-drop a:hover, .vic-drop a:focus-visible { background: var(--vic-primary-softer); }
-.vic-drop a[aria-current="page"] { background: var(--vic-primary-softer); }
-.vic-drop__tit { font-size: 15px; font-weight: 600; color: var(--vic-azul-profundo); }
-.vic-drop__desc { font-size: 13px; line-height: 1.45; color: var(--vic-text-muted); }
+.vic-nav-lista a:hover, .vic-nav-lista a:focus-visible { background: var(--vic-primary-softer); }
+.vic-nav-lista a[aria-current="page"] { background: var(--vic-primary-softer); }
+.vic-nav-lista__tit { font-size: 15px; font-weight: 600; color: var(--vic-azul-profundo); }
+.vic-nav-lista__desc { font-size: 13px; line-height: 1.45; color: var(--vic-text-muted); }
 
 /* Mega panel de programas */
 .vic-nav-item--mega > .vic-nav-panel { left: 0; right: 0; }
@@ -1041,7 +1043,7 @@ img { max-width: 100%; }
     display: none; transition: none;
   }
   .vic-nav-item.is-open > .vic-nav-panel { display: block; }
-  .vic-drop, .vic-mega { margin: 10px 0 14px; box-shadow: none; padding: 12px; min-width: 0; }
+  .vic-nav-lista, .vic-mega { margin: 10px 0 14px; box-shadow: none; padding: 12px; min-width: 0; }
   .vic-mega__grid { grid-template-columns: 1fr; gap: 10px; }
   /* En móvil las tarjetas van en fila: miniatura + texto. A ancho completo
      cada una medía ~400px y el menú entero pasaba de los 1200. */
