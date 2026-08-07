@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Programas — VictoriaEDU</title>
+<meta name="description" content="Simulacro IPN 2026, Curso de Matemáticas IPN 2027 y Curso de Admisión IPN. Diagnóstico por tema, profesores egresados del IPN y tutor IA supervisado.">
+<link rel="icon" href="uploads/victoriaedu_logo_transparent.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/victoria.css?v=4">
+</head>
+<body>
+
+<header data-vic-header data-cta="comprar"></header>
+
+<!-- ================= ENCABEZADO ================= -->
+<section class="vic-section vic-section--tight vic-section--impacto vic-blueprint">
+  <div class="vic-container">
+    <div class="vic-eyebrow">Programas</div>
+    <h1 style="font-size:clamp(34px,4vw,52px);line-height:1.06;margin:0 0 20px;max-width:22ch">Elige por dónde empezar.</h1>
+    <p style="font-size:19px;line-height:1.6;margin:0;max-width:60ch">Hoy está abierto el simulacro diagnóstico. Los cursos completos abren por generación: si te interesa alguno, déjanos tu correo y te avisamos con el precio de lanzamiento antes que a nadie.</p>
+  </div>
+</section>
+
+<!-- ================= CATÁLOGO ================= -->
+<section class="vic-section vic-section--luz">
+  <div class="vic-container">
+    <div class="vic-grid vic-grid--3" id="catalogoGrid" data-reveal></div>
+
+    <div class="vic-note vic-note--info" style="margin-top:40px">
+      <strong>Sobre los pagos.</strong> Por ahora cobramos únicamente por transferencia SPEI y validamos cada pago a mano el mismo día. El pago con tarjeta y OXXO llega en cuanto terminemos la integración con Mercado Pago.
+    </div>
+  </div>
+</section>
+
+<!-- ================= CÓMO COMPRAR ================= -->
+<section class="vic-section vic-section--gris">
+  <div class="vic-container">
+    <div class="vic-eyebrow">Cómo comprar</div>
+    <h2 class="vic-h2" style="margin:0 0 44px;max-width:24ch">Cuatro pasos, sin llamadas de ventas.</h2>
+    <div class="vic-grid vic-grid--4">
+      <div class="vic-card">
+        <div class="vic-paso__num" style="margin-bottom:14px">1</div>
+        <h3 style="font-size:19px;margin:0 0 10px">Llenas tus datos</h3>
+        <p style="font-size:15px;line-height:1.55;margin:0">Nombre, correo y WhatsApp. Nada de tarjetas todavía.</p>
+      </div>
+      <div class="vic-card">
+        <div class="vic-paso__num" style="margin-bottom:14px">2</div>
+        <h3 style="font-size:19px;margin:0 0 10px">Recibes tu folio</h3>
+        <p style="font-size:15px;line-height:1.55;margin:0">Un código tipo <span class="vic-mono">VE-A7K3Q2</span> que usas como referencia de la transferencia.</p>
+      </div>
+      <div class="vic-card">
+        <div class="vic-paso__num" style="margin-bottom:14px">3</div>
+        <h3 style="font-size:19px;margin:0 0 10px">Transfieres y avisas</h3>
+        <p style="font-size:15px;line-height:1.55;margin:0">Subes tu comprobante y nos mandas WhatsApp con un botón.</p>
+      </div>
+      <div class="vic-card" style="border-color:var(--vic-azul)">
+        <div class="vic-paso__num" style="margin-bottom:14px;background:var(--vic-burdeos)">4</div>
+        <h3 style="font-size:19px;margin:0 0 10px">Validamos y entras</h3>
+        <p style="font-size:15px;line-height:1.55;margin:0">Revisamos el pago y te llega tu acceso por correo el mismo día.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GARANTÍA ================= -->
+<section class="vic-section vic-section--tight vic-section--luz">
+  <div class="vic-container vic-container--narrow">
+    <div class="vic-grid vic-grid--2" style="gap:32px">
+      <div class="vic-card">
+        <h3 style="font-size:20px;margin:0 0 10px">Reembolso del 100%</h3>
+        <p style="font-size:15px;line-height:1.6;margin:0">Mientras no hayas iniciado el simulacro, te devolvemos todo dentro de los primeros 7 días. Una vez que abres el examen ya no aplica, porque el contenido queda entregado.</p>
+      </div>
+      <div class="vic-card">
+        <h3 style="font-size:20px;margin:0 0 10px">Sin cargos recurrentes</h3>
+        <p style="font-size:15px;line-height:1.6;margin:0">Todo lo que vendemos es pago único. No guardamos datos de tarjeta ni domiciliamos nada; hoy ni siquiera procesamos tarjetas.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer data-vic-footer></footer>
+
+<script src="assets/js/config.js?v=4"></script>
+<script src="assets/js/api.js?v=4"></script>
+<script src="assets/js/ui.js?v=4"></script>
+<script src="assets/js/iconos.js?v=4"></script>
+<script src="assets/js/productos.js?v=4"></script>
+<script>
+(function () {
+  var grid = document.getElementById('catalogoGrid');
+  grid.innerHTML = window.CATALOGO.map(function (p) {
+    return window.VicProductos.tarjeta(p, { detallada: true });
+  }).join('');
+
+  // Si llegamos con #ancla a un producto, lo resaltamos al entrar.
+  if (location.hash) {
+    var destino = document.querySelector(location.hash);
+    if (destino) {
+      setTimeout(function () {
+        destino.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        destino.style.outline = '2px solid var(--vic-azul)';
+        destino.style.outlineOffset = '4px';
+        setTimeout(function () { destino.style.outline = ''; }, 2400);
+      }, 240);
+    }
+  }
+})();
+</script>
+</body>
+</html>

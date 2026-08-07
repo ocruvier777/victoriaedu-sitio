@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>¿Cuántos aciertos necesitas para entrar al IPN? — VictoriaEDU</title>
+<meta name="description" content="Puntajes de corte históricos del IPN por escuela y carrera, en gráfica. Compara tu puntaje contra el corte de la carrera que quieres y descubre cuánto te falta.">
+<link rel="icon" href="uploads/victoriaedu_logo_transparent.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/victoria.css?v=4">
+</head>
+<body>
+
+<header data-vic-header data-cta="comprar"></header>
+
+<!-- ================= ENCABEZADO ================= -->
+<section class="vic-section vic-section--tight vic-section--impacto vic-blueprint">
+  <div class="vic-container">
+    <div class="vic-eyebrow">Datos abiertos del IPN</div>
+    <h1 style="font-size:clamp(32px,3.8vw,50px);line-height:1.06;margin:0 0 20px;max-width:24ch">¿Cuántos aciertos necesitas para entrar al IPN?</h1>
+    <p style="font-size:19px;line-height:1.6;margin:0 0 32px;max-width:62ch">Ninguna. El Poli no fija un mínimo — el corte lo define el último aspirante que alcanza lugar. Lo que sí existe es el histórico: qué puntaje tuvo ese último admitido, carrera por carrera. Eso es lo que está aquí.</p>
+    <div class="vic-grid vic-grid--4" id="kpis"></div>
+  </div>
+</section>
+
+<!-- ================= ADVERTENCIA ================= -->
+<section style="background:var(--vic-bg-canvas);padding:28px 0;border-bottom:1px solid var(--vic-border)">
+  <div class="vic-container">
+    <div class="vic-note vic-note--warning" style="margin:0">
+      <strong>Léelo antes de usar estos números.</strong> El IPN no publica un mínimo de aciertos por carrera. Ordena a todos los sustentantes de mayor a menor y asigna los lugares disponibles; el puntaje del último que entra es el que queda como corte de esa convocatoria. Por eso cambia cada año según cuánta gente la pida y cuántos lugares haya. Son <strong>referencias históricas, no un requisito</strong>: sacar el corte del año pasado no te garantiza el lugar este año.
+    </div>
+  </div>
+</section>
+
+<!-- ================= GRÁFICA ================= -->
+<section class="vic-section vic-section--blanco">
+  <div class="vic-container">
+    <div class="vic-chart">
+
+      <!-- Panel del puntaje: es el gancho, así que va primero y con peso propio -->
+      <div class="vic-puntaje">
+        <div class="vic-puntaje__texto">
+          <div class="vic-row" style="gap:12px;margin-bottom:10px">
+            <span class="vic-icono vic-icono--sm vic-icono--claro" data-icono="reporte" data-icono-tam="20"></span>
+            <span style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.6)">Compárate</span>
+          </div>
+          <h2 style="font-size:clamp(22px,2.4vw,28px);line-height:1.2;margin:0 0 8px;color:#fff">¿Ya hiciste el examen este año?</h2>
+          <p style="font-size:16px;line-height:1.55;margin:0;color:rgba(255,255,255,.75)">Escribe cuántos aciertos sacaste y te separo las carreras que habrías alcanzado de las que no — con cuántos aciertos te faltaron en cada una.</p>
+        </div>
+        <div class="vic-puntaje__campo">
+          <label for="fPuntaje">Tus aciertos</label>
+          <div class="vic-puntaje__entrada">
+            <input id="fPuntaje" type="number" min="0" max="140" placeholder="94" inputmode="numeric">
+            <span>de 140</span>
+          </div>
+          <button class="vic-btn vic-btn--ghost vic-btn--sm vic-hidden" type="button" id="limpiarPuntaje">Quitar mi puntaje</button>
+        </div>
+      </div>
+
+      <!-- Filtros: una sola fila, arriba de todo lo que acotan -->
+      <div class="vic-chart__filtros">
+        <div class="vic-chart__filtro">
+          <label for="fArea">Área</label>
+          <select class="vic-select" id="fArea"><option value="">Todas las áreas</option></select>
+        </div>
+        <div class="vic-chart__filtro">
+          <label for="fEscuela">Escuela</label>
+          <select class="vic-select" id="fEscuela"><option value="">Todas las escuelas</option></select>
+        </div>
+        <div class="vic-chart__filtro" style="flex:2 1 240px">
+          <label for="fBusca">Buscar carrera</label>
+          <input class="vic-input" type="search" id="fBusca" placeholder="mecatrónica, medicina, industrial…">
+        </div>
+        <div class="vic-chart__filtro" style="flex:0 0 auto;min-width:0">
+          <label>&nbsp;</label>
+          <button class="vic-btn vic-btn--ghost vic-btn--md" type="button" id="limpiarFiltros">Limpiar</button>
+        </div>
+      </div>
+
+      <div class="vic-chart__resumen" id="resumenFiltro"></div>
+
+      <!-- Vistas -->
+      <div class="vic-chart__tabs" id="tabs" role="tablist">
+        <button class="vic-btn vic-btn--secondary vic-btn--sm" data-vista="corte" role="tab" aria-selected="true">Corte por carrera</button>
+        <button class="vic-btn vic-btn--ghost vic-btn--sm" data-vista="convocatorias" role="tab" aria-selected="false">1ª vs 2ª convocatoria</button>
+        <button class="vic-btn vic-btn--ghost vic-btn--sm" data-vista="tabla" role="tab" aria-selected="false">Ver tabla</button>
+      </div>
+
+      <div id="leyenda"></div>
+      <div id="grafica" aria-live="polite"></div>
+      <div id="fuente" class="vic-hint" style="margin-top:28px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="vic-section vic-section--tight vic-section--impacto vic-blueprint">
+  <div class="vic-container">
+    <div class="vic-grid vic-grid--2" style="gap:56px;align-items:center">
+      <div>
+        <h2 class="vic-h2" style="margin:0 0 18px;max-width:24ch">Ya sabes cuánto pide tu carrera. ¿Sabes cuánto sacas hoy?</h2>
+        <p style="font-size:18px;line-height:1.6;margin:0 0 26px;max-width:52ch">El corte es la mitad del dato. La otra mitad es tu puntaje real bajo condiciones de examen — y ese solo lo sabes presentando uno completo, contra reloj.</p>
+        <a class="vic-btn vic-btn--primary vic-btn--xl" href="simulacro-ipn-2026.html">Ver el Simulacro IPN 2026 — $299</a>
+      </div>
+      <div class="vic-panel-claro" style="background:#fff;border-radius:24px;padding:32px;box-shadow:var(--vic-shadow-lg)">
+        <h3 style="font-size:20px;margin:0 0 14px">Lo que el simulacro te dice y esta tabla no</h3>
+        <ul class="vic-lista-check" style="margin:0">
+          <li>Tu puntaje real con el formato y las materias del examen oficial</li>
+          <li>En qué área pierdes los puntos: MB, MA, Sociales o Expresión</li>
+          <li>Cuántos aciertos te faltan para el corte de tu carrera</li>
+          <li>Qué estudiar primero para recuperarlos</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer data-vic-footer></footer>
+
+<script src="assets/js/config.js?v=4"></script>
+<script src="assets/js/api.js?v=4"></script>
+<script src="assets/js/ui.js?v=4"></script>
+<script src="assets/js/iconos.js?v=4"></script>
+<script src="assets/js/datos-cortes.js?v=4"></script>
+<script src="assets/js/pagina-aciertos.js?v=4"></script>
+<script src="assets/js/popup-simulacro.js?v=4"></script>
+</body>
+</html>

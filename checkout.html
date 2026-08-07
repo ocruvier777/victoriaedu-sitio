@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tus datos — VictoriaEDU</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="uploads/victoriaedu_logo_transparent.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/victoria.css?v=4">
+</head>
+<body>
+
+<header data-vic-header data-cta="ninguno"></header>
+
+<section class="vic-section vic-section--tight vic-section--luz">
+  <div class="vic-container">
+
+    <!-- Pasos -->
+    <nav class="vic-steps" aria-label="Progreso de compra" style="margin-bottom:40px">
+      <span class="vic-step vic-step--active"><span class="vic-step__num">1</span><span>Tus datos</span></span>
+      <span class="vic-step__sep"></span>
+      <span class="vic-step"><span class="vic-step__num">2</span><span>Pago</span></span>
+      <span class="vic-step__sep"></span>
+      <span class="vic-step"><span class="vic-step__num">3</span><span>Confirmación</span></span>
+    </nav>
+
+    <div class="vic-checkout">
+      <!-- ---------- Formulario ---------- -->
+      <div>
+        <h1 style="font-size:clamp(28px,3.2vw,38px);line-height:1.1;margin:0 0 10px">¿A nombre de quién va el acceso?</h1>
+        <p class="vic-lead" style="margin:0 0 32px;max-width:52ch">Con estos datos generamos tu folio y te mandamos la liga del simulacro. Todavía no se cobra nada.</p>
+
+        <form id="formDatos" class="vic-stack" style="gap:22px" novalidate>
+          <label class="vic-field">
+            <span class="vic-label">Nombre completo del alumno <span class="vic-req">*</span></span>
+            <input class="vic-input" type="text" name="nombre" placeholder="Ana Karen Martínez López" autocomplete="name" required>
+            <span class="vic-error vic-hidden" data-error="nombre"></span>
+          </label>
+
+          <label class="vic-field">
+            <span class="vic-label">Correo electrónico <span class="vic-req">*</span></span>
+            <input class="vic-input" type="email" name="correo" placeholder="tucorreo@ejemplo.com" autocomplete="email" required>
+            <span class="vic-hint">Aquí llega tu liga de acceso y tu reporte. Revísalo bien.</span>
+            <span class="vic-error vic-hidden" data-error="correo"></span>
+          </label>
+
+          <label class="vic-field">
+            <span class="vic-label">WhatsApp <span class="vic-req">*</span></span>
+            <input class="vic-input" type="tel" name="telefono" placeholder="55 1234 5678" autocomplete="tel" required>
+            <span class="vic-hint">Lo usamos solo para avisarte que validamos tu pago.</span>
+            <span class="vic-error vic-hidden" data-error="telefono"></span>
+          </label>
+
+          <label class="vic-field">
+            <span class="vic-label">Carrera o escuela a la que aspiras <span class="vic-muted" style="font-weight:400">(opcional)</span></span>
+            <input class="vic-input" type="text" name="carrera" placeholder="ESIME Zacatenco · Ing. en Comunicaciones">
+            <span class="vic-hint">Con esto comparamos tu puntaje contra el corte estimado de esa carrera.</span>
+          </label>
+
+          <label class="vic-row" style="gap:12px;align-items:flex-start;cursor:pointer">
+            <input type="checkbox" name="acepto" style="width:18px;height:18px;margin-top:2px;accent-color:var(--vic-azul);flex:none" required>
+            <span style="font-size:14px;line-height:1.55">Acepto el <a href="#">aviso de privacidad</a> y los <a href="#">términos y condiciones</a>. <span class="vic-req">*</span></span>
+          </label>
+          <span class="vic-error vic-hidden" data-error="acepto" style="margin-top:-12px"></span>
+
+          <div class="vic-row" style="gap:16px;margin-top:8px">
+            <button class="vic-btn vic-btn--primary vic-btn--xl" type="submit">Continuar al pago →</button>
+            <a class="vic-btn vic-btn--ghost vic-btn--lg" href="tienda.html">Volver a programas</a>
+          </div>
+        </form>
+      </div>
+
+      <!-- ---------- Resumen ---------- -->
+      <aside>
+        <div class="vic-card vic-summary" id="resumen">
+          <h2 style="font-size:18px;margin:0 0 18px">Resumen de tu compra</h2>
+          <div id="resumenContenido"></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<footer data-vic-footer></footer>
+
+<script src="assets/js/config.js?v=4"></script>
+<script src="assets/js/api.js?v=4"></script>
+<script src="assets/js/ui.js?v=4"></script>
+<script src="assets/js/iconos.js?v=4"></script>
+<script src="assets/js/pagina-checkout.js?v=4"></script>
+</body>
+</html>
