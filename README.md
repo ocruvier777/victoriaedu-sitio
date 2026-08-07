@@ -39,12 +39,33 @@ Ahí dentro, **Cargar datos de ejemplo** llena la tabla para poder enseñarlo.
 | `checkout.html` | Paso 1 — datos del comprador |
 | `pago.html` | Paso 2 — elección de método de pago |
 | `confirmacion.html` | Paso 3 — folio, datos bancarios, comprobante y aviso por WhatsApp |
+| `ipn.html` | Guía del examen: estructura, áreas, cómo se califica, equipo y calendario |
 | `aciertos-ipn.html` | Cortes históricos del IPN en gráfica: 105 carreras, filtros y comparador contra tu puntaje |
 | `convocatoria-ipn-segunda-vuelta.html` | Página SEO de la convocatoria de segunda vuelta: fechas, requisitos y equipo necesario |
 | `admin.html` | Panel de revisión manual de pagos y lista de espera |
 
 El header y el footer no están duplicados en el HTML: los pinta `assets/js/ui.js`
 para que haya un solo lugar donde tocarlos.
+
+### El menú
+
+Un solo árbol en `ui.js` (`NAV`), idéntico en las diez páginas — está verificado
+en la batería de pruebas, que compara la firma del menú de cada una:
+
+```
+Inicio · Programas ▾ · IPN ▾ · Método · Equipo · [CTA]
+```
+
+- **Programas** abre un mega panel con una tarjeta por programa, sacada del
+  catálogo. Los que no están a la venta llevan a la tienda con su ancla, nunca a
+  un vacío. El rótulo es un enlace real a `tienda.html`.
+- **IPN** agrupa las tres páginas de contenido (guía, aciertos, convocatoria);
+  antes eran dos entradas sueltas hablando de lo mismo.
+- **Cómo se abre:** en escritorio, al pasar el ratón; el clic navega a la página
+  del rótulo. En táctil no hay hover, así que el primer toque abre el acordeón y
+  el segundo navega. También responde a teclado y se cierra con Escape.
+- El CTA es lo único que varía: `data-cta="comprar"` en las páginas públicas y
+  `"ninguno"` dentro del checkout, donde un botón de compra sobraría.
 
 ---
 
@@ -268,6 +289,12 @@ No son decorativas y no conviene "arreglarlas" a ojo:
 **Tipografías.** Creato Display se auto-hospeda porque no está en ningún CDN
 público. Inter y JetBrains Mono se cargan desde Google Fonts; sin internet el
 sitio cae a la pila de sistema y se ve digno, pero no idéntico.
+
+**Ilustraciones.** Los programas ya no usan fotos de stock: `assets/img/*.svg`
+son dibujos de marca hechos a medida. La del simulacro muestra una laptop con el
+examen —cronómetro, opciones y barra de avance— porque el examen del IPN es en
+línea y **no se puede presentar desde celular**. Al ser SVG pesan unos 2 KB, se
+ven nítidos en cualquier pantalla y no dependen de ningún servidor externo.
 
 **Logo.** Hay dos variantes. `victoriaedu_logo_transparent.png` es el original,
 para fondos claros. `victoriaedu_logo_light.png` es una versión invertida que se

@@ -132,8 +132,8 @@ window.CATALOGO = [
     badge: { texto: 'Disponible', clase: 'vic-badge--solid' },
     meta: '2 exámenes · 70 reactivos c/u · 90 min c/u',
     pagina: 'simulacro-ipn-2026.html',
-    imagen: 'https://images.unsplash.com/photo-1561089489-f13d5e730d72?auto=format&fit=crop&w=1200&q=80',
-    imagenAlt: 'Alumnos resolviendo un simulacro',
+    imagen: 'assets/img/prog-simulacro.svg',
+    imagenAlt: 'Laptop mostrando un examen en línea con cronómetro',
     incluye: [
       'Dos exámenes de 70 reactivos: la mitad del examen real cada uno',
       'Todas las materias que evalúa el IPN, inglés incluido',
@@ -155,8 +155,8 @@ window.CATALOGO = [
     badge: { texto: 'Próximamente', clase: 'vic-badge--warning' },
     meta: 'Arranca el 5 de octubre · 24 semanas',
     pagina: null,
-    imagen: 'https://images.unsplash.com/photo-1453733190371-0a9bedd82893?auto=format&fit=crop&w=1200&q=80',
-    imagenAlt: 'Ecuaciones en el pizarrón',
+    imagen: 'assets/img/prog-matematicas.svg',
+    imagenAlt: 'Pizarrón con la gráfica de una función',
     incluye: [
       '48 clases en vivo con grabación',
       'Práctica diaria adaptativa',
@@ -176,8 +176,8 @@ window.CATALOGO = [
     badge: { texto: 'Próximamente', clase: 'vic-badge--warning' },
     meta: 'Siguiente generación por confirmar',
     pagina: null,
-    imagen: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80',
-    imagenAlt: 'Clase presencial con profesor frente al grupo',
+    imagen: 'assets/img/prog-admision.svg',
+    imagenAlt: 'Lista del proceso de admisión junto a un edificio universitario',
     incluye: [
       'Las cuatro áreas del examen de admisión',
       'Diagnóstico de entrada y ruta personalizada',

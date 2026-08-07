@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Lista de verificación del proceso de admisión junto a un edificio universitario">
+  <rect width="640" height="360" fill="#E6ECF8"/>
+  <g stroke="#6C8AC7" stroke-width="1" opacity=".4">
+    <path d="M0 90h640M0 180h640M0 270h640M120 0v360M240 0v360M360 0v360M480 0v360"/>
+  </g>
+  <!-- edificio -->
+  <g>
+    <path d="M356 300V168l84-46 84 46v132z" fill="#223A74"/>
+    <path d="M356 168l84-46 84 46" fill="none" stroke="#6C8AC7" stroke-width="3" stroke-linejoin="round"/>
+    <g fill="#FFFFFF" opacity=".55">
+      <rect x="382" y="196" width="22" height="30" rx="3"/>
+      <rect x="418" y="196" width="22" height="30" rx="3"/>
+      <rect x="454" y="196" width="22" height="30" rx="3"/>
+      <rect x="382" y="240" width="22" height="30" rx="3"/>
+      <rect x="454" y="240" width="22" height="30" rx="3"/>
+    </g>
+    <rect x="418" y="248" width="24" height="52" rx="3" fill="#310E17"/>
+  </g>
+  <!-- checklist -->
+  <g>
+    <rect x="104" y="86" width="212" height="214" rx="10" fill="#FFFFFF"/>
+    <rect x="104" y="86" width="212" height="30" rx="10" fill="#2C4D9D"/>
+    <rect x="104" y="106" width="212" height="10" fill="#2C4D9D"/>
+    <rect x="122" y="96" width="88" height="10" rx="5" fill="#FFFFFF" opacity=".7"/>
+    <g>
+      <circle cx="136" cy="146" r="9" fill="#197A52"/>
+      <path d="M131.6 146l3 3 6-6.2" stroke="#FFFFFF" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="154" y="141" width="130" height="9" rx="4.5" fill="#D6D6D6"/>
+      <circle cx="136" cy="182" r="9" fill="#197A52"/>
+      <path d="M131.6 182l3 3 6-6.2" stroke="#FFFFFF" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="154" y="177" width="106" height="9" rx="4.5" fill="#D6D6D6"/>
+      <circle cx="136" cy="218" r="9" fill="none" stroke="#2C4D9D" stroke-width="2.4"/>
+      <rect x="154" y="213" width="122" height="9" rx="4.5" fill="#2C4D9D" opacity=".3"/>
+      <circle cx="136" cy="254" r="9" fill="none" stroke="#9F9F9E" stroke-width="2.4"/>
+      <rect x="154" y="249" width="90" height="9" rx="4.5" fill="#E2E1E2"/>
+    </g>
+  </g>
+</svg>

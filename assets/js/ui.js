@@ -9,19 +9,79 @@
 
   var C = window.CONFIG;
 
-  /* --- Navegación --------------------------------------------------------- */
+  /* --- Navegación ----------------------------------------------------------
+     Un solo árbol para todo el sitio: el header se pinta desde aquí en todas
+     las páginas, así que el menú no puede desincronizarse entre una y otra.
+
+     Dos tipos de desplegable:
+     · `mega`  → panel con las tarjetas de los programas (se llena del catálogo)
+     · `hijos` → lista simple
+
+     En ambos, el rótulo es un enlace de verdad: al hacer clic la primera vez
+     abre el panel, y si vuelves a hacer clic, navega a su propia página.
+  ------------------------------------------------------------------------ */
   var NAV = [
-    { href: 'index.html',                titulo: 'Inicio' },
-    { href: 'index.html#metodo',         titulo: 'Método' },
-    { href: 'tienda.html',               titulo: 'Programas' },
-    { href: 'simulacro-ipn-2026.html',   titulo: 'Simulacro IPN' },
-    { href: 'aciertos-ipn.html',         titulo: 'Aciertos IPN' },
-    { href: 'convocatoria-ipn-segunda-vuelta.html', titulo: 'Segunda vuelta' },
+    { titulo: 'Inicio', href: 'index.html' },
+    { titulo: 'Programas', href: 'tienda.html', mega: true },
+    {
+      titulo: 'IPN', href: 'ipn.html', hijos: [
+        { titulo: 'Guía del examen IPN', href: 'ipn.html', desc: 'Estructura, materias, calificación y calendario' },
+        { titulo: 'Aciertos por carrera', href: 'aciertos-ipn.html', desc: 'Cortes históricos de 105 carreras, en gráfica' },
+        { titulo: 'Convocatoria segunda vuelta', href: 'convocatoria-ipn-segunda-vuelta.html', desc: 'Fechas, registro y requisitos' },
+      ],
+    },
+    { titulo: 'Método', href: 'index.html#metodo' },
+    { titulo: 'Equipo', href: 'index.html#equipo' },
   ];
 
   function paginaActual() {
     var p = location.pathname.split('/').pop();
     return p === '' ? 'index.html' : p;
+  }
+
+  /* Páginas que "pertenecen" a Programas, para marcar el rótulo como activo. */
+  var PAGINAS_PROGRAMAS = ['tienda.html', 'simulacro-ipn-2026.html', 'checkout.html', 'pago.html', 'confirmacion.html'];
+
+  var CHEVRON = '<svg class="vic-nav-item__chev" viewBox="0 0 24 24" width="14" height="14" fill="none" ' +
+    'stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<path d="M6 9l6 6 6-6"/></svg>';
+
+  /* --- Contenido de los paneles ------------------------------------------- */
+
+  /* Mega panel: una tarjeta por programa, sacada del catálogo. Los que no
+     están a la venta llevan su etiqueta y llevan a la tienda, no a un vacío. */
+  function panelProgramas() {
+    var tarjetas = (window.CATALOGO || []).map(function (p) {
+      var disponible = p.estado === 'disponible';
+      var destino = disponible && p.pagina ? p.pagina : 'tienda.html#' + p.slug;
+      return '<a class="vic-mega__item" href="' + destino + '">' +
+        '<span class="vic-mega__img"><img src="' + escapar(p.ilustracion || p.imagen) + '" alt="" loading="lazy"></span>' +
+        '<span class="vic-mega__cuerpo">' +
+          '<span class="vic-mega__tit">' + escapar(p.nombre) +
+            '<span class="vic-badge ' + escapar(p.badge.clase) + '">' + escapar(p.badge.texto) + '</span>' +
+          '</span>' +
+          '<span class="vic-mega__desc">' + escapar(p.meta) + '</span>' +
+          '<span class="vic-mega__precio">' + (disponible ? window.formatoMXN(p.precio) : 'Déjanos tu correo') + '</span>' +
+        '</span>' +
+      '</a>';
+    }).join('');
+
+    return '<div class="vic-mega">' +
+      '<div class="vic-mega__grid">' + tarjetas + '</div>' +
+      '<div class="vic-mega__pie">' +
+        '<a href="tienda.html">Ver todos los programas y cómo comprar →</a>' +
+        '<span>Hoy solo el simulacro está a la venta. Los cursos abren por generación.</span>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function panelLista(hijos, actual) {
+    return '<div class="vic-drop">' + hijos.map(function (h) {
+      return '<a href="' + h.href + '"' + (h.href === actual ? ' aria-current="page"' : '') + '>' +
+        '<span class="vic-drop__tit">' + escapar(h.titulo) + '</span>' +
+        '<span class="vic-drop__desc">' + escapar(h.desc) + '</span>' +
+      '</a>';
+    }).join('') + '</div>';
   }
 
   /* --- Header ------------------------------------------------------------- */
@@ -32,10 +92,26 @@
     var actual = paginaActual();
     var cta = host.getAttribute('data-cta') || 'comprar';
 
-    var enlaces = NAV.map(function (n) {
+    var enlaces = NAV.map(function (n, i) {
       var base = n.href.split('#')[0];
       var esActual = base === actual && (actual !== 'index.html' || n.href === 'index.html');
-      return '<a href="' + n.href + '"' + (esActual ? ' aria-current="page"' : '') + '>' + n.titulo + '</a>';
+
+      if (!n.mega && !n.hijos) {
+        return '<a href="' + n.href + '"' + (esActual ? ' aria-current="page"' : '') + '>' + n.titulo + '</a>';
+      }
+
+      var id = 'vicPanel' + i;
+      var hijos = n.mega ? PAGINAS_PROGRAMAS : n.hijos.map(function (h) { return h.href; });
+      var ramaActiva = hijos.indexOf(actual) !== -1;
+
+      var panel = n.mega ? panelProgramas() : panelLista(n.hijos, actual);
+
+      return '<div class="vic-nav-item' + (n.mega ? ' vic-nav-item--mega' : '') + '">' +
+        '<a class="vic-nav-item__label" href="' + n.href + '" id="' + id + 'Btn" ' +
+          'aria-haspopup="true" aria-expanded="false" aria-controls="' + id + '"' +
+          (ramaActiva ? ' aria-current="true"' : '') + '>' + n.titulo + CHEVRON + '</a>' +
+        '<div class="vic-nav-panel" id="' + id + '" aria-labelledby="' + id + 'Btn">' + panel + '</div>' +
+      '</div>';
     }).join('');
 
     var botones = {
@@ -59,17 +135,101 @@
 
     var toggle = host.querySelector('.vic-navbar__toggle');
     var links = host.querySelector('#vicNavLinks');
+
     toggle.addEventListener('click', function () {
       var abierto = links.classList.toggle('is-open');
       toggle.setAttribute('aria-expanded', String(abierto));
       toggle.textContent = abierto ? '✕' : '☰';
     });
-    links.addEventListener('click', function (e) {
-      if (e.target.tagName === 'A') {
+
+    activarDesplegables(host, links, toggle);
+  }
+
+  /* --- Comportamiento de los desplegables -----------------------------------
+     Escritorio: se abren al pasar el ratón. El primer clic en el rótulo abre
+     el panel; el segundo deja pasar la navegación a su propia página.
+     Móvil (sin hover): el rótulo funciona como acordeón y la navegación se
+     hace desde los enlaces de dentro.
+  ------------------------------------------------------------------------ */
+  function activarDesplegables(host, links, toggle) {
+    var items = Array.prototype.slice.call(host.querySelectorAll('.vic-nav-item'));
+    if (!items.length) return;
+
+    var hayHover = window.matchMedia && window.matchMedia('(hover: hover)').matches;
+    var esAncho = function () { return window.innerWidth > 860; };
+
+    function cerrarTodos(excepto) {
+      items.forEach(function (it) {
+        if (it === excepto) return;
+        it.classList.remove('is-open');
+        it.querySelector('.vic-nav-item__label').setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    function abrir(item, si) {
+      item.classList.toggle('is-open', si);
+      item.querySelector('.vic-nav-item__label').setAttribute('aria-expanded', String(si));
+      if (si) cerrarTodos(item);
+    }
+
+    items.forEach(function (item) {
+      var label = item.querySelector('.vic-nav-item__label');
+      var temporizador;
+
+      if (hayHover) {
+        item.addEventListener('mouseenter', function () {
+          if (!esAncho()) return;
+          clearTimeout(temporizador);
+          abrir(item, true);
+        });
+        item.addEventListener('mouseleave', function () {
+          if (!esAncho()) return;
+          // Pequeña gracia para que el puntero pueda cruzar el hueco al panel
+          temporizador = setTimeout(function () { abrir(item, false); }, 180);
+        });
+      }
+
+      label.addEventListener('click', function (e) {
+        var abiertoYa = item.classList.contains('is-open');
+        if (!abiertoYa) {
+          // Primer clic: abre. La navegación se deja para el segundo.
+          e.preventDefault();
+          abrir(item, true);
+        }
+        // Si ya estaba abierto, no hacemos nada: el enlace navega solo.
+      });
+
+      // Foco por teclado dentro del panel: mantenerlo abierto
+      item.addEventListener('focusin', function () { if (esAncho()) abrir(item, true); });
+      item.addEventListener('focusout', function () {
+        setTimeout(function () {
+          if (esAncho() && !item.contains(document.activeElement)) abrir(item, false);
+        }, 0);
+      });
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      cerrarTodos(null);
+      if (links.classList.contains('is-open')) {
         links.classList.remove('is-open');
         toggle.setAttribute('aria-expanded', 'false');
         toggle.textContent = '☰';
       }
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!host.contains(e.target)) cerrarTodos(null);
+    });
+
+    // Al navegar desde cualquier enlace del menú, se cierra todo
+    links.addEventListener('click', function (e) {
+      var a = e.target.closest('a');
+      if (!a || a.classList.contains('vic-nav-item__label')) return;
+      cerrarTodos(null);
+      links.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.textContent = '☰';
     });
   }
 

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Laptop mostrando un examen en línea con cronómetro y avance por materia">
+  <rect width="640" height="360" fill="#E6ECF8"/>
+  <g stroke="#6C8AC7" stroke-width="1" opacity=".45">
+    <path d="M0 60h640M0 120h640M0 180h640M0 240h640M0 300h640"/>
+    <path d="M80 0v360M160 0v360M240 0v360M320 0v360M400 0v360M480 0v360M560 0v360"/>
+  </g>
+  <!-- laptop -->
+  <g>
+    <rect x="140" y="66" width="360" height="222" rx="10" fill="#223A74"/>
+    <rect x="152" y="78" width="336" height="198" rx="4" fill="#FFFFFF"/>
+    <!-- barra superior de la pantalla -->
+    <rect x="152" y="78" width="336" height="30" rx="4" fill="#2C4D9D"/>
+    <rect x="152" y="98" width="336" height="10" fill="#2C4D9D"/>
+    <circle cx="169" cy="93" r="4" fill="#FFFFFF" opacity=".55"/>
+    <rect x="182" y="88" width="86" height="10" rx="5" fill="#FFFFFF" opacity=".65"/>
+    <!-- cronómetro -->
+    <rect x="396" y="84" width="76" height="20" rx="10" fill="#FFFFFF"/>
+    <text x="434" y="99" font-family="'JetBrains Mono',ui-monospace,monospace" font-size="13" font-weight="700" fill="#310E17" text-anchor="middle">01:30</text>
+    <!-- pregunta -->
+    <rect x="172" y="128" width="180" height="11" rx="5.5" fill="#223A74"/>
+    <rect x="172" y="148" width="252" height="8" rx="4" fill="#D6D6D6"/>
+    <!-- opciones -->
+    <g>
+      <circle cx="180" cy="180" r="7" fill="none" stroke="#9F9F9E" stroke-width="2"/>
+      <rect x="196" y="175" width="150" height="9" rx="4.5" fill="#D6D6D6"/>
+      <circle cx="180" cy="206" r="7" fill="#2C4D9D"/>
+      <path d="M176.5 206l2.6 2.6 4.9-5" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="196" y="201" width="196" height="9" rx="4.5" fill="#2C4D9D" opacity=".28"/>
+      <circle cx="180" cy="232" r="7" fill="none" stroke="#9F9F9E" stroke-width="2"/>
+      <rect x="196" y="227" width="122" height="9" rx="4.5" fill="#D6D6D6"/>
+    </g>
+    <!-- avance por materia -->
+    <g>
+      <rect x="172" y="254" width="296" height="6" rx="3" fill="#E2E1E2"/>
+      <rect x="172" y="254" width="186" height="6" rx="3" fill="#2C4D9D"/>
+    </g>
+    <!-- base -->
+    <path d="M112 288h416l16 20H96z" fill="#223A74"/>
+    <rect x="284" y="292" width="72" height="6" rx="3" fill="#6C8AC7"/>
+  </g>
+</svg>
