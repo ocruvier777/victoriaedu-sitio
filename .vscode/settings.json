@@ -1,0 +1,13 @@
+{
+  // Nada se guarda solo. El autoguardado es justo lo que escribía un buffer
+  // viejo de index.html encima de la versión buena del disco.
+  "files.autoSave": "off",
+
+  // Al recuperar la ventana, VS Code recarga del disco en vez de conservar
+  // buffers viejos de una sesión anterior.
+  "files.hotExit": "off",
+
+  // Sin formateo automático al guardar: evita que el editor marque como
+  // "sucio" un archivo que solo estabas mirando.
+  "editor.formatOnSave": false
+}
