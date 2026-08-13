@@ -160,6 +160,16 @@ archivo. No hay valores de marca escritos a mano más abajo.
 | Iconos de marca | `data-icono="materia\|tutor\|progreso\|tecnologia"` | Las cuatro tarjetas de "Qué hacemos" |
 | Hueco de mascota | `.mascot-slot` + `data-mascota` | Bloque de diagnóstico gratuito |
 
+**Portadas de programa.** Viven en `assets/brand/programas/*.webp`, son 1672×941
+(16:9 exacto, el mismo que fija `.vic-producto__img`) y pesan entre 35 y 70 KB.
+WebP es línea base en todos los navegadores vivos, así que se sirven directo
+desde `imagen` en el catálogo. Si algún día hay variantes AVIF, se pone la ruta
+en `imagenAvif` y la tarjeta pasa sola a `<picture>` con el WebP de respaldo.
+
+Las tres llevan `width`/`height` para que el navegador reserve el espacio antes
+de descargar nada. La primera de la portada se carga sin `lazy` porque entra
+casi con el primer scroll; las otras dos sí van diferidas.
+
 Para pintar una textura en una sección hay que envolverla con `.vic-lienzo`, que
 crea el contexto de posicionamiento y sube el contenido por encima de la capa.
 

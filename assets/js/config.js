@@ -243,16 +243,20 @@ window.CATALOGO = [
     badge: { texto: 'Disponible', clase: 'vic-badge--solid' },
     meta: '2 exámenes · 70 reactivos c/u · 90 min c/u',
     pagina: 'simulacro-ipn-2026.html',
-    /* imagen        → la que se sirve hoy. SIEMPRE tiene que existir.
-       imagenAvif/Webp → variantes optimizadas, opcionales. En cuanto exista
-       el archivo se descomenta la línea y la tarjeta empieza a servirlo por
-       <picture>, con la SVG de siempre como respaldo. Mientras estén en null
-       no se emite ningún <source> y no hay forma de que quede una imagen
-       rota. Ruta acordada: assets/brand/programas/<nombre>.webp */
-    imagen: 'assets/img/prog-simulacro.svg',
+    /* imagen        → la que se sirve. SIEMPRE tiene que existir.
+       imagenAvif    → variante AVIF, opcional. En cuanto exista el archivo se
+       pone aquí la ruta y la tarjeta empieza a servirlo por <picture>, con el
+       WebP de abajo como respaldo. Mientras esté en null no se emite ningún
+       <source> y no hay forma de que quede una imagen rota.
+
+       Las ilustraciones son 1672x941 (16:9 exacto, el mismo que fija
+       .vic-producto__img) y pesan entre 35 y 70 KB. WebP es línea base en
+       todos los navegadores vivos, así que se sirve directo y no hace falta
+       arrastrar las SVG como respaldo. */
+    imagen: 'assets/brand/programas/simulacro-ipn.webp',
     imagenAvif: null,   // 'assets/brand/programas/simulacro-ipn.avif'
-    imagenWebp: null,   // 'assets/brand/programas/simulacro-ipn.webp'
-    imagenAlt: 'Laptop mostrando un examen en línea con cronómetro',
+    imagenWebp: null,   // ya es `imagen`; se usa solo si algún día hay AVIF
+    imagenAlt: 'Tableta con un examen de opción múltiple, un cronómetro y una tarjeta de resultados',
     /* Los 4 puntos de la tarjeta. Cortos a propósito: en la portada se ojean,
        no se leen. La lista larga sigue siendo `incluye`. */
     puntos: [
@@ -282,10 +286,10 @@ window.CATALOGO = [
     badge: { texto: 'Próximamente', clase: 'vic-badge--warning' },
     meta: 'Arranca el 5 de octubre · 24 semanas',
     pagina: null,
-    imagen: 'assets/img/prog-matematicas.svg',
+    imagen: 'assets/brand/programas/matematicas-ipn.webp',
     imagenAvif: null,   // 'assets/brand/programas/matematicas-ipn.avif'
-    imagenWebp: null,   // 'assets/brand/programas/matematicas-ipn.webp'
-    imagenAlt: 'Pizarrón con la gráfica de una función',
+    imagenWebp: null,   // ya es `imagen`; se usa solo si algún día hay AVIF
+    imagenAlt: 'Tres láminas que avanzan de las figuras básicas a la geometría con compás y de ahí a una curva creciente en papel milimétrico',
     puntos: [
       'De aritmética a cálculo',
       '48 clases en vivo',
@@ -311,10 +315,10 @@ window.CATALOGO = [
     badge: { texto: 'Próximamente', clase: 'vic-badge--warning' },
     meta: 'Siguiente generación por confirmar',
     pagina: null,
-    imagen: 'assets/img/prog-admision.svg',
+    imagen: 'assets/brand/programas/admision-ipn.webp',
     imagenAvif: null,   // 'assets/brand/programas/admision-ipn.avif'
-    imagenWebp: null,   // 'assets/brand/programas/admision-ipn.webp'
-    imagenAlt: 'Lista del proceso de admisión junto a un edificio universitario',
+    imagenWebp: null,   // ya es `imagen`; se usa solo si algún día hay AVIF
+    imagenAlt: 'Tres rutas con nodos que convergen y suben hacia el arco de entrada de una escuela',
     puntos: [
       'Las 4 áreas del examen',
       'Diagnóstico y ruta personal',

@@ -435,6 +435,19 @@
   color: #fff;
 }
 
+/* --- Portadas de programa ------------------------------------------------
+   victoria.css apaga la portada de los "próximamente" con
+   saturate(.45) opacity(.7). Ese ajuste se calibró contra las ilustraciones
+   SVG planas de antes; sobre las editoriales las deja grises y lavadas, y lo
+   que se lee no es "catálogo" sino "imagen rota".
+
+   Se suaviza, no se quita: la intención original sigue siendo buena. Y el
+   estado ya lo dicen dos cosas más fuertes —la insignia "Próximamente" y un
+   botón de lista de espera en vez de compra—, así que el filtro solo tiene
+   que susurrarlo.
+------------------------------------------------------------------------- */
+.vic-producto--proximo .vic-producto__img img { filter: saturate(.78) opacity(.92); }
+
 /* ==========================================================================
    7 · Ruta del Método Victoria
    --------------------------------------------------------------------------
