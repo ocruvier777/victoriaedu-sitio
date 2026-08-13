@@ -729,23 +729,50 @@
    sitio a medio terminar, que es peor que no tener mascota.
    ========================================================================== */
 .mascot-slot { display: none; }
-.mascot-slot:has(img) { display: block; }
+.mascot-slot:has(img) {
+  display: block;
+  position: relative;
+  width: fit-content;
+  margin-top: 30px;
+}
+
+/* Medallón claro detrás de Vico.
+   NO es decoración: el cuerpo de Vico es azul marino y la banda de esta
+   sección es azul profundo, así que sobre el fondo desnudo la silueta se
+   funde y se pierde la cola entera. Sobre claro se lee completo.
+
+   Es un círculo y no un recuadro a propósito: un rectángulo blanco dentro de
+   una banda de color se lee como un parche o como una imagen que no cargó;
+   un medallón se lee como decisión. Y va algo más chico que la ilustración
+   para que Vico lo desborde — apoyado en él, no pegado encima. */
+.mascot-slot:has(img)::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  width: 86%;
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 45%,
+    var(--vic-blanco-calido) 62%,
+    rgba(250, 248, 245, .72) 82%,
+    rgba(250, 248, 245, 0) 100%);
+}
 
 .mascot-slot img {
+  position: relative;   /* por encima del medallón */
   display: block;
   width: 100%;
-  max-width: 210px;
+  max-width: 260px;
   height: auto;
-  margin-top: 26px;
 }
 
 @media (max-width: 900px) {
-  /* En móvil compite con el formulario: se reduce y se centra sobre el
-     bloque, o desaparece si el espacio ya está peleado. */
-  .mascot-slot img { max-width: 130px; margin: 0 auto 18px; }
-}
-@media (max-width: 520px) {
-  .mascot-slot { display: none !important; }
+  /* En móvil la columna se apila sobre el formulario: se centra y se reduce
+     para no empujar el CTA fuera de la primera pantalla. */
+  .mascot-slot:has(img) { margin: 22px auto 0; }
+  .mascot-slot img { max-width: 180px; }
 }
 
 /* ==========================================================================

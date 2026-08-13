@@ -182,6 +182,14 @@ Si algún día la tarjeta cambia de tono, la solución **no** es pintarles un
 recuadro blanco detrás: hay que pedir las ilustraciones ya compuestas contra el
 color nuevo.
 
+**Vico.** `assets/brand/vico/vico-diagnostico.webp`, se activa desde
+`CONFIG.mascota`. Lleva un medallón claro detrás (`.mascot-slot::before`) y esa
+es la parte que importa: el cuerpo de Vico es azul marino y la banda donde vive
+es azul profundo, así que sobre el fondo desnudo **la silueta se funde y se
+pierde la cola entera**. Es un círculo y no un recuadro a propósito — un
+rectángulo claro dentro de una banda de color se lee como parche o como imagen
+que no cargó.
+
 Para pintar una textura en una sección hay que envolverla con `.vic-lienzo`, que
 crea el contexto de posicionamiento y sube el contenido por encima de la capa.
 

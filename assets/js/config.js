@@ -19,7 +19,12 @@ window.CONFIG = {
      `alt` describe a la mascota; si algún día se usa como puro adorno, se
      deja en cadena vacía y el lector de pantalla la salta.
   ------------------------------------------------------------------------ */
-  mascota: null,
+  mascota: {
+    src: 'assets/brand/vico/vico-diagnostico.webp',
+    alt: 'Vico, la mascota de VictoriaEDU, junto a un tablero con el resultado de un diagnóstico',
+    ancho: 1600,
+    alto: 2000,
+  },
 
   marca: {
     nombre: 'VictoriaEDU',
