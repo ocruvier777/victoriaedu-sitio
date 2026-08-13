@@ -316,6 +316,7 @@
 /* Variantes, nombradas por el par de bandas que unen */
 .section-divider--guinda-papel { --sd-desde: var(--vic-noche);        --sd-hacia: var(--vic-blanco); --sd-filo: rgba(var(--vic-cian-rgb), .5); }
 .section-divider--guinda-lienzo { --sd-desde: var(--vic-noche);       --sd-hacia: var(--vic-bg-canvas); --sd-filo: rgba(var(--vic-cian-rgb), .5); }
+.section-divider--guinda-gris   { --sd-desde: var(--vic-noche);       --sd-hacia: var(--vic-gris-claro); --sd-filo: rgba(var(--vic-cian-rgb), .5); }
 .section-divider--gris-guinda  { --sd-desde: var(--vic-gris-claro);   --sd-hacia: var(--vic-noche);  --sd-filo: rgba(var(--vic-azul-rgb), .55); }
 .section-divider--papel-noche  { --sd-desde: var(--vic-blanco);       --sd-hacia: var(--vic-noche);  --sd-filo: rgba(var(--vic-azul-rgb), .5); }
 .section-divider--azul-guinda  { --sd-desde: var(--vic-azul-profundo); --sd-hacia: var(--vic-noche); --sd-filo: rgba(var(--vic-cian-rgb), .45); }
@@ -499,6 +500,138 @@
 /* El pie de la tarjeta también se apaga: sin precio que anclar la mirada, el
    borde superior a todo color pesaba de más. */
 .vic-producto--proximo .vic-producto__pie { border-top-color: var(--vic-border-subtle); }
+
+/* --- Precio ---------------------------------------------------------------
+   Sale por clases, no por estilos en línea, porque la misma tarjeta se pinta
+   sobre papel blanco y sobre cristal oscuro.
+------------------------------------------------------------------------- */
+.vic-precio__num {
+  font-family: var(--vic-font-display);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--vic-azul-profundo);
+  line-height: 1.1;
+}
+.vic-precio__nota { font-size: 13px; color: var(--vic-text-muted); margin-top: 2px; }
+.vic-precio--proximo .vic-precio__num { font-size: 20px; color: var(--vic-text-muted); }
+
+.vic-producto__meta { font-size: 14px; color: var(--vic-text-muted); }
+
+/* ==========================================================================
+   Carrusel de programas (tienda)
+   --------------------------------------------------------------------------
+   Tarjeta horizontal —ilustración a un lado, contenido al otro— sobre una
+   banda oscura, en cristal.
+
+   Por qué la banda es oscura: el glassmorphism no es un color, es un
+   desenfoque de lo que hay DETRÁS. Sobre el blanco plano que tenía la sección
+   no se vería absolutamente nada: cristal sobre blanco es blanco. Para que el
+   efecto exista hace falta algo que desenfocar, así que la banda lleva las
+   mismas manchas de color que la de testimonios, que ya resolvía este mismo
+   problema en el sitio.
+   ========================================================================== */
+.vic-catalogo {
+  position: relative;
+  overflow: hidden;
+  background: var(--vic-noche);
+}
+.vic-catalogo > * { position: relative; z-index: 1; }
+.vic-catalogo::before {
+  content: "";
+  position: absolute;
+  inset: -10%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(52% 50% at 12% 16%, rgba(var(--vic-azul-rgb), .58), transparent 68%),
+    radial-gradient(44% 46% at 86% 10%, rgba(108, 138, 199, .26), transparent 70%),
+    radial-gradient(54% 56% at 78% 94%, rgba(var(--vic-guinda-rgb), .72), transparent 68%);
+}
+
+/* Encabezado de la sección sobre fondo oscuro */
+.vic-catalogo h2, .vic-catalogo h3 { color: #fff; }
+.vic-catalogo .vic-eyebrow { color: rgba(255, 255, 255, .55); }
+.vic-catalogo > .vic-container > p { color: rgba(255, 255, 255, .75); }
+
+/* --- La tarjeta en cristal ------------------------------------------------ */
+.vic-producto--horizontal {
+  display: grid;
+  grid-template-columns: minmax(0, 42%) minmax(0, 58%);
+  align-items: stretch;
+  border-radius: var(--vic-radius-xl);
+  border: 1px solid rgba(255, 255, 255, .16);
+  background: rgba(255, 255, 255, .07);
+  -webkit-backdrop-filter: blur(16px);
+          backdrop-filter: blur(16px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .35);
+  color: rgba(255, 255, 255, .78);
+  overflow: hidden;
+}
+
+/* La ilustración ocupa su columna completa, no una franja 16:9 */
+.vic-producto--horizontal .vic-producto__img {
+  aspect-ratio: auto;
+  height: 100%;
+  min-height: 260px;
+  background: rgba(0, 0, 0, .18);
+}
+.vic-producto--horizontal .vic-producto__body { padding: 34px; }
+
+/* Texto sobre cristal: el sistema pinta títulos y precios en azul profundo,
+   que sobre este fondo desaparecería. */
+.vic-producto--horizontal h3,
+.vic-producto--horizontal .vic-precio__num { color: #fff; }
+.vic-producto--horizontal .vic-producto__meta,
+.vic-producto--horizontal .vic-precio__nota,
+.vic-producto--horizontal .vic-lista-check li { color: rgba(255, 255, 255, .74); }
+.vic-producto--horizontal .vic-precio--proximo .vic-precio__num { color: rgba(255, 255, 255, .72); }
+/* La palomita verde institucional pierde contraste sobre oscuro; el cian del
+   sistema es el equivalente legible aquí. */
+.vic-producto--horizontal .vic-lista-check li::before { color: var(--vic-cian); }
+.vic-producto--horizontal .vic-producto__pie {
+  border-top-color: rgba(255, 255, 255, .16);
+  /* Centrado y no al fondo: con los controles apilados, `flex-end` hundía el
+     precio hasta la altura del último botón y el pie se leía torcido. */
+  align-items: center;
+}
+.vic-producto--horizontal .vic-producto__link { color: #fff; }
+
+/* En horizontal sobra ancho, así que los dos botones caben en una fila y el
+   enlace de texto pasa debajo. Apilados hacían la tarjeta mucho más alta, y
+   cuanto más alta la tarjeta, más se recorta la ilustración de al lado. */
+.vic-producto--horizontal .vic-producto__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex: 1 1 320px;
+}
+.vic-producto--horizontal .vic-producto__acciones .vic-btn {
+  flex: 1 1 auto;
+  width: auto;
+}
+.vic-producto--horizontal .vic-producto__link { flex: 1 0 100%; }
+
+/* Un "próximamente" en cristal no necesita el papel gris: aquí la señal es
+   quitarle saturación a la ilustración y el resto ya lo dicen la insignia y
+   la ausencia de precio. */
+.vic-producto--horizontal.vic-producto--proximo {
+  background: rgba(255, 255, 255, .045);
+  border-color: rgba(255, 255, 255, .12);
+}
+
+.vic-catalogo .vic-rail { grid-auto-columns: 100%; }
+.vic-catalogo .vic-rail > * { scroll-snap-stop: always; }
+
+@media (max-width: 860px) {
+  /* Apilada: la ilustración arriba, en franja, y el contenido debajo. */
+  .vic-producto--horizontal { grid-template-columns: 1fr; }
+  .vic-producto--horizontal .vic-producto__img {
+    aspect-ratio: 16 / 9;
+    height: auto;
+    min-height: 0;
+  }
+  .vic-producto--horizontal .vic-producto__body { padding: 26px; }
+}
 
 /* --- Pie de la tarjeta de tienda -----------------------------------------
    Los controles iban alineados a la derecha (`justify-items:end`) y cada uno

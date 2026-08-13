@@ -5,6 +5,11 @@
    Precios, datos bancarios, WhatsApp y estado de los productos viven aquí.
    ========================================================================== */
 
+/* Versión del sitio. Se imprime en el pie, y ahí sirve para una cosa muy
+   concreta: cuando alguien reporte "se ve raro", poder preguntarle qué versión
+   trae y saber si está viendo caché vieja. Súbela cuando publiques. */
+window.VERSION_SITIO = '1.3.0';
+
 window.CONFIG = {
   /* --- Mascota (Vico) ------------------------------------------------------
      null = no se pinta NADA. Ni caja, ni marco, ni silueta gris: un
@@ -28,7 +33,7 @@ window.CONFIG = {
 
   marca: {
     nombre: 'VictoriaEDU',
-    razonSocial: 'Victoria EDU S.A.S.',
+    razonSocial: 'Victoria EDU S.A.S. de C.V.',
     correo: 'hola@victoriaedu.mx',
     correoInstituciones: 'instituciones@victoriaedu.mx',
     telefono: '+52 55 0000 0000',

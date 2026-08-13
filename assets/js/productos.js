@@ -34,17 +34,21 @@
 
      El precio sigue en CONFIG.CATALOGO —hace falta para ordenar y para el día
      que abran—, simplemente no se publica hasta que el producto exista. */
+  /* Va por clases y no por estilos en línea a propósito: la misma tarjeta se
+     pinta sobre papel blanco y sobre cristal oscuro, y un color escrito en el
+     atributo `style` gana a cualquier regla de tema. Con clases, el contexto
+     manda. */
   function precioHTML(p) {
     if (p.estado !== 'disponible') {
-      return '<div><div style="font-family:var(--vic-font-display);font-size:20px;font-weight:700;color:var(--vic-text-muted)">' +
-          'Precio por definir' +
-        '</div><div style="font-size:13px;color:var(--vic-text-muted)">' +
-          'Te avisamos al abrir' +
-        '</div></div>';
+      return '<div class="vic-precio vic-precio--proximo">' +
+        '<div class="vic-precio__num">Precio por definir</div>' +
+        '<div class="vic-precio__nota">Te avisamos al abrir</div>' +
+      '</div>';
     }
-    return '<div><div style="font-family:var(--vic-font-display);font-size:26px;font-weight:700;color:var(--vic-azul-profundo)">' +
-        window.formatoMXN(p.precio) +
-      '</div><div style="font-size:13px;color:var(--vic-text-muted)">pago único</div></div>';
+    return '<div class="vic-precio">' +
+      '<div class="vic-precio__num">' + window.formatoMXN(p.precio) + '</div>' +
+      '<div class="vic-precio__nota">pago único</div>' +
+    '</div>';
   }
 
   /* --- Portada del programa ------------------------------------------------
@@ -85,9 +89,11 @@
   /**
    * Devuelve el HTML de una tarjeta de producto.
    * @param {Object} p producto del CATALOGO
-   * @param {{detallada?:boolean, prioritaria?:boolean}} [opts]
-   *        detallada = tienda; si no, portada.
+   * @param {{detallada?:boolean, prioritaria?:boolean, horizontal?:boolean}} [opts]
+   *        detallada   = tienda; si no, portada.
    *        prioritaria = no aplicar lazy-load a la imagen.
+   *        horizontal  = imagen a un lado y contenido al otro, en cristal;
+   *                      es el formato del carrusel de la tienda.
    */
   function tarjetaProducto(p, opts) {
     opts = opts || {};
@@ -98,8 +104,16 @@
     if (opts.detallada) {
       // Tienda: aquí ya vino a comprar, así que se le enseña todo y el botón
       // es la compra directa.
+      //
+      // En el carrusel se usan los 4 `puntos` en vez de la lista larga. No es
+      // por estética: en un riel todas las tarjetas miden lo que la más alta,
+      // y con `incluye` el simulacro (siete líneas) dejaba a las otras dos con
+      // un hueco enorme entre la lista y el precio. Con cuatro líneas parejas
+      // las tres quedan del mismo alto, la ilustración de al lado se recorta
+      // menos, y el detalle completo sigue a un clic en "Ver el programa".
+      var lista = opts.horizontal ? puntosDe(p) : (p.incluye || []);
       cuerpo = '<p style="font-size:16px;line-height:1.6;margin:0 0 20px">' + esc(p.resumen) + '</p>' +
-        listaCheck(p.incluye || []);
+        listaCheck(lista);
       accion = disponible
         ? '<a class="vic-btn vic-btn--primary vic-btn--lg" href="' + esc(window.VicUI.urlComprar()) +
             '" data-metrica="comprar_clic" data-metrica-lugar="tienda">Comprar — ' + esc(window.VicUI.precioCorto(p.id)) + '</a>' +
@@ -117,15 +131,19 @@
             esc(p.id) + '">Conoce más</button>';
     }
 
+    var clases = 'vic-card vic-card--flush vic-card--hoverable vic-producto' +
+      (disponible ? '' : ' vic-producto--proximo') +
+      (opts.horizontal ? ' vic-producto--horizontal' : '');
+
     return '' +
-      '<article class="vic-card vic-card--flush vic-card--hoverable vic-producto' + (disponible ? '' : ' vic-producto--proximo') + '" id="' + esc(p.slug) + '">' +
+      '<article class="' + clases + '" id="' + esc(p.slug) + '">' +
         '<div class="vic-producto__img">' +
           portadaHTML(p, opts) +
         '</div>' +
         '<div class="vic-producto__body">' +
           '<div class="vic-row" style="gap:10px;margin-bottom:14px">' +
             '<span class="vic-badge ' + esc(p.badge.clase) + '">' + esc(p.badge.texto) + '</span>' +
-            '<span style="font-size:14px;color:var(--vic-text-muted)">' + esc(p.meta) + '</span>' +
+            '<span class="vic-producto__meta">' + esc(p.meta) + '</span>' +
           '</div>' +
           '<h3 style="font-size:24px;margin:0 0 14px">' + esc(p.nombre) + '</h3>' +
           cuerpo +

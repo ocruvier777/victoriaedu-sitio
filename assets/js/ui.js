@@ -282,7 +282,10 @@
           '</div>' +
         '</div>' +
         '<div class="vic-footer__bottom">' +
-          '<span>© 2026 ' + C.marca.razonSocial + ' · Desarrollado por VictoriaDEV — made with <span style="color:#E2818F">&#10084;</span></span>' +
+          '<span>© ' + new Date().getFullYear() + ' ' + C.marca.razonSocial +
+            ' · Hecho con <span style="color:#E2818F" aria-label="cariño" role="img">&#10084;</span> por ' +
+            '<a href="https://victoriadev.com" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">VictoriaDEV</a>' +
+            ' · <span class="vic-mono" style="opacity:.7">v' + (window.VERSION_SITIO || '—') + '</span></span>' +
           '<span>La preparación no garantiza admisión. Nuestros resultados se reportan por generación.</span>' +
         '</div>' +
       '</div>';

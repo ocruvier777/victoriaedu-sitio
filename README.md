@@ -157,6 +157,7 @@ archivo. No hay valores de marca escritos a mano más abajo.
 | Cuaderno Victoria | `.academic-grid` + `--claro` / `--oscuro` | Claro en "Qué hacemos"; el oscuro está integrado en `.vic-blueprint` (hero y método) |
 | Separadores | `.section-divider--*` | Las 6 páginas públicas, 16 en total |
 | Ruta del método | `.vic-ruta` | Recorre los cinco pasos; vertical en móvil |
+| Carrusel de programas | `.vic-catalogo` + `.vic-producto--horizontal` | Catálogo de la tienda |
 | Ilustraciones de beneficio | `.benefit-illustration` | Las cuatro tarjetas de "Qué hacemos" |
 | Iconos de marca | `data-icono="materia\|tutor\|progreso\|tecnologia"` | Reserva: los cuatro iconos siguen en `iconos.js` por si hay que volver atrás |
 | Hueco de mascota | `.mascot-slot` + `data-mascota` | Bloque de diagnóstico gratuito |
@@ -192,6 +193,17 @@ que no cargó.
 
 Para pintar una textura en una sección hay que envolverla con `.vic-lienzo`, que
 crea el contexto de posicionamiento y sube el contenido por encima de la capa.
+
+**El catálogo de la tienda es un carrusel** de tarjetas horizontales en cristal,
+montado sobre `VicUI.rail()` — el mismo que ya movía testimonios y reels, sin
+JavaScript nuevo. La banda es oscura por necesidad, no por gusto: el
+glassmorphism es un desenfoque de lo que hay **detrás**, y sobre el blanco plano
+que tenía la sección no se vería nada. Lleva las mismas manchas de color que la
+banda de testimonios, que resolvía este mismo problema.
+
+En el carrusel las tarjetas usan los 4 `puntos` y no la lista `incluye`: en un
+riel todas miden lo que la más alta, y con siete líneas el simulacro dejaba a
+las otras dos con un hueco enorme sobre el precio.
 
 **Dos cosas que conviene no "arreglar" a ojo:**
 

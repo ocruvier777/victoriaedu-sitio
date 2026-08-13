@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/victoria.css?v=13">
-<link rel="stylesheet" href="assets/css/victoria-marca.css?v=13">
+<link rel="stylesheet" href="assets/css/victoria.css?v=14">
+<link rel="stylesheet" href="assets/css/victoria-marca.css?v=14">
 </head>
 <body>
 
@@ -25,15 +25,28 @@
   </div>
 </section>
 
-<div class="section-divider section-divider--guinda-papel" aria-hidden="true"></div>
+<!-- Sin separador entre el encabezado y el catálogo: ahora los dos son bandas
+     oscuras y una diagonal clara entre ellas sería una cuña de la nada. -->
 
 <!-- ================= CATÁLOGO ================= -->
-<section class="vic-section vic-section--luz">
+<section class="vic-section vic-catalogo">
   <div class="vic-container">
-    <div class="vic-grid vic-grid--3" id="catalogoGrid" data-reveal></div>
-
+    <div class="vic-spread" style="align-items:flex-end;gap:24px;margin-bottom:28px">
+      <div>
+        <div class="vic-eyebrow">Catálogo</div>
+        <h2 class="vic-h2" style="margin:0">Un programa a la vez.</h2>
+      </div>
+      <!-- Las flechas y el contador del carrusel se cuelgan de aquí; solos
+           encima de la tarjeta abrían un hueco. -->
+      <div id="catalogoNav"></div>
+    </div>
+    <div class="vic-rail-wrap">
+      <div class="vic-rail" id="catalogoRail"></div>
+    </div>
   </div>
 </section>
+
+<div class="section-divider section-divider--guinda-gris" aria-hidden="true"></div>
 
 <!-- ================= CÓMO COMPRAR ================= -->
 <section class="vic-section vic-section--gris">
@@ -85,29 +98,42 @@
 
 <footer data-vic-footer></footer>
 
-<script src="assets/js/config.js?v=13"></script>
-<script src="assets/js/api.js?v=13"></script>
-<script src="assets/js/ui.js?v=13"></script>
-<script src="assets/js/iconos.js?v=13"></script>
-<script src="assets/js/metricas.js?v=13"></script>
-<script src="assets/js/productos.js?v=13"></script>
+<script src="assets/js/config.js?v=14"></script>
+<script src="assets/js/api.js?v=14"></script>
+<script src="assets/js/ui.js?v=14"></script>
+<script src="assets/js/iconos.js?v=14"></script>
+<script src="assets/js/metricas.js?v=14"></script>
+<script src="assets/js/productos.js?v=14"></script>
 <script>
 (function () {
-  var grid = document.getElementById('catalogoGrid');
-  grid.innerHTML = window.CATALOGO.map(function (p) {
-    return window.VicProductos.tarjeta(p, { detallada: true });
+  var rail = document.getElementById('catalogoRail');
+
+  // La primera tarjeta es la única a la venta y es la que se ve al entrar:
+  // su ilustración no se difiere, las otras dos sí.
+  rail.innerHTML = window.CATALOGO.map(function (p, i) {
+    return window.VicProductos.tarjeta(p, {
+      detallada: true,
+      horizontal: true,
+      prioritaria: i === 0,
+    });
   }).join('');
 
-  // Si llegamos con #ancla a un producto, lo resaltamos al entrar.
+  window.VicUI.rail(rail, { etiqueta: 'Programas de VictoriaEDU', navEn: '#catalogoNav' });
+
+  /* Si se llega con #ancla a un producto —el mega-menú enlaza así— hay que
+     DESPLAZAR EL CARRUSEL hasta esa tarjeta, no la página: con el catálogo en
+     carrusel, scrollIntoView movía el documento y dejaba la tarjeta fuera de
+     la ventana del riel, que es justo lo que el usuario venía a ver. */
   if (location.hash) {
-    var destino = document.querySelector(location.hash);
+    var destino = rail.querySelector(location.hash);
     if (destino) {
       setTimeout(function () {
+        rail.scrollTo({ left: destino.offsetLeft - rail.offsetLeft, behavior: 'smooth' });
         destino.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        destino.style.outline = '2px solid var(--vic-azul)';
+        destino.style.outline = '2px solid var(--vic-cian, #58A9C0)';
         destino.style.outlineOffset = '4px';
         setTimeout(function () { destino.style.outline = ''; }, 2400);
-      }, 240);
+      }, 260);
     }
   }
 })();
