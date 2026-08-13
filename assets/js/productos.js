@@ -26,15 +26,25 @@
     }).join('') + '</ul>';
   }
 
+  /* Los productos que todavía no existen NO enseñan precio.
+     Antes salía el del catálogo rotulado "precio estimado", y un número puesto
+     en la mesa es un número que alguien va a recordar: si el curso abre a otro
+     precio, la conversación empieza con nosotros desdiciéndonos. Mejor decir
+     que no está definido, que además es verdad.
+
+     El precio sigue en CONFIG.CATALOGO —hace falta para ordenar y para el día
+     que abran—, simplemente no se publica hasta que el producto exista. */
   function precioHTML(p) {
-    var disponible = p.estado === 'disponible';
-    return '<div><div style="font-family:var(--vic-font-display);font-size:' +
-        (disponible ? '26' : '22') + 'px;font-weight:700;color:var(--vic-' +
-        (disponible ? 'azul-profundo' : 'text-muted') + ')">' +
+    if (p.estado !== 'disponible') {
+      return '<div><div style="font-family:var(--vic-font-display);font-size:20px;font-weight:700;color:var(--vic-text-muted)">' +
+          'Precio por definir' +
+        '</div><div style="font-size:13px;color:var(--vic-text-muted)">' +
+          'Te avisamos al abrir' +
+        '</div></div>';
+    }
+    return '<div><div style="font-family:var(--vic-font-display);font-size:26px;font-weight:700;color:var(--vic-azul-profundo)">' +
         window.formatoMXN(p.precio) +
-      '</div><div style="font-size:13px;color:var(--vic-text-muted)">' +
-        (disponible ? 'pago único' : 'precio estimado') +
-      '</div></div>';
+      '</div><div style="font-size:13px;color:var(--vic-text-muted)">pago único</div></div>';
   }
 
   /* --- Portada del programa ------------------------------------------------

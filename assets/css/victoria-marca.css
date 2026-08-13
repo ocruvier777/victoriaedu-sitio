@@ -450,18 +450,55 @@
   color: #fff;
 }
 
-/* --- Portadas de programa ------------------------------------------------
-   victoria.css apaga la portada de los "próximamente" con
-   saturate(.45) opacity(.7). Ese ajuste se calibró contra las ilustraciones
-   SVG planas de antes; sobre las editoriales las deja grises y lavadas, y lo
-   que se lee no es "catálogo" sino "imagen rota".
+/* --- Programas que todavía no abren --------------------------------------
+   El problema a resolver: que se vea de un golpe que estos dos no se pueden
+   comprar todavía.
 
-   Se suaviza, no se quita: la intención original sigue siendo buena. Y el
-   estado ya lo dicen dos cosas más fuertes —la insignia "Próximamente" y un
-   botón de lista de espera en vez de compra—, así que el filtro solo tiene
-   que susurrarlo.
+   La solución que NO funciona es la que traía victoria.css —apagar la imagen
+   con saturate(.45) opacity(.7)—. Con las ilustraciones editoriales eso no
+   dice "próximamente", dice "imagen rota": el ojo lee un defecto de carga,
+   no una decisión.
+
+   Lo que sí funciona es tratar la TARJETA como secundaria y dejar el dibujo
+   casi intacto. Tres señales que se suman, ninguna destructiva:
+     1. el papel deja de ser blanco y pasa a gris de lienzo,
+     2. una trama diagonal muy fina sobre la portada —el ángulo del isotipo,
+        el mismo lenguaje del resto del sitio— que se lee como "en obra",
+     3. la imagen baja un punto de saturación, no cuatro.
+
+   Y encima de eso siguen la insignia "Próximamente", la ausencia de precio y
+   un botón de lista de espera en vez de compra. Con cinco señales, ninguna
+   necesita gritar.
 ------------------------------------------------------------------------- */
-.vic-producto--proximo .vic-producto__img img { filter: saturate(.78) opacity(.92); }
+.vic-producto--proximo {
+  background: var(--vic-bg-canvas);
+  border-color: var(--vic-border-subtle);
+}
+.vic-producto--proximo .vic-producto__img img {
+  filter: saturate(.62) opacity(.88);
+}
+
+/* Trama diagonal sobre la portada. Va en el contenedor y no en la imagen para
+   que no se escale con ella. */
+.vic-producto--proximo .vic-producto__img { position: relative; }
+.vic-producto--proximo .vic-producto__img::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Paso ancho y opacidad mínima. A 11px se leía como barrotes encima del
+     dibujo; el objetivo es que se note al comparar las tres tarjetas, no al
+     mirar una sola. */
+  background: repeating-linear-gradient(
+    calc(90deg - var(--vic-angulo)),
+    rgba(var(--vic-guinda-rgb), .05) 0 1px,
+    transparent 1px 24px
+  );
+}
+
+/* El pie de la tarjeta también se apaga: sin precio que anclar la mirada, el
+   borde superior a todo color pesaba de más. */
+.vic-producto--proximo .vic-producto__pie { border-top-color: var(--vic-border-subtle); }
 
 /* ==========================================================================
    7 · Ruta del Método Victoria
