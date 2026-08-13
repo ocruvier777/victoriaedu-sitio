@@ -48,35 +48,32 @@ window.CONFIG = {
   ------------------------------------------------------------------------ */
   whatsapp: '5215632118930',
 
-  /* --- Datos para transferencia SPEI ---------------------------------------
-     TODO(operación): sustituir por los datos reales de la cuenta.
-     La "referencia" que el alumno debe poner es su folio (VE-XXXXXX).
-  ------------------------------------------------------------------------ */
-  banco: {
-    beneficiario: 'Victoria EDU S.A.S. de C.V.',
-    institucion: 'BBVA México',
-    clabe: '012180001234567895',
-    cuenta: '0123456789',
-    concepto: 'Simulacro IPN 2026',
-  },
+  /* --- Plataforma ----------------------------------------------------------
+     El sitio ya NO cobra ni entrega nada por su cuenta: es el escaparate.
+     Todo lo que implique una cuenta —presentar el examen, ver respuestas,
+     pagar— vive en la plataforma, que sí tiene base de datos y sesión.
 
-  /* --- Pasarelas de pago ---------------------------------------------------
-     mercadopago.activo = false  -> se muestra como "Próximamente" y deshabilitado.
-     Cuando Brando conecte el back, poner true y llenar publicKey.
+     El embudo es: clic → registro → examen gratis → resultados → compra.
+     El registro es el peaje, y es a propósito: las respuestas y explicaciones
+     solo se ven con cuenta, así que ahí es donde capturamos al alumno.
+
+     examenGratis → id_publico del simulacro demo (precio 0) en la plataforma.
+                    Si Brando lo publica con otro id, se cambia AQUÍ y ya.
+     base         → sin diagonal final.
+
+     Para probar contra el ambiente de desarrollo, cambia `base` por
+     'https://dev-edu.victoriadev.com' y no toques nada más.
+     Contrato completo y pendientes del lado de la plataforma:
+     ver INTEGRACION-PLATAFORMA.md.
   ------------------------------------------------------------------------ */
-  pagos: {
-    transferencia: {
-      activo: true,
-      etiqueta: 'Transferencia SPEI',
-      descripcion: 'Pagas desde tu banca en línea. Revisamos y liberamos tu acceso el mismo día.',
-      horasRevision: 24,
-    },
-    mercadopago: {
-      activo: false,
-      etiqueta: 'Tarjeta, OXXO y meses sin intereses',
-      descripcion: 'Débito, crédito y efectivo en OXXO con acceso inmediato.',
-      publicKey: '',       // TODO(Brando): APP_USR-...
-      preferenceUrl: '',   // TODO(Brando): POST /api/pagos/mercadopago/preferencia
+  plataforma: {
+    base: 'https://edu.victoriadev.com',
+    examenGratis: 'SIM-IPN-2026-DEMO',
+    rutas: {
+      registro: '/registro',
+      login: '/login',
+      simulacros: '/simulacros',
+      examen: '/examenes/',
     },
   },
 
@@ -224,7 +221,7 @@ window.CATALOGO = [
     slug: 'simulacro-ipn-2026',
     nombre: 'Simulacro IPN 2026',
     resumen: 'Dos exámenes de 70 reactivos con todas las materias del examen real, inglés incluido. Reporte por área y plan de estudio generado por IA y revisado por un profesor.',
-    precio: 299,
+    precio: 199,
     precioLista: null,
     moneda: 'MXN',
     estado: 'disponible',

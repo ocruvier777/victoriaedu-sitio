@@ -129,6 +129,7 @@
       }
       form.elements.correo.removeAttribute('aria-invalid');
       err.classList.add('vic-hidden');
+      window.VicMetricas.evento('lead_enviado', { lugar: 'convocatoria' });
       window.VictoriaAPI.registrarLead({
         correo: correo,
         productoNombre: 'Avisos de la convocatoria',

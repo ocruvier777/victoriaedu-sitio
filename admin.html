@@ -3,15 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Panel interno — VictoriaEDU</title>
+<title>Lista de espera — VictoriaEDU</title>
 <meta name="robots" content="noindex">
 <link rel="icon" href="uploads/victoriaedu_logo_transparent.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/victoria.css?v=5">
+<link rel="stylesheet" href="assets/css/victoria.css?v=6">
 </head>
 <body>
+
+<!-- ==========================================================================
+     Este panel ya NO administra pagos.
+
+     La revisión de comprobantes vive en la plataforma (/admin/pagos), con
+     usuarios reales y permisos de verdad. Lo único que queda aquí es la lista
+     de espera del sitio, que la plataforma no cubre: gente que quiere que le
+     avisemos cuando abra un producto que todavía no existe.
+     ========================================================================== -->
 
 <header data-vic-header data-cta="ninguno"></header>
 
@@ -19,8 +28,8 @@
 <section class="vic-section vic-section--luz" id="compuerta">
   <div class="vic-container vic-container--narrow">
     <div class="vic-card" style="max-width:440px;margin:0 auto">
-      <h1 style="font-size:24px;margin:0 0 8px">Panel interno</h1>
-      <p class="vic-hint" style="margin:0 0 22px">Revisión manual de pagos por transferencia.</p>
+      <h1 style="font-size:24px;margin:0 0 8px">Lista de espera</h1>
+      <p class="vic-hint" style="margin:0 0 22px">Correos capturados en este navegador.</p>
       <form id="formClave" class="vic-stack" style="gap:16px" novalidate>
         <label class="vic-field">
           <span class="vic-label">Clave de acceso</span>
@@ -30,8 +39,7 @@
         <button class="vic-btn vic-btn--primary vic-btn--lg vic-btn--block" type="submit">Entrar</button>
       </form>
       <div class="vic-note vic-note--warning" style="margin-top:22px;font-size:13px;padding:14px 16px">
-        <strong>Esto no es seguridad.</strong> Es una compuerta visual para poder enseñar el flujo. La autenticación real va en el back.
-        La clave del demo es <span class="vic-mono">victoria2026</span>.
+        <strong>Esto no es seguridad.</strong> Es una compuerta visual: la clave está en el JavaScript del sitio y cualquiera puede leerla. No metas aquí nada que no puedas enseñar.
       </div>
     </div>
   </div>
@@ -44,67 +52,35 @@
     <div class="vic-spread" style="margin-bottom:32px;align-items:flex-end">
       <div>
         <div class="vic-eyebrow" style="margin-bottom:8px">Operación</div>
-        <h1 style="font-size:clamp(26px,3vw,34px);line-height:1.1;margin:0">Pagos por revisar</h1>
+        <h1 style="font-size:clamp(26px,3vw,34px);line-height:1.1;margin:0">Lista de espera</h1>
       </div>
       <div class="vic-row" style="gap:10px">
-        <button class="vic-btn vic-btn--ghost vic-btn--sm" type="button" id="btnSembrar">Cargar datos de ejemplo</button>
+        <span class="vic-hint" id="conteoLeads"></span>
+        <button class="vic-btn vic-btn--ghost vic-btn--sm" type="button" id="btnCopiar">Copiar correos</button>
         <button class="vic-btn vic-btn--ghost vic-btn--sm" type="button" id="btnReiniciar">Borrar todo</button>
       </div>
     </div>
 
-    <!-- Métricas -->
-    <div class="vic-grid vic-grid--4" style="margin-bottom:32px" id="metricas"></div>
-
-    <!-- Filtros -->
-    <div class="vic-row" style="gap:8px;margin-bottom:18px" id="filtros">
-      <button class="vic-btn vic-btn--secondary vic-btn--sm" data-filtro="todos">Todos</button>
-      <button class="vic-btn vic-btn--ghost vic-btn--sm" data-filtro="comprobante_recibido">Por revisar</button>
-      <button class="vic-btn vic-btn--ghost vic-btn--sm" data-filtro="pendiente_pago">Pendientes</button>
-      <button class="vic-btn vic-btn--ghost vic-btn--sm" data-filtro="pagado">Pagados</button>
-      <button class="vic-btn vic-btn--ghost vic-btn--sm" data-filtro="rechazado">Rechazados</button>
-      <div style="flex:1"></div>
-      <input class="vic-input" type="search" id="busqueda" placeholder="Buscar folio, nombre o correo…" style="max-width:280px;height:36px;font-size:14px">
-    </div>
-
-    <!-- Tabla -->
     <div class="vic-table-wrap">
       <table class="vic-table">
-        <thead>
-          <tr>
-            <th>Folio</th><th>Alumno</th><th>Programa</th><th>Monto</th>
-            <th>Comprobante</th><th>Estado</th><th>Creado</th><th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody id="tabla"></tbody>
+        <thead><tr><th>Correo</th><th>Nombre</th><th>WhatsApp</th><th>Interés</th><th>Origen</th><th>Fecha</th></tr></thead>
+        <tbody id="tablaLeads"></tbody>
       </table>
     </div>
 
-    <!-- Lista de espera -->
-    <div style="margin-top:56px">
-      <div class="vic-spread" style="align-items:flex-end;margin-bottom:18px">
-        <h2 style="font-size:24px;margin:0">Lista de espera</h2>
-        <span class="vic-hint" id="conteoLeads"></span>
-      </div>
-      <div class="vic-table-wrap">
-        <table class="vic-table">
-          <thead><tr><th>Correo</th><th>Nombre</th><th>WhatsApp</th><th>Interés</th><th>Origen</th><th>Fecha</th></tr></thead>
-          <tbody id="tablaLeads"></tbody>
-        </table>
-      </div>
-    </div>
-
     <div class="vic-note vic-note--dashed" style="margin-top:40px">
-      <strong>Nota para el back.</strong> Esta pantalla es el mockup de lo que hoy hacemos a mano. Los datos salen de <span class="vic-mono">localStorage</span> a través de <span class="vic-mono">VictoriaAPI</span>; ese módulo ya expone los mismos métodos que necesitará contra la API real, así que conectar el back no debería tocar ninguna vista.
+      <strong>Ojo con esto.</strong> Los leads viven en el <span class="vic-mono">localStorage</span> de ESTE navegador: si el alumno dejó su correo en su celular, aquí no aparece. Es una limitación real, no un pendiente cosmético. Para que sirvan hay que pedirle a la plataforma un endpoint público de leads — está anotado en <span class="vic-mono">INTEGRACION-PLATAFORMA.md</span>.
     </div>
   </div>
 </section>
 
 <footer data-vic-footer></footer>
 
-<script src="assets/js/config.js?v=5"></script>
-<script src="assets/js/api.js?v=5"></script>
-<script src="assets/js/ui.js?v=5"></script>
-<script src="assets/js/iconos.js?v=5"></script>
-<script src="assets/js/pagina-admin.js?v=5"></script>
+<script src="assets/js/config.js?v=6"></script>
+<script src="assets/js/api.js?v=6"></script>
+<script src="assets/js/ui.js?v=6"></script>
+<script src="assets/js/iconos.js?v=6"></script>
+<script src="assets/js/metricas.js?v=6"></script>
+<script src="assets/js/pagina-admin.js?v=6"></script>
 </body>
 </html>

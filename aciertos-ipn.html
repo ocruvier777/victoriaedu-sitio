@@ -9,11 +9,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/victoria.css?v=5">
+<link rel="stylesheet" href="assets/css/victoria.css?v=6">
 </head>
 <body>
 
-<header data-vic-header data-cta="comprar"></header>
+<header data-vic-header data-cta="examen"></header>
 
 <!-- ================= ENCABEZADO ================= -->
 <section class="vic-section vic-section--tight vic-section--impacto vic-blueprint">
@@ -102,7 +102,10 @@
       <div>
         <h2 class="vic-h2" style="margin:0 0 18px;max-width:24ch">Ya sabes cuánto pide tu carrera. ¿Sabes cuánto sacas hoy?</h2>
         <p style="font-size:18px;line-height:1.6;margin:0 0 26px;max-width:52ch">El corte es la mitad del dato. La otra mitad es tu puntaje real bajo condiciones de examen — y ese solo lo sabes presentando uno completo, contra reloj.</p>
-        <a class="vic-btn vic-btn--primary vic-btn--xl" href="simulacro-ipn-2026.html">Ver el Simulacro IPN 2026 — $299</a>
+        <div class="vic-row">
+          <a class="vic-btn vic-btn--primary vic-btn--xl" data-plataforma="examen" data-metrica="examen_gratis_clic" data-metrica-lugar="aciertos">Haz el examen gratis</a>
+          <a class="vic-btn vic-btn--secondary vic-btn--xl" href="simulacro-ipn-2026.html">Ver el Simulacro IPN 2026</a>
+        </div>
       </div>
       <div class="vic-panel-claro" style="background:#fff;border-radius:24px;padding:32px;box-shadow:var(--vic-shadow-lg)">
         <h3 style="font-size:20px;margin:0 0 14px">Lo que el simulacro te dice y esta tabla no</h3>
@@ -119,12 +122,13 @@
 
 <footer data-vic-footer></footer>
 
-<script src="assets/js/config.js?v=5"></script>
-<script src="assets/js/api.js?v=5"></script>
-<script src="assets/js/ui.js?v=5"></script>
-<script src="assets/js/iconos.js?v=5"></script>
-<script src="assets/js/datos-cortes.js?v=5"></script>
-<script src="assets/js/pagina-aciertos.js?v=5"></script>
-<script src="assets/js/popup-simulacro.js?v=5"></script>
+<script src="assets/js/config.js?v=6"></script>
+<script src="assets/js/api.js?v=6"></script>
+<script src="assets/js/ui.js?v=6"></script>
+<script src="assets/js/iconos.js?v=6"></script>
+<script src="assets/js/metricas.js?v=6"></script>
+<script src="assets/js/datos-cortes.js?v=6"></script>
+<script src="assets/js/pagina-aciertos.js?v=6"></script>
+<script src="assets/js/popup-simulacro.js?v=6"></script>
 </body>
 </html>

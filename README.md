@@ -1,12 +1,21 @@
-# VictoriaEDU — sitio + e-commerce (mockup de flujos)
+# VictoriaEDU — sitio
 
-Sitio estático navegable que une las dos landings de Claude Design y agrega la
-tienda, el checkout, la pasarela de pago y el panel de revisión manual.
+Sitio estático: portada, catálogo, página de producto y tres páginas de contenido
+sobre el examen del IPN.
 
-**Qué es y qué no es.** Es un mockup funcional de los flujos: todo se puede
-recorrer de punta a punta en el navegador, pero los datos viven en
-`localStorage`, no en un servidor. La persistencia real la implementa Brando;
-ver [Para el back](#para-el-back).
+**El sitio ya no cobra.** Es el escaparate. Todo lo que implica una cuenta
+—presentar el examen, ver respuestas, pagar— vive en la plataforma
+(`edu.victoriadev.com`), que sí tiene base de datos, sesión y validación de
+comprobante. El botón principal es **"Haz el examen gratis"** y salta al registro
+de la plataforma con un `next=` que lo deja en el examen demo.
+
+El flujo completo, qué falta del lado de la plataforma y las instrucciones para
+Brando están en **[INTEGRACION-PLATAFORMA.md](INTEGRACION-PLATAFORMA.md)**.
+
+> El checkout propio (`checkout.html` → `pago.html` → `confirmacion.html`) se
+> retiró: guardaba los pedidos en `localStorage`, o sea que se perdían al cambiar
+> de navegador. Los archivos siguen ahí, convertidos en redirecciones, porque hay
+> ligas compartidas apuntando a ellos.
 
 ---
 
@@ -21,11 +30,14 @@ python3 -m http.server 8000
 ```
 
 > **Si ves la página sin estilos**, es caché del navegador. Los archivos llevan
-> `?v=5` justo para evitarlo: al cambiar CSS o JS, **sube ese número en todos los
+> `?v=6` justo para evitarlo: al cambiar CSS o JS, **sube ese número en todos los
 > `.html`** (o recarga con Ctrl+Shift+R).
 
-Panel interno: `http://localhost:8000/admin.html` — clave `victoria2026`.
-Ahí dentro, **Cargar datos de ejemplo** llena la tabla para poder enseñarlo.
+Para probar contra el ambiente de desarrollo de la plataforma, cambia
+`CONFIG.plataforma.base` a `https://dev-edu.victoriadev.com` en
+`assets/js/config.js`. Es lo único que hay que tocar.
+
+Lista de espera: `http://localhost:8000/admin.html` — clave `victoria2026`.
 
 ---
 
@@ -36,13 +48,12 @@ Ahí dentro, **Cargar datos de ejemplo** llena la tabla para poder enseñarlo.
 | `index.html` | Landing madre: manifiesto, motor tecnológico, programas, método, equipo, resultados, captura de leads |
 | `tienda.html` | Catálogo de los tres programas |
 | `simulacro-ipn-2026.html` | Página de producto del simulacro, con cuenta regresiva |
-| `checkout.html` | Paso 1 — datos del comprador |
-| `pago.html` | Paso 2 — elección de método de pago |
-| `confirmacion.html` | Paso 3 — folio, datos bancarios, comprobante y aviso por WhatsApp |
 | `ipn.html` | Guía del examen: estructura, áreas, cómo se califica, equipo y calendario |
 | `aciertos-ipn.html` | Cortes históricos del IPN en gráfica: 105 carreras, filtros y comparador contra tu puntaje |
 | `convocatoria-ipn-segunda-vuelta.html` | Página SEO de la convocatoria de segunda vuelta: fechas, requisitos y equipo necesario |
-| `admin.html` | Panel de revisión manual de pagos y lista de espera |
+| `admin.html` | Lista de espera capturada en este navegador |
+| `checkout.html` · `pago.html` | Redirecciones a la plataforma (el checkout viejo) |
+| `confirmacion.html` | Explica a dónde se fue la compra; no redirige, por si alguien llega con un folio `VE-` viejo |
 
 El header y el footer no están duplicados en el HTML: los pinta `assets/js/ui.js`
 para que haya un solo lugar donde tocarlos.
@@ -64,8 +75,9 @@ Inicio · Programas ▾ · IPN ▾ · Método · Equipo · [CTA]
 - **Cómo se abre:** en escritorio, al pasar el ratón; el clic navega a la página
   del rótulo. En táctil no hay hover, así que el primer toque abre el acordeón y
   el segundo navega. También responde a teclado y se cierra con Escape.
-- El CTA es lo único que varía: `data-cta="comprar"` en las páginas públicas y
-  `"ninguno"` dentro del checkout, donde un botón de compra sobraría.
+- El CTA es lo único que varía: `data-cta="examen"` ("Haz el examen gratis") en las
+  páginas públicas, `"comprar"` en la página del producto —donde el alumno ya viene
+  decidido— y `"ninguno"` en las páginas internas.
 
 ### La portada
 
@@ -128,32 +140,43 @@ Tres reglas que conviene no romper al editarla:
 
 ---
 
-## El flujo de compra
+## El embudo
+
+El sitio no cobra: convence y entrega al alumno a la plataforma. El registro es el
+peaje, y es a propósito — las respuestas y explicaciones del examen solo se ven con
+cuenta, así que ahí es donde se captura al alumno, con base de datos detrás.
 
 ```
-tienda / producto
+victoriaedu.mx   "Haz el examen gratis"
       ↓
-checkout.html    datos del alumno → se guarda un borrador
+edu.victoriadev.com/registro?next=/examenes/SIM-IPN-2026-DEMO&origen=landing-examen-gratis
+      ↓  crea cuenta → auto-login → aterriza en el examen
+10 reactivos gratis  →  resultados con respuestas explicadas
       ↓
-pago.html        elige método → NACE el pedido con folio VE-XXXXXX
-      ↓
-confirmacion.html
-      1. transfiere con el folio como concepto
-      2. sube su comprobante
-      3. nos avisa por WhatsApp (mensaje ya escrito con folio, nombre y monto)
-      ↓
-admin.html       aprobamos o rechazamos a mano
+/simulacros  →  "Comprar — $199"  →  comprobante  →  validación  →  desbloqueado
 ```
 
-Estados de un pedido:
+Todos los CTAs salen por `VicUI.urlExamenGratis()` / `urlComprar()`
+(`assets/js/ui.js`), que leen `CONFIG.plataforma`. En el HTML basta
+`<a data-plataforma="examen">` o `="comprar"`: ninguna página tiene el dominio
+escrito a mano, igual que con `data-wa`.
 
-| Estado | Significa |
-|---|---|
-| `pendiente_pago` | Recién creado, todavía no transfiere |
-| `comprobante_recibido` | Subió comprobante, falta que validemos |
-| `pagado` | Validado a mano; se libera el acceso |
-| `rechazado` | El comprobante no correspondía |
-| `cancelado` | Desistió o venció la ventana |
+**Lo que falta del lado de la plataforma** —el examen demo, el soporte de `next=`,
+el precio a $199— está en **[INTEGRACION-PLATAFORMA.md](INTEGRACION-PLATAFORMA.md)**.
+Mientras Brando no haga esos cambios el embudo funciona a medias: el alumno se
+registra bien, pero aterriza en su dashboard en vez de en el examen.
+
+### Medición
+
+`assets/js/metricas.js` empuja eventos a `window.dataLayer` (lo que leen GTM, GA4 y
+el Pixel de Meta) y a la consola si no hay pixel instalado. Es el enchufe, no la
+analítica: el día que se instale un pixel, los eventos ya están fluyendo.
+
+Se declara en el HTML con `data-metrica="nombre" data-metrica-lugar="dónde"`.
+Eventos: `examen_gratis_clic`, `comprar_clic`, `lead_enviado`.
+
+El `lugar` importa: como el embudo cruza a otro dominio, es lo único que permite
+saber qué CTA carga el embudo y cuál sobra.
 
 ---
 
@@ -168,11 +191,22 @@ Todo lo que hay que tocar está en **`assets/js/config.js`**:
       conversación, quita el `1`: `525632118930`.
 - [ ] **`redes`** — pega el `@` de Instagram y los reels. La sección "En video"
       de la portada **no se pinta** mientras `redes.reels` esté vacío.
-- [ ] **`banco`** — beneficiario, institución y CLABE son de ejemplo.
-      **La CLABE que está ahí no es real: si se publica así, nadie puede pagar.**
+- [x] **`banco`** — se eliminó. Los datos bancarios vivían aquí para el checkout
+      propio, con una CLABE de ejemplo que nadie podía pagar. El cobro ahora es de
+      la plataforma, así que el sitio ya no publica ninguna cuenta.
+- [ ] **`plataforma.base`** — apunta a producción (`edu.victoriadev.com`). Para
+      probar contra dev, cámbialo a `dev-edu.victoriadev.com`. **No publiques
+      apuntando a dev.**
+- [ ] **`plataforma.examenGratis`** — hoy `SIM-IPN-2026-DEMO`. Ese examen todavía
+      no existe: lo tiene que crear Brando (ver INTEGRACION-PLATAFORMA.md, B1).
+      **Hasta entonces el CTA principal lleva a un examen que no está.**
+- [ ] **Precio $199** — el `precio` del catálogo tiene que coincidir **exacto** con
+      `examenes.precio` de la plataforma o el backend rechaza todos los pagos con
+      `monto_invalido`. Confirmar con Brando antes de publicar.
 - [ ] **`marca.telefono`** — hoy `+52 55 0000 0000`.
-- [ ] **`admin.clave`** — la compuerta del panel es visual, no seguridad. No
-      sirve para producción: la autenticación real va en el back.
+- [ ] **`admin.clave`** — la compuerta de `admin.html` es visual, no seguridad: la
+      clave está en el JavaScript del sitio y cualquiera puede leerla. Solo protege
+      la lista de espera, pero no metas ahí nada que no puedas enseñar.
 - [x] **Testimonios: ya son reales.** Los del mockup eran inventados y se
       eliminaron. Los siete que hay ahora en **`CONFIG.testimonios`** son
       reseñas públicas de Facebook a los cursos que Óscar dio en Oriéntate MX,
@@ -263,53 +297,39 @@ ESIME", está haciendo una afirmación que el propio Poli no hace.
 
 ## Para el back
 
-**`assets/js/api.js` es la única frontera entre las vistas y la persistencia.**
-Todos sus métodos ya son `async` y devuelven promesas, precisamente para que
-cambiar `localStorage` por `fetch` no obligue a tocar ninguna página.
+**Casi nada.** El sitio no llama a ninguna API: todos los saltos a la plataforma son
+links normales, así que no hace falta tocar CORS ni `FRONTEND_URL`. Lo que sí falta
+del lado de la plataforma está en
+**[INTEGRACION-PLATAFORMA.md](INTEGRACION-PLATAFORMA.md)**.
 
-Contrato sugerido:
+Lo único que queda en `assets/js/api.js` es la captura de leads: la lista de espera
+de los productos `proximamente` y los avisos de la convocatoria. Es gente que **no
+puede registrarse** en la plataforma porque todavía no hay nada que comprar.
 
-| Método de `VictoriaAPI` | Endpoint |
-|---|---|
-| `crearPedido(datos)` | `POST /api/pedidos` |
-| `obtenerPedido(folio)` | `GET /api/pedidos/:folio` |
-| `listarPedidos()` | `GET /api/pedidos` |
-| `adjuntarComprobante(folio, file)` | `POST /api/pedidos/:folio/comprobante` |
-| `actualizarEstado(folio, estado, nota)` | `PATCH /api/pedidos/:folio` |
-| `registrarLead(datos)` | `POST /api/leads` |
-| `listarLeads()` | `GET /api/leads` |
-
-Cada método tiene su `// TODO(Brando):` con la llamada equivalente.
-
-Dos detalles que sí son del mockup y desaparecen con el back:
-
-- `comprimirImagen()` reduce el comprobante antes de guardarlo porque
-  `localStorage` tiene ~5 MB. El back recibe el archivo tal cual.
-- `sembrarEjemplos()` y `reiniciar()` son utilidades de demo.
-
-### Mercado Pago
-
-Está deshabilitado a propósito y se muestra como "Próximamente". Para
-encenderlo: poner `config.pagos.mercadopago.activo = true`, llenar `publicKey` y
-`preferenceUrl`, y completar el `TODO(Brando)` de `assets/js/pagina-pago.js`
-(crear la preferencia y redirigir a `init_point`). La tarjeta de método de pago
-se habilita sola al leer la config.
+Eso sigue viviendo en `localStorage`, lo que en la práctica significa que se pierde
+—solo se ve en el navegador donde se capturó—. Arreglarlo pide un
+`POST /api/v1/leads` público en la plataforma, y ese sí necesitaría CORS. No es
+urgente y no bloquea el embudo; está anotado en INTEGRACION-PLATAFORMA.md.
 
 ---
 
 ## Estructura
 
 ```
-index.html · tienda.html · simulacro-ipn-2026.html · aciertos-ipn.html
-checkout.html · pago.html · confirmacion.html · admin.html
+index.html · tienda.html · simulacro-ipn-2026.html · ipn.html
+aciertos-ipn.html · convocatoria-ipn-segunda-vuelta.html
+checkout.html · pago.html · confirmacion.html   ← redirecciones a la plataforma
+admin.html                                      ← lista de espera
+INTEGRACION-PLATAFORMA.md                       ← contrato con la plataforma
 assets/
   css/victoria.css        design system completo (tokens + componentes + gráficas)
   fonts/                  Creato Display (4 pesos, auto-hospedada)
   js/
-    config.js             ← negocio y catálogo: lo único que se toca para operar
-    api.js                ← capa de datos: lo único que toca Brando
-    datos-cortes.js       ← los 105 cortes del IPN y su fuente
-    ui.js                 header, footer, navegación, WhatsApp, contadores, sparklines
+    config.js             ← negocio, catálogo y CONFIG.plataforma: lo único que se toca para operar
+    api.js                captura de leads (lista de espera)
+    metricas.js           eventos del embudo → dataLayer
+    datos-cortes.js       los 105 cortes del IPN y su fuente
+    ui.js                 header, footer, navegación, URLs de plataforma, WhatsApp, contadores
     iconos.js             set de SVG en línea (<span data-icono="datos"></span>)
     productos.js          tarjetas de producto y modal de lista de espera
     mini-cortes.js        mini gráfica de cortes (inicio y simulacro)

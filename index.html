@@ -9,11 +9,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/victoria.css?v=5">
+<link rel="stylesheet" href="assets/css/victoria.css?v=6">
 </head>
 <body>
 
-<header data-vic-header data-cta="comprar"></header>
+<header data-vic-header data-cta="examen"></header>
 
 <!-- ================= HERO =================
      Tres cosas en la primera pantalla: qué es, para quién y cómo contactar.
@@ -26,11 +26,10 @@
         <h1 style="font-size:clamp(40px,4.6vw,68px);line-height:1.02;letter-spacing:-.02em;margin:0 0 24px">Tu próxima victoria empieza aquí.</h1>
         <p style="font-size:20px;line-height:1.5;margin:0 0 32px;max-width:44ch">Las materias que ya llevas —cálculo, física, álgebra— con profesores que las pasaron y un tutor IA que no se duerme.</p>
         <div class="vic-row">
-          <a class="vic-btn vic-btn--wa vic-btn--lg" data-wa="Hola, quiero informes sobre los programas de VictoriaEDU.">
-            <span data-icono="whatsapp" data-icono-tam="20"></span>Pedir informes
-          </a>
+          <a class="vic-btn vic-btn--primary vic-btn--lg" data-plataforma="examen" data-metrica="examen_gratis_clic" data-metrica-lugar="hero">Haz el examen gratis</a>
           <a class="vic-btn vic-btn--secondary vic-btn--lg" href="tienda.html">Ver programas</a>
         </div>
+        <p style="font-size:14px;line-height:1.5;color:rgba(255,255,255,.6);margin:14px 0 0;max-width:42ch">10 reactivos reales del IPN. Creas tu cuenta, lo presentas al instante y ves cada respuesta explicada.</p>
         <div class="vic-row" style="gap:40px;margin-top:48px;padding-top:28px;border-top:1px solid rgba(255,255,255,.14)">
           <div>
             <div style="font-family:var(--vic-font-display);font-size:32px;font-weight:700;color:#fff">9 años</div>
@@ -356,32 +355,23 @@
     <div class="vic-grid vic-grid--2" style="gap:64px;align-items:center">
       <div>
         <div class="vic-eyebrow" style="color:rgba(255,255,255,.55)">06 · Gratis</div>
-        <h2 style="font-size:36px;line-height:1.14;color:#fff;margin:0 0 14px">Diagnóstico gratis: 20 preguntas del IPN.</h2>
-        <p style="font-size:18px;line-height:1.6;color:rgba(255,255,255,.75);margin:0 0 28px">Te llega a tu correo con el desglose por tema. Sin costo y sin llamada de ventas.</p>
+        <h2 style="font-size:36px;line-height:1.14;color:#fff;margin:0 0 14px">Antes de pagarnos un peso, mide dónde estás.</h2>
+        <p style="font-size:18px;line-height:1.6;color:rgba(255,255,255,.75);margin:0 0 28px">10 reactivos reales del examen del IPN, cronometrados como el de verdad. Al terminar ves tu puntaje, la materia donde lo pierdes y por qué falló cada respuesta que fallaste.</p>
         <a class="vic-btn vic-btn--wa vic-btn--lg" data-wa="Hola, quiero informes sobre los programas de VictoriaEDU.">
           <span data-icono="whatsapp" data-icono-tam="20"></span>¿Prefieres WhatsApp?
         </a>
       </div>
       <div style="background:#fff;border-radius:24px;padding:36px;box-shadow:var(--vic-shadow-lg)">
-        <form id="formDiagnostico" novalidate>
-          <div class="vic-stack" style="gap:20px">
-            <label class="vic-field">
-              <span class="vic-label">Nombre del alumno</span>
-              <input class="vic-input" type="text" name="nombre" placeholder="Ana Karen Martínez" autocomplete="name">
-            </label>
-            <label class="vic-field">
-              <span class="vic-label">Correo <span class="vic-req">*</span></span>
-              <input class="vic-input" type="email" name="correo" placeholder="tucorreo@ejemplo.com" autocomplete="email" required>
-              <span class="vic-hint">Solo lo usamos para enviarte el diagnóstico.</span>
-              <span class="vic-error vic-hidden" data-error></span>
-            </label>
-            <button class="vic-btn vic-btn--primary vic-btn--lg vic-btn--block" type="submit">Recibir mi diagnóstico</button>
-            <p class="vic-hint" style="margin:0">Al enviar aceptas nuestro aviso de privacidad. Puedes darte de baja en cualquier momento.</p>
-          </div>
-        </form>
-        <div id="okDiagnostico" class="vic-hidden" style="min-height:210px;display:flex;flex-direction:column;gap:12px;justify-content:center">
-          <div style="font-family:var(--vic-font-display);font-size:24px;font-weight:700;color:var(--vic-success)">Listo, revisa tu correo.</div>
-          <p style="font-size:16px;line-height:1.6;margin:0">Te enviamos el diagnóstico y la guía de los 7 temas. Si no llega en 5 minutos, revisa spam o escríbenos.</p>
+        <div class="vic-stack" style="gap:18px">
+          <div style="font-family:var(--vic-font-display);font-size:26px;font-weight:700;line-height:1.2">Examen de diagnóstico</div>
+          <ul class="vic-lista-check" style="margin:0;font-size:16px">
+            <li>10 reactivos del banco real del IPN</li>
+            <li>Puntaje y desglose por materia</li>
+            <li>Cada respuesta explicada, no solo la palomita</li>
+            <li>Sin costo y sin llamada de ventas</li>
+          </ul>
+          <a class="vic-btn vic-btn--primary vic-btn--lg vic-btn--block" data-plataforma="examen" data-metrica="examen_gratis_clic" data-metrica-lugar="cierre">Haz el examen gratis</a>
+          <p class="vic-hint" style="margin:0">Creas tu cuenta con tu correo —así guardamos tu resultado y te enseñamos las respuestas— y lo presentas al instante.</p>
         </div>
       </div>
     </div>
@@ -390,13 +380,14 @@
 
 <footer data-vic-footer></footer>
 
-<script src="assets/js/config.js?v=5"></script>
-<script src="assets/js/api.js?v=5"></script>
-<script src="assets/js/ui.js?v=5"></script>
-<script src="assets/js/iconos.js?v=5"></script>
-<script src="assets/js/productos.js?v=5"></script>
-<script src="assets/js/datos-cortes.js?v=5"></script>
-<script src="assets/js/mini-cortes.js?v=5"></script>
-<script src="assets/js/pagina-inicio.js?v=5"></script>
+<script src="assets/js/config.js?v=6"></script>
+<script src="assets/js/api.js?v=6"></script>
+<script src="assets/js/ui.js?v=6"></script>
+<script src="assets/js/iconos.js?v=6"></script>
+<script src="assets/js/metricas.js?v=6"></script>
+<script src="assets/js/productos.js?v=6"></script>
+<script src="assets/js/datos-cortes.js?v=6"></script>
+<script src="assets/js/mini-cortes.js?v=6"></script>
+<script src="assets/js/pagina-inicio.js?v=6"></script>
 </body>
 </html>

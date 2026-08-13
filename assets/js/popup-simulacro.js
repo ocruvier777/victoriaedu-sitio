@@ -60,18 +60,19 @@
     overlay.innerHTML =
       '<div class="vic-popup__caja" role="dialog" aria-modal="true" aria-labelledby="popupTitulo">' +
         '<button class="vic-modal__cerrar" type="button" aria-label="Cerrar">✕</button>' +
-        '<div class="vic-popup__cinta">' + window.formatoMXN(p.precio) + ' · pago único</div>' +
+        '<div class="vic-popup__cinta">Gratis · 10 reactivos</div>' +
         '<h2 id="popupTitulo" style="font-size:26px;line-height:1.2;margin:0 0 12px">Ya sabes cuánto pide tu carrera. ¿Sabes cuánto sacas tú?</h2>' +
-        '<p style="font-size:16px;line-height:1.6;margin:0 0 20px">Dos simulacros de 70 reactivos con todas las materias del examen real, inglés incluido. Al terminar sabes tu puntaje, en qué materia lo pierdes y cuántos aciertos te faltan.</p>' +
+        '<p style="font-size:16px;line-height:1.6;margin:0 0 20px">Contesta 10 reactivos reales del examen del IPN y mira tu resultado con las respuestas explicadas una por una. No cuesta nada.</p>' +
         '<ul class="vic-lista-check" style="margin:0 0 24px;font-size:15px">' +
-          '<li>Dos exámenes, 90 minutos cada uno</li>' +
-          '<li>Reporte por materia después de cada uno</li>' +
-          '<li>Plan de estudio generado por IA y revisado por un profesor</li>' +
+          '<li>10 reactivos como los del examen real</li>' +
+          '<li>Tu puntaje y en qué materia lo pierdes</li>' +
+          '<li>Cada respuesta explicada, no solo la palomita</li>' +
         '</ul>' +
         '<div class="vic-popup__acciones">' +
-          '<a class="vic-btn vic-btn--primary vic-btn--lg" href="checkout.html?producto=' + encodeURIComponent(p.id) + '">Comprar el simulacro</a>' +
+          '<a class="vic-btn vic-btn--primary vic-btn--lg" href="' + window.VicUI.urlExamenGratis() + '" data-metrica="examen_gratis_clic" data-metrica-lugar="popup">Haz el examen gratis</a>' +
           '<button class="vic-btn vic-btn--ghost vic-btn--lg" type="button" data-seguir>Seguir leyendo</button>' +
         '</div>' +
+        '<p style="font-size:13px;line-height:1.5;margin:14px 0 0;opacity:.7">Creas tu cuenta y lo presentas al instante.</p>' +
       '</div>';
 
     document.body.appendChild(overlay);

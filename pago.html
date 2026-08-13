@@ -3,105 +3,37 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Método de pago — VictoriaEDU</title>
+<title>Te llevamos a la plataforma — VictoriaEDU</title>
 <meta name="robots" content="noindex">
+<meta http-equiv="refresh" content="3;url=https://edu.victoriadev.com/registro?next=%2Fsimulacros&origen=landing-compra">
 <link rel="icon" href="uploads/victoriaedu_logo_transparent.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/victoria.css?v=5">
+<link rel="stylesheet" href="assets/css/victoria.css?v=6">
 </head>
 <body>
+
+<!-- El paso de pago del sitio se retiró: nunca cobró de verdad, solo generaba
+     un folio y enseñaba una CLABE. El pago real (comprobante + validación de un
+     admin) vive en la plataforma. Ver el comentario largo en checkout.html. -->
 
 <header data-vic-header data-cta="ninguno"></header>
 
 <section class="vic-section vic-section--tight vic-section--luz">
-  <div class="vic-container">
-
-    <nav class="vic-steps" aria-label="Progreso de compra" style="margin-bottom:40px">
-      <a class="vic-step vic-step--done" href="checkout.html" style="text-decoration:none"><span class="vic-step__num">✓</span><span>Tus datos</span></a>
-      <span class="vic-step__sep"></span>
-      <span class="vic-step vic-step--active"><span class="vic-step__num">2</span><span>Pago</span></span>
-      <span class="vic-step__sep"></span>
-      <span class="vic-step"><span class="vic-step__num">3</span><span>Confirmación</span></span>
-    </nav>
-
-    <div class="vic-checkout" id="pagoWrap">
-      <!-- ---------- Métodos ---------- -->
-      <div>
-        <h1 style="font-size:clamp(28px,3.2vw,38px);line-height:1.1;margin:0 0 10px">¿Cómo prefieres pagar?</h1>
-        <p class="vic-lead" style="margin:0 0 32px;max-width:54ch">Estamos terminando la conexión con Mercado Pago. Mientras tanto cobramos por transferencia y validamos cada pago a mano el mismo día.</p>
-
-        <form id="formPago" class="vic-stack" style="gap:16px" novalidate>
-
-          <!-- Transferencia SPEI -->
-          <label class="vic-radio-card">
-            <input type="radio" name="metodo" value="transferencia" checked>
-            <div style="flex:1">
-              <div class="vic-spread" style="gap:12px;margin-bottom:6px">
-                <span style="font-size:17px;font-weight:700;color:var(--vic-azul-profundo)">Transferencia SPEI</span>
-                <span class="vic-badge vic-badge--success">Disponible</span>
-              </div>
-              <p style="font-size:15px;line-height:1.55;margin:0;color:var(--vic-text-body)">Pagas desde tu banca en línea con la CLABE que te damos. Validamos tu comprobante y liberamos tu acceso el mismo día.</p>
-              <div class="vic-row" style="gap:8px;margin-top:12px">
-                <span class="vic-tag">Sin comisión</span>
-                <span class="vic-tag">Desde cualquier banco</span>
-                <span class="vic-tag">Validación manual</span>
-              </div>
-            </div>
-          </label>
-
-          <!-- Mercado Pago (pendiente) -->
-          <label class="vic-radio-card vic-radio-card--disabled" id="mpCard">
-            <input type="radio" name="metodo" value="mercadopago" disabled>
-            <div style="flex:1">
-              <div class="vic-spread" style="gap:12px;margin-bottom:6px">
-                <span style="font-size:17px;font-weight:700;color:var(--vic-text-muted)">Tarjeta, OXXO y meses sin intereses</span>
-                <span class="vic-badge vic-badge--warning">Próximamente</span>
-              </div>
-              <p style="font-size:15px;line-height:1.55;margin:0;color:var(--vic-text-muted)">Débito, crédito y efectivo en OXXO con acceso inmediato, vía Mercado Pago. Estamos terminando la integración.</p>
-              <div class="vic-row" style="gap:8px;margin-top:12px">
-                <span class="vic-tag">Visa · Mastercard</span>
-                <span class="vic-tag">OXXO</span>
-                <span class="vic-tag">Acceso inmediato</span>
-              </div>
-            </div>
-          </label>
-
-          <!-- Instrucciones SPEI -->
-          <div id="bloqueSpei" class="vic-card" style="background:var(--vic-bg-canvas);margin-top:8px">
-            <h2 style="font-size:18px;margin:0 0 6px">Datos para tu transferencia</h2>
-            <p class="vic-hint" style="margin:0 0 20px">Te los volvemos a mostrar en la siguiente pantalla junto con tu folio. No transfieras todavía: primero genera tu folio para que podamos identificar tu pago.</p>
-            <div class="vic-bank" id="datosBanco"></div>
-            <div class="vic-note vic-note--warning" style="margin-top:20px;font-size:14px">
-              <strong>Importante.</strong> En el campo de <em>concepto</em> o <em>referencia</em> de tu banco escribe tu folio. Es lo único que nos permite emparejar tu depósito con tu compra sin tener que preguntarte.
-            </div>
-          </div>
-
-          <div class="vic-row" style="gap:16px;margin-top:12px">
-            <button class="vic-btn vic-btn--primary vic-btn--xl" type="submit" id="btnGenerar">Generar mi folio →</button>
-            <a class="vic-btn vic-btn--ghost vic-btn--lg" href="checkout.html">← Corregir mis datos</a>
-          </div>
-        </form>
-      </div>
-
-      <!-- ---------- Resumen ---------- -->
-      <aside>
-        <div class="vic-card vic-summary">
-          <h2 style="font-size:18px;margin:0 0 18px">Resumen</h2>
-          <div id="resumenPago"></div>
-        </div>
-      </aside>
-    </div>
+  <div class="vic-container" style="max-width:560px;text-align:center;padding-top:40px;padding-bottom:40px">
+    <h1 style="font-size:30px;line-height:1.2;margin:0 0 14px">Te estamos llevando a la plataforma…</h1>
+    <p style="font-size:17px;line-height:1.6;margin:0 0 28px">Ahí subes tu comprobante de transferencia y lo validamos el mismo día. Tu simulacro queda ligado a tu cuenta, no a este navegador.</p>
+    <a class="vic-btn vic-btn--primary vic-btn--lg" data-plataforma="comprar" data-metrica="comprar_clic" data-metrica-lugar="redirect-pago">Continuar a la plataforma</a>
   </div>
 </section>
 
 <footer data-vic-footer></footer>
 
-<script src="assets/js/config.js?v=5"></script>
-<script src="assets/js/api.js?v=5"></script>
-<script src="assets/js/ui.js?v=5"></script>
-<script src="assets/js/iconos.js?v=5"></script>
-<script src="assets/js/pagina-pago.js?v=5"></script>
+<script src="assets/js/config.js?v=6"></script>
+<script src="assets/js/ui.js?v=6"></script>
+<script src="assets/js/iconos.js?v=6"></script>
+<script src="assets/js/metricas.js?v=6"></script>
+<script>location.replace(window.VicUI.urlComprar());</script>
 </body>
 </html>

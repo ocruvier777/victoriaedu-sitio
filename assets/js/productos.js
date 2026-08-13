@@ -54,8 +54,10 @@
       cuerpo = '<p style="font-size:16px;line-height:1.6;margin:0 0 20px">' + esc(p.resumen) + '</p>' +
         listaCheck(p.incluye || []);
       accion = disponible
-        ? '<a class="vic-btn vic-btn--primary vic-btn--lg" href="checkout.html?producto=' +
-            encodeURIComponent(p.id) + '">Comprar ahora</a>' +
+        ? '<a class="vic-btn vic-btn--primary vic-btn--lg" href="' + esc(window.VicUI.urlComprar()) +
+            '" data-metrica="comprar_clic" data-metrica-lugar="tienda">Comprar — ' + esc(window.VicUI.precioCorto(p.id)) + '</a>' +
+          '<a class="vic-btn vic-btn--secondary vic-btn--lg" href="' + esc(window.VicUI.urlExamenGratis()) +
+            '" data-metrica="examen_gratis_clic" data-metrica-lugar="tienda">Pruébalo gratis primero</a>' +
           (p.pagina ? '<a href="' + esc(p.pagina) + '" style="font-size:14px;font-weight:600">Ver el programa completo →</a>' : '')
         : '<button class="vic-btn vic-btn--secondary vic-btn--lg" type="button" data-lista-espera="' +
             esc(p.id) + '">Avísame cuando abra</button>';
@@ -125,6 +127,7 @@
       form.elements.correo.removeAttribute('aria-invalid');
       err.classList.add('vic-hidden');
 
+      window.VicMetricas.evento('lead_enviado', { lugar: 'lista-espera', producto: p.id });
       window.VictoriaAPI.registrarLead({
         productoId: p.id,
         productoNombre: p.nombre,

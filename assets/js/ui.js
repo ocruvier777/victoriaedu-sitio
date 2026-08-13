@@ -114,12 +114,16 @@
       '</div>';
     }).join('');
 
+    /* El CTA del navbar es "examen gratis", no "comprar": pedir dinero antes de
+       demostrar algo es lo que estamos corrigiendo. `comprar` sigue existiendo
+       para la página del producto, que es donde el alumno ya viene decidido. */
     var botones = {
-      comprar:  '<a class="vic-btn vic-btn--primary vic-btn--md vic-navbar__cta" href="checkout.html?producto=simulacro-ipn-2026">Comprar simulacro — $299</a>',
+      examen:   '<a class="vic-btn vic-btn--primary vic-btn--md vic-navbar__cta" href="' + urlExamenGratis() + '" data-metrica="examen_gratis_clic" data-metrica-lugar="navbar">Haz el examen gratis</a>',
+      comprar:  '<a class="vic-btn vic-btn--primary vic-btn--md vic-navbar__cta" href="' + urlComprar() + '" data-metrica="comprar_clic" data-metrica-lugar="navbar">Comprar simulacro — ' + precioCorto('simulacro-ipn-2026') + '</a>',
       programas:'<a class="vic-btn vic-btn--secondary vic-btn--md vic-navbar__cta" href="tienda.html">Ver programas</a>',
       ninguno:  '',
     };
-    var boton = botones[cta] !== undefined ? botones[cta] : botones.comprar;
+    var boton = botones[cta] !== undefined ? botones[cta] : botones.examen;
 
     host.className = 'vic-navbar';
     host.innerHTML =
@@ -284,25 +288,57 @@
       '</div>';
   }
 
+  /* --- Salto a la plataforma -----------------------------------------------
+     Todos los CTAs de conversión del sitio salen por aquí. La gracia de tener
+     un solo constructor es que el dominio y los parámetros de atribución viven
+     en un lugar: si mañana la plataforma se muda a examen.victoriaedu.mx, se
+     cambia `CONFIG.plataforma.base` y no hay que perseguir diez botones.
+
+     `next`   → a dónde mandar al alumno DESPUÉS de crear su cuenta. La
+                plataforma lo lee del query (ver INTEGRACION-PLATAFORMA.md, B3);
+                mientras Brando no lo implemente, el parámetro viaja pero se
+                ignora y el alumno aterriza en su dashboard.
+     `origen` → de dónde vino. Es lo único que nos va a permitir saber cuántos
+                registros trae el sitio (INTEGRACION-PLATAFORMA.md, B5).
+  ------------------------------------------------------------------------ */
+  function urlPlataforma(ruta, params) {
+    var p = C.plataforma;
+    var url = p.base.replace(/\/+$/, '') + ruta;
+    var query = new URLSearchParams(params || {}).toString();
+    return query ? url + '?' + query : url;
+  }
+
+  /* El CTA primario del sitio. Aterriza en el registro, no en el examen: el
+     examen exige cuenta, y es mejor decirlo con el botón que fingir que no. */
+  function urlExamenGratis() {
+    var p = C.plataforma;
+    return urlPlataforma(p.rutas.registro, {
+      next: p.rutas.examen + p.examenGratis,
+      origen: 'landing-examen-gratis',
+    });
+  }
+
+  /* Precio sin " MXN", para etiquetas de botón. Sale del catálogo, nunca
+     escrito a mano: el precio del sitio tiene que coincidir EXACTO con el de
+     la plataforma o el backend rechaza el pago (INTEGRACION-PLATAFORMA.md, B4). */
+  function precioCorto(productoId) {
+    var p = window.getProducto(productoId);
+    return p ? '$' + Number(p.precio).toLocaleString('es-MX') : '';
+  }
+
+  /* El CTA de compra. Manda al listado de simulacros de la plataforma, que es
+     donde vive el pago real (comprobante + validación). */
+  function urlComprar() {
+    var p = C.plataforma;
+    return urlPlataforma(p.rutas.registro, {
+      next: p.rutas.simulacros,
+      origen: 'landing-compra',
+    });
+  }
+
   /* --- WhatsApp ----------------------------------------------------------- */
   function enlaceWhatsApp(mensaje) {
     return 'https://wa.me/' + C.whatsapp + '?text=' + encodeURIComponent(mensaje);
-  }
-
-  /* Mensaje prellenado con los datos del pedido — es la vía por la que el
-     alumno nos avisa mientras MercadoPago no esté conectado. */
-  function mensajePedido(pedido) {
-    return [
-      'Hola VictoriaEDU, acabo de hacer mi transferencia.',
-      '',
-      'Folio: ' + pedido.folio,
-      'Nombre: ' + pedido.nombre,
-      'Correo: ' + pedido.correo,
-      'Programa: ' + pedido.productoNombre,
-      'Monto: ' + window.formatoMXN(pedido.monto),
-      '',
-      'Adjunto mi comprobante.',
-    ].join('\n');
   }
 
   /* --- Enlaces de WhatsApp en el HTML --------------------------------------
@@ -314,6 +350,17 @@
       a.href = enlaceWhatsApp(a.getAttribute('data-wa') || 'Hola, quiero informes sobre VictoriaEDU.');
       a.target = '_blank';
       a.rel = 'noopener';
+    });
+  }
+
+  /* --- Enlaces a la plataforma en el HTML ----------------------------------
+     Mismo truco que los de WhatsApp: <a data-plataforma="examen|comprar"> se
+     completa desde aquí. Así ningún HTML tiene el dominio escrito a mano y
+     mudarse de dominio sigue siendo un cambio de una línea en config.js.
+  ------------------------------------------------------------------------ */
+  function activarEnlacesPlataforma() {
+    document.querySelectorAll('[data-plataforma]').forEach(function (a) {
+      a.href = a.getAttribute('data-plataforma') === 'comprar' ? urlComprar() : urlExamenGratis();
     });
   }
 
@@ -721,6 +768,7 @@
     pintarFooter();
     pintarBotonWhatsApp();
     activarEnlacesWhatsApp();
+    activarEnlacesPlataforma();
     activarReveal();
     activarCopiar();
     activarCuentaRegresiva();
@@ -734,9 +782,13 @@
   }
 
   window.VicUI = {
+    urlPlataforma: urlPlataforma,
+    urlExamenGratis: urlExamenGratis,
+    urlComprar: urlComprar,
+    precioCorto: precioCorto,
     enlaceWhatsApp: enlaceWhatsApp,
     activarEnlacesWhatsApp: activarEnlacesWhatsApp,
-    mensajePedido: mensajePedido,
+    activarEnlacesPlataforma: activarEnlacesPlataforma,
     modal: modal,
     rail: rail,
     toast: toast,

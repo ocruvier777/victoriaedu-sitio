@@ -138,32 +138,8 @@
     window.VicUI.rail(railR, { etiqueta: 'Videos de Instagram' });
   }
 
-  /* --- Diagnóstico gratuito ------------------------------------------------ */
-  var form = document.getElementById('formDiagnostico');
-  if (form) {
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var correo = form.elements.correo.value.trim();
-      var err = form.querySelector('[data-error]');
-
-      if (!window.VicUI.validarCorreo(correo)) {
-        form.elements.correo.setAttribute('aria-invalid', 'true');
-        err.textContent = 'Escribe un correo válido, por ejemplo nombre@dominio.com';
-        err.classList.remove('vic-hidden');
-        form.elements.correo.focus();
-        return;
-      }
-      form.elements.correo.removeAttribute('aria-invalid');
-      err.classList.add('vic-hidden');
-
-      window.VictoriaAPI.registrarLead({
-        nombre: form.elements.nombre.value.trim(),
-        correo: correo,
-        origen: 'diagnostico-gratuito',
-      }).then(function () {
-        form.classList.add('vic-hidden');
-        document.getElementById('okDiagnostico').classList.remove('vic-hidden');
-      });
-    });
-  }
+  /* El bloque de cierre ya no captura correos: el "diagnóstico gratuito"
+     prometía un PDF por correo que nunca existió. Ahora manda al examen gratis
+     de la plataforma, que es esa misma promesa pero de verdad, y ahí el correo
+     se captura en el registro —con base de datos detrás, no en localStorage. */
 })();
