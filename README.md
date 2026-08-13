@@ -155,7 +155,7 @@ archivo. No hay valores de marca escritos a mano más abajo.
 |---|---|---|
 | Fragmentos V | `.v-pattern` + `-subtle` / `-medium` / `-dark` | `-subtle` en secciones claras · `-medium` solo en tarjetas · `-dark` en fondos de color |
 | Cuaderno Victoria | `.academic-grid` + `--claro` / `--oscuro` | Claro en "Qué hacemos"; el oscuro está integrado en `.vic-blueprint` (hero y método) |
-| Separadores | `.section-divider--*` | Entre las cuatro bandas de color de la portada |
+| Separadores | `.section-divider--*` | Las 6 páginas públicas, 16 en total |
 | Ruta del método | `.vic-ruta` | Recorre los cinco pasos; vertical en móvil |
 | Iconos de marca | `data-icono="materia\|tutor\|progreso\|tecnologia"` | Las cuatro tarjetas de "Qué hacemos" |
 | Hueco de mascota | `.mascot-slot` + `data-mascota` | Bloque de diagnóstico gratuito |

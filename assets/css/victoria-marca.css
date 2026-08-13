@@ -315,6 +315,7 @@
 
 /* Variantes, nombradas por el par de bandas que unen */
 .section-divider--guinda-papel { --sd-desde: var(--vic-noche);        --sd-hacia: var(--vic-blanco); --sd-filo: rgba(var(--vic-cian-rgb), .5); }
+.section-divider--guinda-lienzo { --sd-desde: var(--vic-noche);       --sd-hacia: var(--vic-bg-canvas); --sd-filo: rgba(var(--vic-cian-rgb), .5); }
 .section-divider--gris-guinda  { --sd-desde: var(--vic-gris-claro);   --sd-hacia: var(--vic-noche);  --sd-filo: rgba(var(--vic-azul-rgb), .55); }
 .section-divider--papel-noche  { --sd-desde: var(--vic-blanco);       --sd-hacia: var(--vic-noche);  --sd-filo: rgba(var(--vic-azul-rgb), .5); }
 .section-divider--azul-guinda  { --sd-desde: var(--vic-azul-profundo); --sd-hacia: var(--vic-noche); --sd-filo: rgba(var(--vic-cian-rgb), .45); }
