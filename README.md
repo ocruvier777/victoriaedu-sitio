@@ -157,7 +157,8 @@ archivo. No hay valores de marca escritos a mano más abajo.
 | Cuaderno Victoria | `.academic-grid` + `--claro` / `--oscuro` | Claro en "Qué hacemos"; el oscuro está integrado en `.vic-blueprint` (hero y método) |
 | Separadores | `.section-divider--*` | Las 6 páginas públicas, 16 en total |
 | Ruta del método | `.vic-ruta` | Recorre los cinco pasos; vertical en móvil |
-| Iconos de marca | `data-icono="materia\|tutor\|progreso\|tecnologia"` | Las cuatro tarjetas de "Qué hacemos" |
+| Ilustraciones de beneficio | `.benefit-illustration` | Las cuatro tarjetas de "Qué hacemos" |
+| Iconos de marca | `data-icono="materia\|tutor\|progreso\|tecnologia"` | Reserva: los cuatro iconos siguen en `iconos.js` por si hay que volver atrás |
 | Hueco de mascota | `.mascot-slot` + `data-mascota` | Bloque de diagnóstico gratuito |
 
 **Portadas de programa.** Viven en `assets/brand/programas/*.webp`, son 1672×941
@@ -169,6 +170,17 @@ en `imagenAvif` y la tarjeta pasa sola a `<picture>` con el WebP de respaldo.
 Las tres llevan `width`/`height` para que el navegador reserve el espacio antes
 de descargar nada. La primera de la portada se carga sin `lazy` porque entra
 casi con el primer scroll; las otras dos sí van diferidas.
+
+**Ilustraciones de beneficio.** En `assets/brand/beneficios/*.webp`, 1200×1200
+con canal alfa. **Van sobre blanco y eso no es decorativo**: el arte se dibujó
+contra blanco, así que al recortarle el fondo los píxeles del borde conservan
+halo blanco. Sobre cualquier otro color ese halo se ve como dientes de sierra
+alrededor de cada forma. `.vic-card` ya es blanco puro, así que se apoyan en él
+sin costura y sin necesidad de caja.
+
+Si algún día la tarjeta cambia de tono, la solución **no** es pintarles un
+recuadro blanco detrás: hay que pedir las ilustraciones ya compuestas contra el
+color nuevo.
 
 Para pintar una textura en una sección hay que envolverla con `.vic-lienzo`, que
 crea el contexto de posicionamiento y sube el contenido por encima de la capa.

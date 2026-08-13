@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/victoria.css?v=9">
-<link rel="stylesheet" href="assets/css/victoria-marca.css?v=9">
+<link rel="stylesheet" href="assets/css/victoria.css?v=10">
+<link rel="stylesheet" href="assets/css/victoria-marca.css?v=10">
 </head>
 <body>
 
@@ -143,32 +143,36 @@
     </div>
 
     <div class="vic-grid vic-grid--4" data-reveal>
-      <!-- El icono va dentro de .benefit-media para que las cuatro tarjetas
-           reserven la misma altura y los títulos arranquen alineados. Ese
-           contenedor es además el hueco donde entra una ilustración editorial
-           el día que exista: se le añade .benefit-illustration y un <img>, sin
-           tocar nada más de la tarjeta. Los iconos van aria-hidden porque el
-           <h3> de al lado ya dice lo mismo. -->
+      <!-- Las ilustraciones ocupan .benefit-media, el hueco que ya estaba
+           reservado para ellas.
+
+           FONDO BLANCO A PROPÓSITO: el arte tiene canal alfa y se dibujó
+           contra blanco, así que sobre cualquier otro color los bordes
+           muestran dientes de sierra. La nota larga está en victoria-marca.css.
+
+           alt="" a propósito: el <h3> de al lado dice exactamente lo mismo, y
+           duplicarlo obliga a quien usa lector de pantalla a oírlo dos veces.
+           Los iconos SVG siguen en iconos.js por si hay que volver atrás. -->
       <div class="vic-card vic-card--accent vic-card--hoverable vic-valor">
-        <span class="benefit-media"><span class="vic-icono" data-icono="materia"></span></span>
+        <span class="benefit-media"><span class="benefit-illustration"><img src="assets/brand/beneficios/materia-por-materia.webp" alt="" width="1200" height="1200" loading="lazy" decoding="async"></span></span>
         <h3>Materia por materia</h3>
         <p>Cálculo, álgebra, física y química: las que reprueban generaciones enteras.</p>
         <button class="vic-btn vic-btn--ghost vic-btn--sm" type="button" data-mas="materias">Conoce más</button>
       </div>
       <div class="vic-card vic-card--accent vic-card--hoverable vic-valor">
-        <span class="benefit-media"><span class="vic-icono vic-icono--acento" data-icono="tutor"></span></span>
+        <span class="benefit-media"><span class="benefit-illustration"><img src="assets/brand/beneficios/tutor-disponible.webp" alt="" width="1200" height="1200" loading="lazy" decoding="async"></span></span>
         <h3>Tutor IA 24/7</h3>
         <p>Explica el paso 3 a las 11 pm y avisa al profesor si algo no avanza.</p>
         <button class="vic-btn vic-btn--ghost vic-btn--sm" type="button" data-mas="tutor">Conoce más</button>
       </div>
       <div class="vic-card vic-card--accent vic-card--hoverable vic-valor">
-        <span class="benefit-media"><span class="vic-icono" data-icono="progreso"></span></span>
+        <span class="benefit-media"><span class="benefit-illustration"><img src="assets/brand/beneficios/progreso-por-tema.webp" alt="" width="1200" height="1200" loading="lazy" decoding="async"></span></span>
         <h3>Sabes dónde estás parado</h3>
         <p>Cada ejercicio actualiza tu dominio por tema. No un promedio: una curva viva.</p>
         <button class="vic-btn vic-btn--ghost vic-btn--sm" type="button" data-mas="datos">Conoce más</button>
       </div>
       <div class="vic-card vic-card--accent vic-card--hoverable vic-valor">
-        <span class="benefit-media"><span class="vic-icono" data-icono="tecnologia"></span></span>
+        <span class="benefit-media"><span class="benefit-illustration"><img src="assets/brand/beneficios/tecnologia-propia.webp" alt="" width="1200" height="1200" loading="lazy" decoding="async"></span></span>
         <h3>Tecnología propia</h3>
         <p>Plataforma, modelos e infraestructura hechos en casa por VictoriaDEV.</p>
         <button class="vic-btn vic-btn--ghost vic-btn--sm" type="button" data-mas="tecnologia">Conoce más</button>
@@ -496,14 +500,14 @@
 
 <footer data-vic-footer></footer>
 
-<script src="assets/js/config.js?v=9"></script>
-<script src="assets/js/api.js?v=9"></script>
-<script src="assets/js/ui.js?v=9"></script>
-<script src="assets/js/iconos.js?v=9"></script>
-<script src="assets/js/metricas.js?v=9"></script>
-<script src="assets/js/productos.js?v=9"></script>
-<script src="assets/js/datos-cortes.js?v=9"></script>
-<script src="assets/js/mini-cortes.js?v=9"></script>
-<script src="assets/js/pagina-inicio.js?v=9"></script>
+<script src="assets/js/config.js?v=10"></script>
+<script src="assets/js/api.js?v=10"></script>
+<script src="assets/js/ui.js?v=10"></script>
+<script src="assets/js/iconos.js?v=10"></script>
+<script src="assets/js/metricas.js?v=10"></script>
+<script src="assets/js/productos.js?v=10"></script>
+<script src="assets/js/datos-cortes.js?v=10"></script>
+<script src="assets/js/mini-cortes.js?v=10"></script>
+<script src="assets/js/pagina-inicio.js?v=10"></script>
 </body>
 </html>

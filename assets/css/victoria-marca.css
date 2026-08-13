@@ -402,21 +402,36 @@
   margin-bottom: 2px;
 }
 
-/* Hueco preparado para sustituir el icono por una imagen editorial sin tocar
-   la estructura de la tarjeta: se le pone la clase al contenedor y dentro va
-   un <img>. Mientras no exista la imagen, el icono ocupa su lugar. */
+/* Ilustración editorial de la tarjeta. Sustituye al icono; el hueco estaba
+   preparado justo para esto.
+
+   FONDO BLANCO, Y NO ES DECORATIVO. Las ilustraciones son PNG/WebP con canal
+   alfa cuyo arte se dibujó contra blanco: al recortarle el fondo, los píxeles
+   del borde conservan halo blanco. Sobre cualquier color ese halo se ve como
+   dientes de sierra alrededor de cada forma. Sobre blanco compone exactamente
+   como se dibujó y el borde vuelve a ser limpio.
+
+   Por eso tampoco lleva caja de color ni borde: .vic-card ya es blanco puro,
+   así que la ilustración se apoya en él sin costura. El `background` explícito
+   está para que siga siendo blanco aunque algún día la tarjeta cambie de tono
+   — si eso pasa, hay que pedir las ilustraciones ya compuestas contra el
+   nuevo color, no pintarles una caja detrás. */
 .benefit-illustration {
   width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: var(--vic-radius-sm);
-  overflow: hidden;
-  background: var(--vic-primary-softer);
+  max-width: 168px;
+  aspect-ratio: 1 / 1;      /* las ilustraciones son cuadradas, 1200x1200 */
+  background: var(--vic-blanco);
+  margin-left: -8px;        /* el arte trae aire propio; esto lo realinea
+                               ópticamente con el texto de abajo */
 }
 .benefit-illustration > img {
   width: 100%; height: 100%;
-  object-fit: cover;
+  object-fit: contain;      /* contain y no cover: no se recorta ilustración */
   display: block;
 }
+
+/* Con ilustración, el área visual la define ella y no el mínimo del icono. */
+.benefit-media:has(.benefit-illustration) { min-height: 0; margin-bottom: 6px; }
 
 /* Corte diagonal en la esquina del recuadro del icono: la misma pieza del
    isotipo, aplicada al elemento más pequeño del sistema. */
