@@ -183,6 +183,12 @@ img { max-width: 100%; }
 .vic-btn--ghost { background: transparent; color: var(--vic-azul); border-color: transparent; }
 .vic-btn--ghost:hover { background: var(--vic-primary-softer); }
 
+/* WhatsApp: el verde de la plataforma es lo que hace que se reconozca de un
+   vistazo. Texto en --vic-noche, no blanco — ver la nota de .vic-fab-wa. */
+.vic-btn--wa { background: #25D366; border-color: #25D366; color: var(--vic-noche); }
+.vic-btn--wa:hover { background: #1FBA59; border-color: #1FBA59; color: var(--vic-noche); }
+.vic-section--impacto .vic-btn--wa:hover { color: var(--vic-noche); }
+
 /* Variantes sobre fondo oscuro */
 .vic-section--impacto .vic-btn--secondary,
 .vic-navbar .vic-btn--secondary {
@@ -192,6 +198,10 @@ img { max-width: 100%; }
 .vic-navbar .vic-btn--secondary:hover {
   background: rgba(255,255,255,.12); color: #fff; border-color: rgba(255,255,255,.7);
 }
+/* El ghost hereda el azul de marca, que sobre el fondo noche baja de 3:1.
+   Los "Conoce más" viven en secciones claras y oscuras, así que necesita par. */
+.vic-section--impacto .vic-btn--ghost { color: #fff; }
+.vic-section--impacto .vic-btn--ghost:hover { background: rgba(255,255,255,.12); color: #fff; }
 
 .vic-btn--sm { height: 36px; padding: 0 14px; font-size: 14px; }
 .vic-btn--md { height: 44px; padding: 0 20px; font-size: 15px; }
@@ -577,11 +587,272 @@ img { max-width: 100%; }
   animation: vicSheen 3.6s ease-in-out infinite;
 }
 
-/* Carrusel horizontal de testimonios */
+/* Carrusel horizontal ------------------------------------------------------
+   El desplazamiento y el enganche son nativos: el dedo y la rueda funcionan
+   aunque el JS no cargue. VicUI.rail() solo añade flechas, puntos y teclado.  */
+/* Columna con `order` en vez de posicionar las flechas en negativo: así la
+   fila de flechas siempre encuentra su hueco, sin depender del margen que
+   traiga el encabezado de la sección de turno. */
+.vic-rail-wrap { display: flex; flex-direction: column; }
 .vic-rail {
+  order: 1;
   display: grid; grid-auto-flow: column; grid-auto-columns: minmax(340px, 1fr);
   gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px;
+  /* Item flexible con overflow: sin min-width:0 se niega a encogerse y en vez
+     de desplazarse por dentro empuja la página a lo ancho. */
+  min-width: 0;
+  scrollbar-width: none;
 }
+.vic-rail::-webkit-scrollbar { display: none; }
+/* El scroll-snap-align va en los hijos, no en el contenedor: sin esta línea el
+   scroll-snap-type del track no engancha en nada. Por eso .vic-rail nunca
+   funcionó desde que se escribió. */
+.vic-rail > * { scroll-snap-align: start; }
+.vic-rail:focus-visible { outline: none; box-shadow: var(--vic-shadow-focus); border-radius: var(--vic-radius-lg); }
+
+.vic-rail__nav { order: 0; align-self: flex-end; display: flex; align-items: center; gap: 8px; margin-bottom: 18px; }
+.vic-rail__btn {
+  width: 40px; height: 40px; border-radius: var(--vic-radius-pill);
+  border: 1px solid var(--vic-border); background: var(--vic-blanco);
+  color: var(--vic-azul); display: grid; place-items: center; cursor: pointer;
+  transition: background var(--vic-transition-base), border-color var(--vic-transition-base), opacity var(--vic-transition-base);
+}
+.vic-rail__btn:hover { background: var(--vic-primary-softer); border-color: var(--vic-azul); }
+.vic-rail__btn[disabled] { opacity: .35; cursor: default; }
+.vic-rail__btn[data-ir="-1"] svg { transform: rotate(180deg); }
+.vic-section--impacto .vic-rail__btn,
+.vic-social .vic-rail__btn {
+  background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.28); color: #fff;
+}
+.vic-section--impacto .vic-rail__btn:hover,
+.vic-social .vic-rail__btn:hover { background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.55); }
+
+/* Los puntos son la referencia de posición en móvil, donde no hay flechas. */
+.vic-rail__dots { order: 2; display: none; justify-content: center; gap: 8px; margin-top: 18px; }
+.vic-rail__dot {
+  width: 8px; height: 8px; padding: 0; border-radius: 50%; cursor: pointer;
+  border: 0; background: var(--vic-gris-medio); opacity: .5;
+  transition: opacity var(--vic-transition-base), transform var(--vic-transition-base);
+}
+.vic-rail__dot.is-on { opacity: 1; background: var(--vic-azul); transform: scale(1.35); }
+.vic-section--impacto .vic-rail__dot,
+.vic-social .vic-rail__dot { background: rgba(255,255,255,.5); }
+.vic-section--impacto .vic-rail__dot.is-on,
+.vic-social .vic-rail__dot.is-on { background: #fff; }
+/* Una tarjeta por vista: el testimonio se lee de una en una, a lo ancho.
+   scroll-snap-stop evita que un manotazo se salte tres de golpe. */
+.vic-rail--ancho { grid-auto-columns: 100%; }
+.vic-rail--ancho > * { scroll-snap-stop: always; }
+
+/* Contador "3 / 7". Con una sola tarjeta a la vista es la única pista de
+   cuántas quedan. */
+.vic-rail__cuenta {
+  font-family: var(--vic-font-mono); font-size: 13px; letter-spacing: .06em;
+  color: var(--vic-text-muted); margin-right: 6px; font-variant-numeric: tabular-nums;
+}
+.vic-social .vic-rail__cuenta { color: rgba(255,255,255,.6); }
+/* Si todo cabe sin desplazar, el carrusel deja de anunciarse como tal. */
+.vic-rail-wrap--fijo .vic-rail__nav,
+.vic-rail-wrap--fijo .vic-rail__dots { display: none; }
+
+/* --- Banda de prueba social ----------------------------------------------
+   El cristal no es un color, es un efecto óptico: necesita algo detrás que
+   desenfocar. Por eso la banda lleva manchas de color sobre el fondo noche —
+   sin ellas, .vic-testimonio se vería como un rectángulo gris cualquiera.
+-------------------------------------------------------------------------- */
+.vic-social { position: relative; overflow: hidden; background: var(--vic-noche); padding: 104px 0; }
+.vic-social > * { position: relative; z-index: 1; }
+.vic-social::before {
+  content: ""; position: absolute; inset: -12%; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(58% 55% at 14% 18%, rgba(44,77,157,.62), transparent 68%),
+    radial-gradient(46% 48% at 88% 12%, rgba(108,138,199,.30), transparent 70%),
+    radial-gradient(52% 58% at 74% 92%, rgba(49,14,23,.72), transparent 68%);
+  /* Deriva muy lenta: el fondo respira sin que nadie lo mire. El bloque global
+     de prefers-reduced-motion la congela. */
+  animation: vicDeriva 26s ease-in-out infinite;
+}
+@keyframes vicDeriva {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(2.5%, -2.5%, 0) scale(1.07); }
+}
+
+/* La cita que abre la banda. Lo que la hace resaltar no es el tamaño solo: es
+   la comilla gigante detrás y el subrayado de marcador en las dos palabras que
+   cargan la frase. */
+.vic-social__cita { position: relative; margin: 0 0 64px; }
+.vic-social__cita::before {
+  content: "\201C"; position: absolute; left: -.06em; top: -.34em; z-index: 0;
+  font-family: var(--vic-font-display); font-weight: 800; line-height: 1;
+  font-size: clamp(140px, 17vw, 260px); color: rgba(255,255,255,.08);
+  pointer-events: none;
+}
+.vic-social__cita blockquote {
+  position: relative; z-index: 1; margin: 0; max-width: 18ch;
+  font-family: var(--vic-font-display); font-weight: 800; color: #fff;
+  font-size: clamp(36px, 5.6vw, 72px); line-height: 1.03; letter-spacing: -.025em;
+  text-wrap: balance;
+}
+/* Trazo de marcador: va detrás del texto, así que el blanco conserva sus 15:1
+   contra el fondo pase lo que pase con el color del trazo. */
+.vic-social__cita em {
+  font-style: normal; white-space: nowrap;
+  background: linear-gradient(180deg, transparent 58%, rgba(108,138,199,.6) 58%, rgba(108,138,199,.6) 94%, transparent 94%);
+}
+.vic-social__cita figcaption {
+  position: relative; z-index: 1; margin-top: 24px;
+  font-size: 15px; color: rgba(255,255,255,.6);
+}
+.vic-social__enc {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 24px; flex-wrap: wrap; margin-bottom: 26px;
+}
+.vic-social__enc .vic-rail__nav { margin-bottom: 0; }
+
+/* Tarjeta de testimonio ----------------------------------------------------
+   Una sola por vista, ancha y baja: quién lo dijo a la izquierda, la cita
+   ocupando todo lo demás. Es el ancho lo que mantiene la tarjeta baja — la
+   misma cita en una columna estrecha se iba a ocho renglones.
+   Solo se pinta con citas reales y autorizadas; ver CONFIG.testimonios.      */
+.vic-testimonio {
+  display: grid; grid-template-columns: 230px 1fr; gap: 40px; align-items: center;
+  /* Sin height:100%: el elemento de rejilla ya se estira solo a la altura de la
+     fila, y el porcentaje contra una altura automática solo añade ruido. */
+  padding: 32px 40px; border-radius: var(--vic-radius-xl);
+  background: rgba(255,255,255,.075);
+  border: 1px solid rgba(255,255,255,.16);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  /* El brillo interior superior es lo que lee el ojo como "canto de cristal" */
+  box-shadow: 0 20px 50px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.2);
+  transition: background var(--vic-transition-base), border-color var(--vic-transition-base);
+}
+.vic-testimonio:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.26); }
+
+.vic-testimonio__quien { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+.vic-testimonio__quien .vic-monograma { margin-bottom: 12px; }
+.vic-testimonio__cita {
+  font-family: var(--vic-font-display); font-weight: 700;
+  font-size: clamp(18px, 1.7vw, 24px); line-height: 1.34; letter-spacing: -.01em;
+  color: #fff; margin: 0; text-wrap: pretty;
+}
+.vic-testimonio__nombre { display: block; font-size: 16px; font-weight: 600; color: #fff; }
+.vic-testimonio__detalle { display: block; font-size: 13px; line-height: 1.45; color: rgba(255,255,255,.62); margin-top: 3px; }
+
+/* El monograma también es de cristal: un disco azul opaco encima del cristal
+   rompía el efecto justo donde más se mira. */
+.vic-social .vic-monograma {
+  background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.22);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+
+/* Sin monograma y con una raya al frente: el anónimo se lee como lo que es,
+   apoyo, y no compite con los que llevan nombre y fecha comprobables. */
+.vic-testimonio--anonimo .vic-testimonio__quien { padding-left: 16px; border-left: 2px solid rgba(255,255,255,.24); }
+.vic-testimonio--anonimo .vic-testimonio__nombre { font-weight: 500; color: rgba(255,255,255,.82); }
+
+/* Uno solo con el cristal más denso, para cerrar el carrusel con peso. */
+.vic-testimonio--destacado {
+  background: rgba(44,77,157,.42); border-color: rgba(255,255,255,.32);
+  box-shadow: 0 26px 62px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.3);
+}
+.vic-testimonio--destacado:hover { background: rgba(44,77,157,.52); }
+.vic-testimonio--destacado .vic-testimonio__cita { font-size: 20px; }
+
+/* Si el navegador no sabe desenfocar el fondo, se sube la opacidad: el cristal
+   se pierde, la legibilidad no. */
+@supports not (backdrop-filter: blur(1px)) {
+  .vic-testimonio { background: rgba(255,255,255,.13); }
+  .vic-testimonio--destacado { background: rgba(44,77,157,.72); }
+}
+
+/* Tarjeta de reel ----------------------------------------------------------
+   Portada + botón: el iframe de Instagram no se crea hasta el clic, así que la
+   página no arrastra su script en la carga. Ver pagina-inicio.js.             */
+.vic-reel {
+  position: relative; display: block; width: 100%; padding: 0; border: 0;
+  aspect-ratio: 9/16; border-radius: var(--vic-radius-lg); overflow: hidden;
+  background: var(--vic-azul-profundo); cursor: pointer;
+  transition: transform var(--vic-transition-base), box-shadow var(--vic-transition-base);
+}
+.vic-reel:hover { transform: translateY(-3px); box-shadow: var(--vic-shadow-xl); }
+.vic-reel img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Velo inferior para que el título se lea sobre cualquier portada. */
+.vic-reel::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to top, rgba(15,5,8,.88) 0%, rgba(15,5,8,.35) 38%, transparent 62%);
+}
+.vic-reel__play {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  width: 60px; height: 60px; border-radius: 50%; z-index: 2;
+  background: rgba(255,255,255,.92); color: var(--vic-azul-profundo);
+  display: grid; place-items: center; padding-left: 4px;
+  transition: transform var(--vic-transition-base);
+}
+.vic-reel:hover .vic-reel__play { transform: translate(-50%,-50%) scale(1.08); }
+.vic-reel__tit {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 18px;
+  font-family: var(--vic-font-display); font-size: 16px; line-height: 1.3;
+  font-weight: 700; color: #fff; text-align: left;
+}
+/* Los reels van más estrechos que el resto de carruseles: a 340px un 9:16
+   mediría 604 de alto y se comería la pantalla. */
+.vic-rail--reels { grid-auto-columns: minmax(210px, 1fr); }
+/* El iframe de Instagram trae su propia maqueta y no respeta un aspect-ratio
+   impuesto; se le da alto fijo relativo a la ventana y él se acomoda dentro. */
+.vic-reel-embed {
+  width: 100%; height: min(78vh, 700px); background: #000;
+  border-radius: var(--vic-radius-lg); overflow: hidden;
+}
+.vic-reel-embed iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+/* Tira compacta del equipo -------------------------------------------------
+   Antes eran tres bios de 40 palabras. Aquí se ve la cara y el cargo; la bio
+   completa entra por el botón, que es lo que se lee en un móvil.              */
+.vic-tira-equipo { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.vic-persona {
+  display: flex; align-items: center; gap: 16px; text-align: left;
+  background: var(--vic-blanco); border: 1px solid var(--vic-border);
+  border-radius: var(--vic-radius-lg); padding: 18px; width: 100%; cursor: pointer;
+  transition: box-shadow var(--vic-transition-base), transform var(--vic-transition-base), border-color var(--vic-transition-base);
+}
+.vic-persona:hover { transform: translateY(-3px); box-shadow: var(--vic-shadow-lg); border-color: var(--vic-primary-light); }
+.vic-persona__foto {
+  width: 68px; height: 68px; border-radius: 50%; flex: none; overflow: hidden;
+  background: var(--vic-bg-subtle);
+}
+/* object-position alto: en un recorte circular la barbilla se comía la cara. */
+.vic-persona__foto img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 12%; display: block; }
+/* display:block obligatorio: son <span> dentro de un <span>, y sin esto los
+   tres renglones se pegan en una sola línea. */
+.vic-persona__nom { display: block; font-family: var(--vic-font-display); font-size: 17px; font-weight: 700; color: var(--vic-azul-profundo); }
+.vic-persona__rol { display: block; font-size: 13px; line-height: 1.4; color: var(--vic-text-muted); margin-top: 3px; }
+.vic-persona__mas { display: block; font-size: 13px; font-weight: 600; color: var(--vic-azul); margin-top: 7px; }
+
+/* Tarjeta de valor con "Conoce más" al pie --------------------------------- */
+.vic-valor { display: flex; flex-direction: column; gap: 12px; }
+.vic-valor h3 { font-size: 20px; margin: 0; }
+.vic-valor p { font-size: 15px; line-height: 1.5; margin: 0; }
+.vic-valor .vic-btn { margin-top: auto; align-self: flex-start; }
+
+/* Botón flotante de WhatsApp ----------------------------------------------
+   Verde de WhatsApp con texto casi negro: el verde de la plataforma es lo que
+   hace que se reconozca sin leerlo, pero en blanco daría 4.1:1 y no pasa AA.
+   Con --vic-noche encima da 9.5:1.                                            */
+.vic-fab-wa {
+  position: fixed; z-index: 900;
+  right: calc(20px + env(safe-area-inset-right, 0px));
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  display: inline-flex; align-items: center; gap: 10px;
+  height: 54px; padding: 0 20px; border-radius: var(--vic-radius-pill);
+  background: #25D366; color: var(--vic-noche);
+  font-family: var(--vic-font-body); font-size: 15px; font-weight: 700;
+  box-shadow: 0 10px 28px rgba(0,0,0,.28);
+  transition: transform var(--vic-transition-base), box-shadow var(--vic-transition-base);
+}
+.vic-fab-wa:hover { color: var(--vic-noche); transform: translateY(-2px); box-shadow: 0 14px 34px rgba(0,0,0,.34); }
+.vic-fab-wa__ico { display: grid; place-items: center; flex: none; }
+@media print { .vic-fab-wa { display: none; } }
 /* Monograma para testimonios sin foto. Un placeholder de rayas se lee como
    "sin terminar"; unas iniciales sobre el azul de marca se leen como decisión. */
 .vic-monograma {
@@ -726,6 +997,12 @@ img { max-width: 100%; }
   cursor: pointer; font-size: 14px; color: var(--vic-text-muted); line-height: 1;
 }
 .vic-modal__cerrar:hover { background: var(--vic-bg-canvas); color: var(--vic-text-strong); }
+/* La ✕ flota sobre la esquina: el primer título tiene que dejarle sitio o a
+   dos renglones se le mete debajo. */
+.vic-modal__caja > h2:first-of-type,
+.vic-modal__caja > h3:first-of-type { padding-right: 44px; }
+/* Un video no necesita márgenes de lectura. */
+.vic-modal--video .vic-modal__caja { padding: 16px; }
 
 /* ==========================================================================
    Gráficas — cortes del IPN
@@ -1068,6 +1345,19 @@ img { max-width: 100%; }
   .vic-donut-row { grid-template-columns: 1fr; justify-items: center; text-align: center; }
   .vic-donut-row .vic-stack { width: 100%; }
   .vic-rail { grid-auto-columns: minmax(min(300px, 82vw), 1fr); }
+  .vic-rail--reels { grid-auto-columns: minmax(min(190px, 52vw), 1fr); }
+  .vic-social { padding: 72px 0; }
+  .vic-social__cita { margin-bottom: 48px; }
+  /* En una columna: primero quién lo dijo, en fila compacta, y luego la cita. */
+  .vic-testimonio { grid-template-columns: 1fr; gap: 20px; padding: 26px 24px; align-items: start; }
+  .vic-testimonio__quien { flex-direction: row; align-items: center; flex-wrap: wrap; gap: 2px 14px; }
+  .vic-testimonio__quien .vic-monograma { margin-bottom: 0; width: 42px; height: 42px; font-size: 15px; }
+  .vic-testimonio__nombre { font-size: 15px; }
+  /* En táctil se arrastra con el dedo: sobran las flechas y hacen falta los
+     puntos, que son la única pista de que hay más tarjetas a la derecha. */
+  .vic-rail__nav { display: none; }
+  .vic-rail__dots { display: flex; }
+  .vic-tira-equipo { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 520px) {
@@ -1075,4 +1365,7 @@ img { max-width: 100%; }
   .vic-steps { gap: 8px; }
   .vic-step__sep { width: 14px; }
   .vic-step span:not(.vic-step__num) { display: none; }
+  /* Pantalla chica: el botón se vuelve círculo para no tapar el contenido. */
+  .vic-fab-wa { height: 56px; width: 56px; padding: 0; justify-content: center; }
+  .vic-fab-wa__txt { display: none; }
 }

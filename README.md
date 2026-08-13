@@ -21,7 +21,7 @@ python3 -m http.server 8000
 ```
 
 > **Si ves la página sin estilos**, es caché del navegador. Los archivos llevan
-> `?v=4` justo para evitarlo: al cambiar CSS o JS, **sube ese número en todos los
+> `?v=5` justo para evitarlo: al cambiar CSS o JS, **sube ese número en todos los
 > `.html`** (o recarga con Ctrl+Shift+R).
 
 Panel interno: `http://localhost:8000/admin.html` — clave `victoria2026`.
@@ -67,6 +67,65 @@ Inicio · Programas ▾ · IPN ▾ · Método · Equipo · [CTA]
 - El CTA es lo único que varía: `data-cta="comprar"` en las páginas públicas y
   `"ninguno"` dentro del checkout, donde un botón de compra sobraría.
 
+### La portada
+
+Está escrita para un público joven que decide en segundos y desde el celular:
+**siete secciones**, ninguna con muros de texto, y contacto siempre a la vista.
+
+| Sección | Qué hace |
+|---|---|
+| Hero | Qué es, para quién y dos botones. La bajada son 22 palabras. |
+| Qué hacemos + equipo | Cuatro tarjetas de una línea y tres caras. |
+| Programas | Tarjeta con imagen, 4 viñetas y "Conoce más". |
+| Método | Los cinco pasos, ≤12 palabras cada uno. |
+| Resultados | Contadores y la gráfica de cortes. |
+| Prueba social | Cita gigante + carrusel de testimonios en cristal. |
+| En video | Reels de Instagram. |
+| Cierre | Diagnóstico gratis + WhatsApp. |
+
+La banda de prueba social (`.vic-social`) es la única con **glassmorphism**, y
+lleva su propio fondo por una razón técnica: el cristal no es un color, es un
+desenfoque de lo que hay detrás. Las manchas de color de `.vic-social::before`
+son ese "detrás" — sobre un fondo plano las tarjetas se verían como rectángulos
+grises. Si algún día se cambia el fondo de la sección, hay que revisarlas. Los
+navegadores sin `backdrop-filter` caen a un `@supports` que sube la opacidad:
+se pierde el cristal, no la legibilidad.
+
+Tres reglas que conviene no romper al editarla:
+
+- **El texto largo no se borra, se esconde.** Cada "Conoce más" abre un modal
+  cuyo contenido vive en un `<div class="vic-hidden" id="mas-CLAVE">` del propio
+  `index.html`, junto al botón `data-mas="CLAVE"`. Va en HTML y no en una cadena
+  de JS para que siga siendo texto indexable y editable a mano.
+- **Las secciones sin contenido no se pintan.** Testimonios y reels salen de
+  `CONFIG.testimonios` y `CONFIG.redes.reels`; con la lista vacía el bloque se
+  queda con su `vic-hidden`. Nunca hay un hueco ni un placeholder en producción.
+- **Instagram no se carga hasta el clic.** La tarjeta del reel es una portada;
+  el `<iframe>` se crea al abrir el modal. Incrustarlo de entrada metería el
+  script de Instagram en cada visita, y eso sí se nota en un celular.
+
+### Piezas compartidas nuevas (`ui.js`)
+
+- `VicUI.modal(html, opts)` — el único modal del sitio: Escape, clic en el
+  fondo, bloqueo de scroll, foco encerrado y devuelto al botón que lo abrió.
+  Devuelve `{ caja, cerrar }`; el cierre está **delegado en el overlay**, así
+  que repintar `caja.innerHTML` no lo rompe. Antes había tres copias a mano.
+- `VicUI.rail(track, opts)` — carrusel sobre un `.vic-rail` dentro de un
+  `.vic-rail-wrap`. El desplazamiento y el enganche son CSS nativo; esto solo
+  añade flechas y contador "3 / 7" (escritorio), puntos (móvil) y flechas de
+  teclado, y se retira solo si todo cabe sin desplazar. Con `opts.navEn` las
+  flechas cuelgan de otra fila —la del encabezado— en vez de quedarse solas
+  encima del carrusel, que abría un hueco enorme.
+- Modificadores del carrusel: `.vic-rail--ancho` es **una tarjeta por vista**
+  (`grid-auto-columns: 100%`, con `scroll-snap-stop: always` para que un
+  manotazo no se salte tres); `.vic-rail--reels` va estrecho, para 9:16.
+- **Botón flotante de WhatsApp**, inyectado en todas las páginas salvo las de
+  `data-cta="ninguno"`. En el HTML, cualquier `<a data-wa="mensaje">` recibe su
+  `href` desde `CONFIG.whatsapp`: el número vive en un solo sitio.
+- `popup-simulacro.js` **no** se migró al modal compartido: usa `.vic-popup`,
+  que es otro componente (entrada animada y bookkeeping de 7 días), no una
+  cuarta copia del mismo.
+
 ---
 
 ## El flujo de compra
@@ -102,24 +161,39 @@ Estados de un pedido:
 
 Todo lo que hay que tocar está en **`assets/js/config.js`**:
 
-- [ ] **`whatsapp`** — hoy `525500000000`, un placeholder. Formato internacional
-      sin `+`, sin espacios y sin guiones.
+- [x] **`whatsapp`** — ya es el número real: `5215632118930` (+52 1 56 3211 8930).
+      Formato internacional sin `+`, sin espacios y sin guiones. Es el CTA
+      principal del sitio (hero, botón flotante y cierre), así que conviene
+      probarlo desde un celular de verdad. Si algún día deja de abrir la
+      conversación, quita el `1`: `525632118930`.
+- [ ] **`redes`** — pega el `@` de Instagram y los reels. La sección "En video"
+      de la portada **no se pinta** mientras `redes.reels` esté vacío.
 - [ ] **`banco`** — beneficiario, institución y CLABE son de ejemplo.
       **La CLABE que está ahí no es real: si se publica así, nadie puede pagar.**
 - [ ] **`marca.telefono`** — hoy `+52 55 0000 0000`.
 - [ ] **`admin.clave`** — la compuerta del panel es visual, no seguridad. No
       sirve para producción: la autenticación real va en el back.
-- [ ] **Testimonios: ya no hay ninguno.** Los que venían del mockup eran
-      inventados y se eliminaron — no podían publicarse. En `index.html` y en
-      `simulacro-ipn-2026.html` quedó la plantilla comentada con la atribución
-      correcta. Cuando tengas los de tus alumnos de OriéntateMX: atribúyelos a
-      ti como profesor ahí ("Alumna de Óscar Cruz en OriéntateMX, 2024"), no a
-      VictoriaEDU; consigue permiso por escrito de cada uno; y revisa tu
-      contrato con OriéntateMX por cláusulas de no competencia o no captación.
+- [x] **Testimonios: ya son reales.** Los del mockup eran inventados y se
+      eliminaron. Los siete que hay ahora en **`CONFIG.testimonios`** son
+      reseñas públicas de Facebook a los cursos que Óscar dio en Oriéntate MX,
+      atribuidas a él **como profesor** — nunca como alumnos de VictoriaEDU,
+      que sería falso. Reglas al editarlas: la cita no se reescribe (recorte con
+      "…", sustitución entre [corchetes]); los anónimos llevan `anonimo: true` y
+      se pintan sin monograma para que no compitan con los verificables.
+      **Pendiente:** revisa tu contrato con Oriéntate MX por cláusulas de no
+      competencia o no captación antes de publicar, y guarda el permiso por
+      escrito de los cinco que aparecen con nombre.
+- [ ] **Ainara vs. "Andy López".** La selección traía una reseña de "Andy López"
+      cortada a media frase; la captura que llegó es de **Ainara López Joachin**
+      y sí está completa. Se publicó la de Ainara. Si son dos reseñas distintas,
+      hace falta el texto completo de la otra: una cita que empieza con "…" no
+      se publica.
 - [ ] **Las cuatro cifras de trayectoria** (+1,200 alumnos, 8 de 10, +31, 9
       generaciones) están redactadas como historial docente tuyo, no como
       resultados de la empresa. Confirma cada una y anota de dónde sale.
-- [ ] **El diploma UNIR.** `index.html` tiene el hueco listo con un `TODO`.
+- [ ] **El diploma UNIR.** El hueco con el `TODO` está en `index.html`, dentro
+      del bloque `#mas-tecnologia` (el que abre el "Conoce más" de *Tecnología
+      propia*).
       Sube la imagen **ya tapada**: sin folio, sin número de certificado, sin
       firma y sin QR. Un escaneo íntegro es el material para falsificarlo. Si la
       UNIR te dio liga pública de verificación, úsala: convence más que un JPG.
@@ -331,3 +405,16 @@ Defectos encontrados y corregidos en el camino, por si reaparecen:
    MCP de Claude Design (84% y 88% decodificados). Se recortaron al mayor
    rectángulo 4:5 válido — que es justo la proporción con la que las muestra el
    diseño — y se recomprimieron. Si tienes los originales, mejor sustitúyelas.
+6. `.vic-rail` llevaba `scroll-snap-type` en el contenedor pero le faltaba
+   `scroll-snap-align` en los hijos, que es donde va la propiedad. El enganche
+   nunca funcionó desde que se escribió el componente.
+7. **El carrusel se descuadraba al pulsar rápido.** Las flechas usaban
+   `scrollBy`, que es relativo a la posición **instantánea**: si pulsabas otra
+   vez antes de que terminara el desplazamiento suave, el segundo salto partía
+   de la mitad de la animación y el error se acumulaba. Seis clics seguidos
+   dejaban la tarjeta a medio camino entre dos posiciones — y con una tarjeta
+   por vista, eso se ve como una tarjeta cortada. Ahora se usa `scrollTo` a la
+   posición absoluta de la tarjeta destino, medida del DOM
+   (`hijos[i].offsetLeft`), y un índice objetivo propio que solo se
+   resincroniza cuando el desplazamiento se detiene. Está cubierto con una
+   prueba que simula animaciones a medio terminar.

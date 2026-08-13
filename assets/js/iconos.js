@@ -35,6 +35,16 @@
     credencial: '<circle cx="12" cy="9.5" r="5.5"/><path d="M9.2 14.3L8 21l4-2 4 2-1.2-6.7"/><path d="M10 9.5l1.4 1.4 2.8-2.8"/>',
     /* Escudo con check */
     verificado: '<path d="M12 3l7 3v6c0 4.2-2.9 7.6-7 9-4.1-1.4-7-4.8-7-9V6z"/><path d="M9 12l2 2 4-4"/>',
+    /* Globo de conversación con auricular: WhatsApp. La marca oficial es de
+       relleno; aquí va en trazo para no romper el lenguaje del resto. */
+    whatsapp: '<path d="M20.5 11.7a8.5 8.5 0 01-12.6 7.5L3.5 20.5l1.4-4.3A8.5 8.5 0 1120.5 11.7z"/>' +
+      '<path d="M9.3 8.6c.3-.1.6 0 .8.3l.8 1.3c.1.2.1.5 0 .7l-.5.7c.5 1 1.3 1.8 2.3 2.3l.7-.5c.2-.1.5-.2.7 0l1.3.8c.3.2.4.5.3.8-.3.8-1.1 1.3-1.9 1.1a7.6 7.6 0 01-5.6-5.6c-.2-.8.3-1.6 1.1-1.9z"/>',
+    /* Triángulo: reproducir el reel */
+    play: '<path d="M8.5 5.4l10.6 6.6-10.6 6.6z"/>',
+    /* Flecha: navegación de los carruseles */
+    flecha: '<path d="M5 12h13M12.5 6l6 6-6 6"/>',
+    /* Instagram */
+    instagram: '<rect x="3.5" y="3.5" width="17" height="17" rx="4.8"/><circle cx="12" cy="12" r="4"/><circle cx="17.1" cy="6.9" r=".9"/>',
   };
 
   function svg(nombre, tam) {

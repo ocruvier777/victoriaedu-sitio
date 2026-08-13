@@ -305,6 +305,230 @@
     ].join('\n');
   }
 
+  /* --- Enlaces de WhatsApp en el HTML --------------------------------------
+     <a data-wa="mensaje">…</a> se completa desde aquí. Así el número vive solo
+     en config.js y no hay que perseguirlo por diez archivos si cambia.
+  ------------------------------------------------------------------------ */
+  function activarEnlacesWhatsApp() {
+    document.querySelectorAll('[data-wa]').forEach(function (a) {
+      a.href = enlaceWhatsApp(a.getAttribute('data-wa') || 'Hola, quiero informes sobre VictoriaEDU.');
+      a.target = '_blank';
+      a.rel = 'noopener';
+    });
+  }
+
+  /* --- Botón flotante de WhatsApp ------------------------------------------
+     El público entra desde el celular y decide en segundos: el contacto tiene
+     que estar siempre a un pulgar de distancia, no enterrado en el footer.
+     Se inyecta desde aquí por la misma razón que el header y el footer.
+  ------------------------------------------------------------------------ */
+  function pintarBotonWhatsApp() {
+    var header = document.querySelector('[data-vic-header]');
+    if (!header) return;
+    // El embudo de compra y el panel interno se marcan con data-cta="ninguno".
+    // Ahí el alumno está pagando: un botón flotante encima solo estorba.
+    if (header.getAttribute('data-cta') === 'ninguno') return;
+    if (document.querySelector('.vic-fab-wa')) return;
+
+    var a = document.createElement('a');
+    a.className = 'vic-fab-wa';
+    a.href = enlaceWhatsApp('Hola, quiero informes sobre los programas de VictoriaEDU.');
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.setAttribute('aria-label', 'Pedir informes por WhatsApp');
+    a.innerHTML =
+      '<span class="vic-fab-wa__ico" data-icono="whatsapp" data-icono-tam="24"></span>' +
+      '<span class="vic-fab-wa__txt">Informes</span>';
+    document.body.appendChild(a);
+  }
+
+  /* --- Modal ----------------------------------------------------------------
+     Un solo modal para todo el sitio. Antes estaba escrito a mano tres veces
+     (diploma, lista de espera y popup del simulacro) y cada copia cerraba de
+     una forma distinta; con seis modales en la portada eso no se sostiene.
+
+     Devuelve { caja, cerrar } para que quien lo abre pueda repintar el
+     contenido —la lista de espera lo hace al enviar— sin volver a cablear nada:
+     el cierre está delegado en el overlay, así que sobrevive a un innerHTML.
+  ------------------------------------------------------------------------ */
+  var FOCUSABLES = 'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';
+
+  function modal(contenido, opts) {
+    opts = opts || {};
+
+    var previo = document.activeElement;
+    var overlay = document.createElement('div');
+    overlay.className = 'vic-modal' + (opts.clase ? ' ' + opts.clase : '');
+    overlay.innerHTML =
+      '<div class="vic-modal__caja" role="dialog" aria-modal="true"' +
+        (opts.titulo ? ' aria-label="' + escapar(opts.titulo) + '"' : '') +
+        (opts.ancho ? ' style="max-width:' + opts.ancho + '"' : '') + '>' +
+        '<button class="vic-modal__cerrar" type="button" aria-label="Cerrar">✕</button>' +
+        contenido +
+      '</div>';
+
+    document.body.appendChild(overlay);
+    document.body.style.overflow = 'hidden';
+
+    var caja = overlay.querySelector('.vic-modal__caja');
+
+    function cerrar() {
+      if (!overlay.parentNode) return;
+      overlay.remove();
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', onKey);
+      // Devolver el foco a donde estaba: si no, el teclado vuelve al principio
+      // de la página y quien navega sin ratón pierde el hilo.
+      if (previo && previo.focus) previo.focus();
+    }
+
+    function onKey(e) {
+      if (e.key === 'Escape') { cerrar(); return; }
+      if (e.key !== 'Tab') return;
+      // Encerrar el foco: mientras el modal está abierto, el resto de la página
+      // es inerte para el ratón, así que también debe serlo para el tabulador.
+      var f = Array.prototype.filter.call(caja.querySelectorAll(FOCUSABLES), function (el) {
+        return el.offsetParent !== null;
+      });
+      if (!f.length) return;
+      var primero = f[0], ultimo = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === primero) { e.preventDefault(); ultimo.focus(); }
+      else if (!e.shiftKey && document.activeElement === ultimo) { e.preventDefault(); primero.focus(); }
+    }
+
+    document.addEventListener('keydown', onKey);
+    overlay.addEventListener('click', function (e) {
+      if (e.target === overlay || e.target.closest('.vic-modal__cerrar')) cerrar();
+    });
+
+    if (window.VicIconos) window.VicIconos.montar(overlay);
+
+    // Foco al primer campo útil; si no hay, a la X.
+    var inicial = caja.querySelector('input:not([type="hidden"]), textarea, select') ||
+                  caja.querySelector('.vic-modal__cerrar');
+    if (inicial) inicial.focus();
+
+    return { overlay: overlay, caja: caja, cerrar: cerrar };
+  }
+
+  /* --- Carrusel horizontal --------------------------------------------------
+     Se monta sobre un .vic-rail que ya tiene scroll y scroll-snap nativos: el
+     dedo y la rueda funcionan sin JS. Esto solo añade las flechas, los puntos y
+     el foco de teclado, y se retira solo si todo cabe sin desplazar.
+  ------------------------------------------------------------------------ */
+  function rail(track, opts) {
+    if (!track) return;
+    opts = opts || {};
+    var wrap = track.closest('.vic-rail-wrap');
+    if (!wrap) return;
+
+    track.setAttribute('tabindex', '0');
+    track.setAttribute('role', 'group');
+    track.setAttribute('aria-label', opts.etiqueta || 'Carrusel');
+
+    var nav = document.createElement('div');
+    nav.className = 'vic-rail__nav';
+    nav.innerHTML =
+      '<span class="vic-rail__cuenta" aria-hidden="true"></span>' +
+      '<button class="vic-rail__btn" type="button" data-ir="-1" aria-label="Anterior">' +
+        '<span data-icono="flecha" data-icono-tam="18"></span></button>' +
+      '<button class="vic-rail__btn" type="button" data-ir="1" aria-label="Siguiente">' +
+        '<span data-icono="flecha" data-icono-tam="18"></span></button>';
+
+    var puntos = document.createElement('div');
+    puntos.className = 'vic-rail__dots';
+
+    // opts.navEn permite colgar las flechas de la fila del encabezado en vez de
+    // dejarlas solas sobre el carrusel, donde abrían un hueco muy grande.
+    var hostNav = opts.navEn ? (typeof opts.navEn === 'string' ? document.querySelector(opts.navEn) : opts.navEn) : null;
+    (hostNav || wrap).appendChild(nav);
+    wrap.appendChild(puntos);
+    if (window.VicIconos) window.VicIconos.montar(nav);
+
+    var hijos = Array.prototype.slice.call(track.children);
+    puntos.innerHTML = hijos.map(function (_, i) {
+      return '<button class="vic-rail__dot" type="button" data-i="' + i + '" aria-label="Ir a ' + (i + 1) + '"></button>';
+    }).join('');
+
+    /* Posición de cada tarjeta, medida del DOM en vez de calculada.
+       hijos[i].offsetLeft se mide desde el ancestro posicionado, no desde el
+       track, así que hay que restar el origen: la diferencia sí es exacta y no
+       depende del gap, del padding ni de redondeos. */
+    function destino(i) { return hijos[i].offsetLeft - hijos[0].offsetLeft; }
+
+    function indiceActual() {
+      var x = track.scrollLeft, mejor = 0, dmin = Infinity;
+      for (var i = 0; i < hijos.length; i++) {
+        var d = Math.abs(destino(i) - x);
+        if (d < dmin) { dmin = d; mejor = i; }
+      }
+      return mejor;
+    }
+
+    var contador = nav.querySelector('.vic-rail__cuenta');
+    /* Índice al que vamos, no en el que estamos. scrollBy calcularía el salto
+       desde la posición instantánea: al pulsar dos veces seguidas, el segundo
+       salto partía de la mitad de la animación anterior y el error se
+       acumulaba hasta dejar la tarjeta descuadrada. Con scrollTo absoluto no
+       hay deriva posible. */
+    var iObjetivo = 0;
+
+    function pintarEstado() {
+      var desplazable = track.scrollWidth - track.clientWidth > 4;
+      wrap.classList.toggle('vic-rail-wrap--fijo', !desplazable);
+      if (hostNav) hostNav.classList.toggle('vic-rail-wrap--fijo', !desplazable);
+      nav.querySelector('[data-ir="-1"]').disabled = track.scrollLeft <= 2;
+      nav.querySelector('[data-ir="1"]').disabled = track.scrollLeft >= track.scrollWidth - track.clientWidth - 2;
+
+      var actual = indiceActual();
+      if (contador) contador.textContent = (actual + 1) + ' / ' + hijos.length;
+      Array.prototype.forEach.call(puntos.children, function (d, i) {
+        d.classList.toggle('is-on', i === actual);
+        d.setAttribute('aria-current', i === actual ? 'true' : 'false');
+      });
+    }
+
+    function irA(i) {
+      iObjetivo = Math.max(0, Math.min(hijos.length - 1, i));
+      track.scrollTo({ left: destino(iObjetivo), behavior: 'smooth' });
+    }
+    function mover(dir) { irA(iObjetivo + dir); }
+
+    nav.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-ir]');
+      if (!b) return;
+      mover(parseInt(b.getAttribute('data-ir'), 10));
+    });
+
+    // Con el carrusel enfocado, las flechas del teclado avanzan de tarjeta en
+    // tarjeta en vez de desplazar unos pocos píxeles.
+    track.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      e.preventDefault();
+      mover(e.key === 'ArrowRight' ? 1 : -1);
+    });
+
+    puntos.addEventListener('click', function (e) {
+      var d = e.target.closest('[data-i]');
+      if (!d) return;
+      irA(parseInt(d.getAttribute('data-i'), 10));
+    });
+
+    /* Al arrastrar con el dedo el objetivo lo manda el usuario, no nosotros —
+       pero solo cuando el desplazamiento se detiene. Sincronizar en cada evento
+       de scroll pisaría el objetivo con una posición intermedia de la propia
+       animación, que es justo el problema que acabamos de quitar. */
+    var reposo;
+    track.addEventListener('scroll', function () {
+      pintarEstado();
+      clearTimeout(reposo);
+      reposo = setTimeout(function () { iObjetivo = indiceActual(); }, 140);
+    }, { passive: true });
+
+    window.addEventListener('resize', function () { pintarEstado(); iObjetivo = indiceActual(); });
+    pintarEstado();
+  }
+
   /* --- Animación de entrada ----------------------------------------------- */
   function activarReveal() {
     var nodos = Array.prototype.slice.call(document.querySelectorAll('[data-reveal]'));
@@ -495,6 +719,8 @@
   function iniciar() {
     pintarHeader();
     pintarFooter();
+    pintarBotonWhatsApp();
+    activarEnlacesWhatsApp();
     activarReveal();
     activarCopiar();
     activarCuentaRegresiva();
@@ -509,7 +735,10 @@
 
   window.VicUI = {
     enlaceWhatsApp: enlaceWhatsApp,
+    activarEnlacesWhatsApp: activarEnlacesWhatsApp,
     mensajePedido: mensajePedido,
+    modal: modal,
+    rail: rail,
     toast: toast,
     parametro: parametro,
     fechaLegible: fechaLegible,
