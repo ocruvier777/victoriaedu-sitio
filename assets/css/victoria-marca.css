@@ -500,6 +500,32 @@
    borde superior a todo color pesaba de más. */
 .vic-producto--proximo .vic-producto__pie { border-top-color: var(--vic-border-subtle); }
 
+/* --- Pie de la tarjeta de tienda -----------------------------------------
+   Los controles iban alineados a la derecha (`justify-items:end`) y cada uno
+   se quedaba con su ancho natural, así que los tres colgaban de una línea
+   invisible a la derecha y quedaban dentados por la izquierda. En una tarjeta
+   angosta, además, el bloque bajaba debajo del precio y el dentado se veía
+   todavía más.
+
+   Solución: el bloque de acciones toma el espacio que queda y los tres
+   controles se estiran al mismo ancho. Un solo borde a cada lado.
+------------------------------------------------------------------------- */
+.vic-producto__acciones {
+  flex: 1 1 210px;
+  gap: 10px;
+  justify-items: stretch;   /* mismo ancho para los tres */
+}
+.vic-producto__acciones .vic-btn { width: 100%; }
+
+/* El enlace de texto no es un botón, pero comparte la columna: se centra para
+   que su eje coincida con el de los botones de arriba. */
+.vic-producto__link {
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  padding-top: 2px;
+}
+
 /* ==========================================================================
    7 · Ruta del Método Victoria
    --------------------------------------------------------------------------

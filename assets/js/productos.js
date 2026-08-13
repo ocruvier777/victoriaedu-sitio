@@ -105,7 +105,7 @@
             '" data-metrica="comprar_clic" data-metrica-lugar="tienda">Comprar — ' + esc(window.VicUI.precioCorto(p.id)) + '</a>' +
           '<a class="vic-btn vic-btn--secondary vic-btn--lg" href="' + esc(window.VicUI.urlExamenGratis()) +
             '" data-metrica="examen_gratis_clic" data-metrica-lugar="tienda">Pruébalo gratis primero</a>' +
-          (p.pagina ? '<a href="' + esc(p.pagina) + '" style="font-size:14px;font-weight:600">Ver el programa completo →</a>' : '')
+          (p.pagina ? '<a class="vic-producto__link" href="' + esc(p.pagina) + '">Ver el programa completo →</a>' : '')
         : '<button class="vic-btn vic-btn--secondary vic-btn--lg" type="button" data-lista-espera="' +
             esc(p.id) + '">Avísame cuando abra</button>';
     } else {
@@ -131,7 +131,7 @@
           cuerpo +
           '<div class="vic-producto__pie">' +
             precioHTML(p) +
-            '<div class="vic-stack" style="gap:8px;justify-items:end">' + accion + '</div>' +
+            '<div class="vic-stack vic-producto__acciones">' + accion + '</div>' +
           '</div>' +
         '</div>' +
       '</article>';

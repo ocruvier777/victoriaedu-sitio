@@ -235,7 +235,7 @@ window.CATALOGO = [
     id: 'simulacro-ipn-2026',
     slug: 'simulacro-ipn-2026',
     nombre: 'Simulacro IPN 2026',
-    resumen: 'Dos exámenes de 70 reactivos con todas las materias del examen real, inglés incluido. Reporte por área y plan de estudio generado por IA y revisado por un profesor.',
+    resumen: 'Dos exámenes de 70 reactivos con todas las materias del examen real, inglés incluido. Incluye el taller de ejercicios en vivo de cada fin de semana hasta el día del examen, más reporte por área y plan de estudio revisado por un profesor.',
     precio: 199,
     precioLista: null,
     moneda: 'MXN',
@@ -262,13 +262,14 @@ window.CATALOGO = [
     puntos: [
       '2 exámenes como el real',
       '140 reactivos, inglés incluido',
-      'Reporte por materia',
-      'Plan de estudio con IA',
+      'Taller en vivo cada fin de semana',
+      'Reporte por materia y plan con IA',
     ],
     incluye: [
       'Dos exámenes de 70 reactivos: la mitad del examen real cada uno',
       'Todas las materias que evalúa el IPN, inglés incluido',
       '90 minutos cronometrados por examen, desde tu casa',
+      'Taller de ejercicios en vivo cada fin de semana hasta el día del examen, dentro de la plataforma y sin costo extra',
       'Reporte por área y por materia después de cada examen',
       'Plan de estudio semana por semana generado por IA',
       'Revisión de un profesor antes de enviarte el plan',
@@ -307,7 +308,19 @@ window.CATALOGO = [
     id: 'curso-admision-ipn',
     slug: 'curso-admision-ipn',
     nombre: 'Curso de Admisión IPN',
-    resumen: 'El programa completo de admisión: las cuatro áreas del examen, diagnóstico inicial, ruta personalizada y acompañamiento hasta el día de la prueba.',
+    /* "Hasta que te quedes": se paga UNA vez y, si no alcanzas lugar, sigues
+       en el curso en la siguiente convocatoria sin volver a pagar.
+
+       Ojo con cómo está redactado: promete que NO se vuelve a cobrar, no
+       promete la admisión. Son cosas distintas y el sitio no puede prometer
+       la segunda — el pie de página dice justamente "la preparación no
+       garantiza admisión", y ese aviso se queda.
+
+       TODO(Óscar): antes de publicarlo hay que fijar las condiciones por
+       escrito: cuántas convocatorias cubre, qué se exige para conservar el
+       beneficio (asistencia, entregas) y qué pasa si el alumno se ausenta.
+       Sin eso, la promesa es imposible de sostener en una reclamación. */
+    resumen: 'El programa completo de admisión: las cuatro áreas del examen, diagnóstico inicial, ruta personalizada y acompañamiento hasta el día de la prueba. Pagas una sola vez: si no te quedas, sigues en el curso sin volver a pagar.',
     precio: 5900,
     precioLista: null,
     moneda: 'MXN',
@@ -320,12 +333,13 @@ window.CATALOGO = [
     imagenWebp: null,   // ya es `imagen`; se usa solo si algún día hay AVIF
     imagenAlt: 'Tres rutas con nodos que convergen y suben hacia el arco de entrada de una escuela',
     puntos: [
+      'Pago único hasta que te quedes',
       'Las 4 áreas del examen',
       'Diagnóstico y ruta personal',
       'Profesores egresados del IPN',
-      'Simulacros incluidos',
     ],
     incluye: [
+      'Pago único: si no alcanzas lugar, sigues en el curso la siguiente convocatoria sin volver a pagar',
       'Las cuatro áreas del examen de admisión',
       'Diagnóstico de entrada y ruta personalizada',
       'Clases en vivo con profesores egresados del IPN',

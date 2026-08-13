@@ -209,6 +209,35 @@ las patas.
 
 ---
 
+## Nuevo: lo que el sitio ya está prometiendo
+
+Estos dos cambios de producto ya están publicados en el sitio. No hay nada que
+programar hoy en la plataforma, pero conviene que sepas lo que se está
+vendiendo, porque acaba aterrizando en tu lado.
+
+**Taller de ejercicios en vivo cada fin de semana.** El sitio dice que viene
+incluido en los $199 del simulacro, que corre hasta el día del examen y que
+pasa dentro de la plataforma. Hoy la plataforma tiene clases en vivo
+(`clases_vivo`, Owncast) pero atadas a un curso; el simulacro standalone no
+tiene curso. Cuando toque, hay que decidir cómo se le da acceso a un alumno con
+`cursos: []` — probablemente lo más limpio sea que el desbloqueo del simulacro
+también habilite el taller.
+
+**Pasarela de pago.** El sitio dejó de nombrar SPEI, comprobante y validación
+manual: ahora dice "pagas desde la plataforma" y "al momento de pagar ves los
+métodos disponibles". Esto es a propósito, para que cuando conectes la pasarela
+no haya que reescribir el copy. Ojo con **B4**: mientras siga vivo
+`desbloquear_simulacro`, el monto se valida exacto contra `examenes.precio`.
+
+**Curso de Admisión: "pago único hasta que te quedes".** Si el alumno no
+alcanza lugar, sigue en el curso la siguiente convocatoria sin volver a pagar.
+Es una promesa comercial, no una funcionalidad — pero implica que un alumno
+puede reaparecer en la generación siguiente sin un pago nuevo asociado, y eso
+sí toca la forma de contarlos. Está marcado como `proximamente`, así que no
+corre prisa.
+
+---
+
 ## Fuera de alcance — no toques esto
 
 - **CORS / `FRONTEND_URL`.** No hace falta. Todos los saltos son links normales; el
