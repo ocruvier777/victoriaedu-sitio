@@ -11,8 +11,11 @@
   /* --- Programas: se pintan desde el catálogo ----------------------------- */
   var grid = document.getElementById('programasGrid');
   if (grid) {
-    grid.innerHTML = window.CATALOGO.map(function (p) {
-      return window.VicProductos.tarjeta(p, { detallada: false });
+    /* La primera portada se carga sin lazy: en pantallas grandes entra casi
+       con el primer scroll, y diferirla la convierte en el hueco gris que
+       todo el mundo alcanza a ver. Las otras dos sí van diferidas. */
+    grid.innerHTML = window.CATALOGO.map(function (p, i) {
+      return window.VicProductos.tarjeta(p, { detallada: false, prioritaria: i === 0 });
     }).join('');
   }
 

@@ -1,0 +1,711 @@
+/* ==========================================================================
+   VictoriaEDU — Sistema gráfico de marca
+   --------------------------------------------------------------------------
+   Capa que va DESPUÉS de victoria.css y no la reemplaza. victoria.css sigue
+   siendo el design system (tokens, botones, tarjetas, rejillas); este archivo
+   solo añade la piel: texturas, geometría de la V, rutas, separadores y las
+   microinteracciones.
+
+   La regla que gobierna todo esto: la decoración nunca compite con el dato.
+   Las tramas viven por debajo del 8% de opacidad, ninguna anima sola, y todo
+   lo que se dibuja aquí es aria-hidden y pointer-events:none. Si algo de este
+   archivo se borra, el sitio sigue funcionando y siendo legible — así se
+   comprueba que es piel y no estructura.
+
+   Referencia visual: institución educativa contemporánea. Nada de neón,
+   hologramas ni circuitos: la geometría sale del isotipo V y de un cuaderno
+   cuadriculado, que es donde de verdad se estudia.
+
+   Índice
+     1  Tokens de marca
+     2  Fragmentos V (patrón)
+     3  Cuaderno Victoria (retícula académica)
+     4  Separadores de sección
+     5  Hero
+     6  Tarjetas de beneficio e iconos
+     7  Ruta del Método Victoria
+     8  Resultados y estadísticas
+     9  Testimonios
+    10  Hueco de mascota
+    11  Microinteracciones
+    12  Movimiento reducido
+   ========================================================================== */
+
+/* ==========================================================================
+   1 · Tokens de marca
+   --------------------------------------------------------------------------
+   Todo color, ángulo, grosor y duración que use este archivo sale de aquí.
+   Ningún valor de marca se repite en línea más abajo: si hay que reafinar el
+   sistema, se reafina en este bloque.
+   ========================================================================== */
+:root {
+  /* --- Color -------------------------------------------------------------
+     Guinda y azul ya existen en victoria.css; aquí solo se les da el nombre
+     con el que habla la marca, para no tener que recordar que "burdeos" es
+     el guinda y "noche" el guinda profundo. */
+  --vic-guinda: var(--vic-burdeos);
+  --vic-guinda-profundo: var(--vic-noche);
+  --vic-guinda-rgb: 49, 14, 23;
+
+  /* Blanco cálido: el papel. Un blanco puro sobre pantalla grande cansa;
+     este tiene un punto de amarillo que lo acerca a una hoja impresa. */
+  --vic-blanco-calido: #FAF8F5;
+
+  /* Cian institucional, muy controlado: se usa SOLO en nodos de ruta y en el
+     remate de la V. Es un cian apagado a propósito — un cian saturado sobre
+     guinda se lee como interfaz de videojuego, que es justo lo que no somos. */
+  --vic-cian: #58A9C0;
+  --vic-cian-rgb: 88, 169, 192;
+
+  /* --- Geometría ---------------------------------------------------------
+     El ángulo del isotipo. Todo corte diagonal del sitio —separadores,
+     fragmentos, remates— usa este mismo valor, que es lo que hace que se
+     lean como familia y no como adornos sueltos. */
+  --vic-angulo: 18deg;
+  --vic-corte: 26px;
+
+  --vic-linea-fina: 1px;
+  --vic-linea-media: 1.75px;   /* el mismo grosor que los iconos */
+
+  /* --- Texturas ----------------------------------------------------------
+     Opacidades separadas del color para poder subir o bajar toda la trama
+     del sitio de un tirón sin tocar ninguna regla. */
+  --vic-trama-clara: rgba(34, 58, 116, 1);
+  --vic-trama-oscura: rgba(255, 255, 255, 1);
+
+  /* Estas tres opacidades NO son intercambiables: lo que se ve no es la
+     opacidad sino el contraste contra el fondo. Un 5% de blanco sobre guinda
+     profundo casi no se nota; el mismo 5% sobre el azul institucional grita.
+     Por eso la variante oscura va más baja que la clara, al revés de lo que
+     sugeriría el número. Calibradas mirándolas, no calculándolas. */
+  --vic-trama-op-sutil: .030;
+  --vic-trama-op-media: .042;
+  --vic-trama-op-oscura: .032;
+
+  --vic-trama-tam-sutil: 200px;
+  --vic-trama-tam-media: 168px;
+  --vic-trama-tam-oscura: 208px;
+
+  /* Cuaderno: milimétrico + línea mayor cada 5 cuadros */
+  --vic-cuaderno-fino: 24px;
+  --vic-cuaderno-mayor: 120px;
+  --vic-cuaderno-op-fina: .055;
+  --vic-cuaderno-op-mayor: .10;
+  --vic-cuaderno-op-marcas: .085;
+
+  /* --- Movimiento --------------------------------------------------------
+     victoria.css ya trae --vic-transition-base (.18s) para estados de
+     control. Estas son para lo decorativo, que debe ser más lento: lo que
+     se mueve rápido pide atención, y la decoración no debe pedirla. */
+  --vic-dur-media: .42s;
+  --vic-dur-ruta: 1.6s;
+  --vic-ease-marca: cubic-bezier(.22, .61, .36, 1);
+
+  --vic-elevacion: 3px;   /* desplazamiento de tarjeta en hover */
+}
+
+/* ==========================================================================
+   2 · Fragmentos V — patrón
+   --------------------------------------------------------------------------
+   Trapecios y barras diagonales sacados de la geometría del isotipo: dos
+   brazos que bajan y se encuentran. El patrón NO reconstruye la V ni la
+   repite; toma sus piezas y las dispersa, que es lo que permite usarlo como
+   fondo sin que el logotipo acabe convertido en papel tapiz.
+
+   Se pinta con `mask-image` + `background-color` en vez de meter el color
+   dentro del SVG. Así el color sale de un token y una misma máscara sirve
+   para fondo claro y oscuro — si fuera un SVG con el color encodeado harían
+   falta tres archivos y los tres se desincronizarían al primer ajuste.
+
+   Uso:
+     <div class="v-pattern v-pattern-subtle" aria-hidden="true"></div>
+   dentro de un contenedor con position:relative.
+   ========================================================================== */
+/* Contenedor para secciones que reciben una capa de textura. Hace dos cosas:
+   crea el contexto de posicionamiento y sube el contenido por encima de la
+   capa. Es el equivalente neutro de .vic-blueprint, que hace lo mismo pero
+   además pinta su propia retícula oscura. */
+.vic-lienzo { position: relative; overflow: hidden; }
+.vic-lienzo > *:not(.v-pattern):not(.academic-grid) { position: relative; z-index: 1; }
+
+.v-pattern {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-color: var(--v-pattern-color, var(--vic-trama-clara));
+  opacity: var(--v-pattern-opacity, var(--vic-trama-op-sutil));
+
+  -webkit-mask-image: var(--v-pattern-mask);
+          mask-image: var(--v-pattern-mask);
+  -webkit-mask-size: var(--v-pattern-size, var(--vic-trama-tam-media));
+          mask-size: var(--v-pattern-size, var(--vic-trama-tam-media));
+  -webkit-mask-repeat: repeat;
+          mask-repeat: repeat;
+
+  /* La trama se apaga hacia abajo. Sin este degradado el patrón llega al
+     borde de la sección y delata el mosaico. */
+  --v-pattern-mask:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cg fill='%23fff'%3E%3Cpath d='M20 8 L33 8 L52 62 L39 62 Z'/%3E%3Cpath d='M104 22 L114 22 L98 66 L88 66 Z'/%3E%3Cpath d='M6 86 L21 86 L28 108 L13 108 Z'/%3E%3Cpath d='M70 92 L80 92 L88 116 L78 116 Z'/%3E%3Cpath d='M58 14 L66 14 L70 32 L62 32 Z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Baja densidad y opacidad mínima: secciones claras, donde cualquier trama
+   se nota el doble porque el contraste del fondo es alto. */
+.v-pattern-subtle {
+  --v-pattern-color: var(--vic-trama-clara);
+  --v-pattern-opacity: var(--vic-trama-op-sutil);
+  --v-pattern-size: var(--vic-trama-tam-sutil);
+}
+
+/* Densidad media: tarjetas y encabezados, donde el área es chica y el patrón
+   necesita repetirse más para leerse como textura y no como una mancha. */
+.v-pattern-medium {
+  --v-pattern-color: var(--vic-trama-clara);
+  --v-pattern-opacity: var(--vic-trama-op-media);
+  --v-pattern-size: var(--vic-trama-tam-media);
+}
+
+/* Fondos guinda: el patrón se dibuja en blanco cálido. */
+.v-pattern-dark {
+  --v-pattern-color: var(--vic-trama-oscura);
+  --v-pattern-opacity: var(--vic-trama-op-oscura);
+  --v-pattern-size: var(--vic-trama-tam-oscura);
+}
+
+/* Desvanecido opcional, para cuando el patrón vive en una sección alta y
+   llegaría hasta el texto. */
+.v-pattern--fade-b {
+  -webkit-mask-composite: source-in;
+          mask-composite: intersect;
+  -webkit-mask-image: var(--v-pattern-mask), linear-gradient(to bottom, #000 10%, transparent 82%);
+          mask-image: var(--v-pattern-mask), linear-gradient(to bottom, #000 10%, transparent 82%);
+  -webkit-mask-size: var(--v-pattern-size), 100% 100%;
+          mask-size: var(--v-pattern-size), 100% 100%;
+  -webkit-mask-repeat: repeat, no-repeat;
+          mask-repeat: repeat, no-repeat;
+}
+
+/* ==========================================================================
+   3 · Cuaderno Victoria — retícula académica
+   --------------------------------------------------------------------------
+   Cuadrícula milimétrica con línea mayor cada cinco cuadros, más arcos
+   geométricos aislados, marcas de medición y fragmentos de ejes cartesianos.
+
+   Deliberadamente NO lleva fórmulas ni símbolos matemáticos: escribir
+   ecuaciones de adorno en un sitio de admisión es pedir que alguien las lea
+   y descubra que no dicen nada. La geometría sí puede ser abstracta; una
+   fórmula, no.
+
+   Las capas van de arriba abajo: marcas SVG, línea mayor, línea fina.
+   ========================================================================== */
+.academic-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  background-image:
+    /* arcos, marcas de medición y fragmentos de eje */
+    var(--ag-marcas),
+    /* retícula mayor */
+    linear-gradient(var(--ag-color-mayor) var(--vic-linea-fina), transparent var(--vic-linea-fina)),
+    linear-gradient(90deg, var(--ag-color-mayor) var(--vic-linea-fina), transparent var(--vic-linea-fina)),
+    /* retícula milimétrica */
+    linear-gradient(var(--ag-color-fino) var(--vic-linea-fina), transparent var(--vic-linea-fina)),
+    linear-gradient(90deg, var(--ag-color-fino) var(--vic-linea-fina), transparent var(--vic-linea-fina));
+
+  background-size:
+    var(--ag-marcas-tam, 520px) var(--ag-marcas-tam, 520px),
+    var(--vic-cuaderno-mayor) var(--vic-cuaderno-mayor),
+    var(--vic-cuaderno-mayor) var(--vic-cuaderno-mayor),
+    var(--vic-cuaderno-fino) var(--vic-cuaderno-fino),
+    var(--vic-cuaderno-fino) var(--vic-cuaderno-fino);
+
+  /* Se apaga hacia abajo para que no se lea como una tabla de datos */
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.95), transparent 80%);
+          mask-image: linear-gradient(to bottom, rgba(0,0,0,.95), transparent 80%);
+}
+
+/* --- Versión clara: azul de marca sobre papel ---------------------------- */
+.academic-grid--claro {
+  --ag-color-fino: rgba(var(--vic-azul-rgb), var(--vic-cuaderno-op-fina));
+  --ag-color-mayor: rgba(var(--vic-azul-rgb), var(--vic-cuaderno-op-mayor));
+  --ag-marcas:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 520' fill='none' stroke='%232C4D9D' stroke-opacity='.16' stroke-width='1.25' stroke-linecap='round'%3E%3Cpath d='M64 108a52 52 0 0 1 52-52'/%3E%3Cpath d='M406 84a72 72 0 0 0-72 72'/%3E%3Cpath d='M212 404a44 44 0 0 0 44 44'/%3E%3Cpath d='M60 300h58M60 300v-58'/%3E%3Cpath d='M436 356v56M436 412h-56'/%3E%3Cpath d='M268 62v14M292 62v14M316 62v14M340 62v14'/%3E%3Cpath d='M150 470h14M150 446h14M150 422h14'/%3E%3Ccircle cx='60' cy='300' r='2.5' fill='%232C4D9D' fill-opacity='.2' stroke='none'/%3E%3Ccircle cx='436' cy='412' r='2.5' fill='%232C4D9D' fill-opacity='.2' stroke='none'/%3E%3C/svg%3E");
+}
+
+/* --- Versión oscura: blanco sobre guinda --------------------------------- */
+.academic-grid--oscuro {
+  --ag-color-fino: rgba(255, 255, 255, var(--vic-cuaderno-op-fina));
+  --ag-color-mayor: rgba(255, 255, 255, var(--vic-cuaderno-op-mayor));
+  --ag-marcas:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 520' fill='none' stroke='%23ffffff' stroke-opacity='.16' stroke-width='1.25' stroke-linecap='round'%3E%3Cpath d='M64 108a52 52 0 0 1 52-52'/%3E%3Cpath d='M406 84a72 72 0 0 0-72 72'/%3E%3Cpath d='M212 404a44 44 0 0 0 44 44'/%3E%3Cpath d='M60 300h58M60 300v-58'/%3E%3Cpath d='M436 356v56M436 412h-56'/%3E%3Cpath d='M268 62v14M292 62v14M316 62v14M340 62v14'/%3E%3Cpath d='M150 470h14M150 446h14M150 422h14'/%3E%3Ccircle cx='60' cy='300' r='2.5' fill='%23ffffff' fill-opacity='.22' stroke='none'/%3E%3Ccircle cx='436' cy='412' r='2.5' fill='%23ffffff' fill-opacity='.22' stroke='none'/%3E%3C/svg%3E");
+}
+
+/* --- Actualización de .vic-blueprint -------------------------------------
+   .vic-blueprint ya existe en victoria.css y ya está puesta en el hero y en
+   el método. En vez de pedir que se cambie el HTML, se le sube la textura
+   aquí: misma clase, mismo papel, mejor dibujo. Si este archivo no carga,
+   vuelve sola a la retícula simple de victoria.css.
+-------------------------------------------------------------------------- */
+.vic-blueprint::before {
+  --ag-color-fino: rgba(255, 255, 255, var(--vic-cuaderno-op-fina));
+  --ag-color-mayor: rgba(255, 255, 255, var(--vic-cuaderno-op-mayor));
+
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 520' fill='none' stroke='%23ffffff' stroke-opacity='.15' stroke-width='1.25' stroke-linecap='round'%3E%3Cpath d='M64 108a52 52 0 0 1 52-52'/%3E%3Cpath d='M406 84a72 72 0 0 0-72 72'/%3E%3Cpath d='M212 404a44 44 0 0 0 44 44'/%3E%3Cpath d='M60 300h58M60 300v-58'/%3E%3Cpath d='M436 356v56M436 412h-56'/%3E%3Cpath d='M268 62v14M292 62v14M316 62v14M340 62v14'/%3E%3C/svg%3E"),
+    linear-gradient(var(--ag-color-mayor) var(--vic-linea-fina), transparent var(--vic-linea-fina)),
+    linear-gradient(90deg, var(--ag-color-mayor) var(--vic-linea-fina), transparent var(--vic-linea-fina)),
+    linear-gradient(var(--ag-color-fino) var(--vic-linea-fina), transparent var(--vic-linea-fina)),
+    linear-gradient(90deg, var(--ag-color-fino) var(--vic-linea-fina), transparent var(--vic-linea-fina));
+
+  background-size:
+    520px 520px,
+    var(--vic-cuaderno-mayor) var(--vic-cuaderno-mayor),
+    var(--vic-cuaderno-mayor) var(--vic-cuaderno-mayor),
+    var(--vic-cuaderno-fino) var(--vic-cuaderno-fino),
+    var(--vic-cuaderno-fino) var(--vic-cuaderno-fino);
+}
+
+/* ==========================================================================
+   4 · Separadores de sección
+   --------------------------------------------------------------------------
+   Un corte diagonal entre dos bandas de color, en el mismo ángulo del
+   isotipo. Resuelve dos cosas a la vez: da carácter al cambio de sección y
+   evita el borde recto de pared a pared, que es lo que hace que una página
+   larga se lea como una pila de cajas.
+
+   El elemento lleva el color de la sección de ABAJO como fondo, y el de
+   ARRIBA en un ::before recortado en diagonal. Así el corte es exacto y no
+   quedan filos de fondo entre secciones.
+
+     <div class="section-divider section-divider--guinda-papel" aria-hidden="true"></div>
+   ========================================================================== */
+.section-divider {
+  position: relative;
+  height: clamp(38px, 4.6vw, 74px);
+  overflow: hidden;
+  background: var(--sd-hacia);
+  /* Sin margen negativo: el separador es un bloque más del flujo, así nunca
+     se come el padding de la sección que sigue. */
+}
+.section-divider::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--sd-desde);
+  clip-path: polygon(0 0, 100% 0, 100% 0, 0 100%);
+}
+
+/* Un filo fino en el corte, del color de acento. Es lo que convierte la
+   diagonal en un gesto de marca y no en un simple triángulo. */
+.section-divider::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom right, transparent calc(50% - 1px), var(--sd-filo, transparent) 50%, transparent calc(50% + 1px));
+  opacity: .5;
+}
+
+/* Un separador anuncia el cambio a una sección concreta. Si esa sección no se
+   pinta —la banda de testimonios y la de reels salen de config y pueden venir
+   vacías— la diagonal se quedaría anunciando algo que no está, entre dos
+   colores que no son los suyos. Se retira sola. */
+.section-divider:has(+ .vic-hidden) { display: none; }
+
+/* Variantes, nombradas por el par de bandas que unen */
+.section-divider--guinda-papel { --sd-desde: var(--vic-noche);        --sd-hacia: var(--vic-blanco); --sd-filo: rgba(var(--vic-cian-rgb), .5); }
+.section-divider--gris-guinda  { --sd-desde: var(--vic-gris-claro);   --sd-hacia: var(--vic-noche);  --sd-filo: rgba(var(--vic-azul-rgb), .55); }
+.section-divider--papel-noche  { --sd-desde: var(--vic-blanco);       --sd-hacia: var(--vic-noche);  --sd-filo: rgba(var(--vic-azul-rgb), .5); }
+.section-divider--azul-guinda  { --sd-desde: var(--vic-azul-profundo); --sd-hacia: var(--vic-noche); --sd-filo: rgba(var(--vic-cian-rgb), .45); }
+
+/* ==========================================================================
+   5 · Hero
+   --------------------------------------------------------------------------
+   La composición del hero no se toca: titular, botones y panel de
+   diagnóstico se quedan donde estaban. Esto solo añade profundidad detrás.
+   ========================================================================== */
+.vic-hero-deco {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.vic-hero-deco svg { width: 100%; height: 100%; display: block; }
+
+/* Los fragmentos respiran muy despacio y con recorrido mínimo (6px en 22s).
+   Es profundidad, no animación: si se nota, está mal calibrado. */
+.vic-hero-deco__frag { animation: vicFlota 22s ease-in-out infinite; transform-origin: center; }
+.vic-hero-deco__frag--b { animation-duration: 27s; animation-delay: -6s; }
+.vic-hero-deco__frag--c { animation-duration: 31s; animation-delay: -13s; }
+
+@keyframes vicFlota {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(0, -6px, 0); }
+}
+
+/* La ruta editorial que conecta el titular con el panel de diagnóstico.
+   Se dibuja sola al cargar, una vez, y se queda. */
+.vic-hero-deco__ruta {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: vicDibuja 2.2s var(--vic-ease-marca) .35s forwards;
+}
+@keyframes vicDibuja { to { stroke-dashoffset: 0; } }
+
+/* Nodos: van fuera del SVG (que está estirado con preserveAspectRatio="none")
+   para que sigan siendo círculos. El anillo se hace con box-shadow, así que
+   el elemento no ocupa más caja de la que se ve. */
+.vic-hero-deco__nodo {
+  position: absolute;
+  width: 5px; height: 5px;
+  margin: -2.5px 0 0 -2.5px;   /* centrado exacto sobre la coordenada */
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .85);
+  box-shadow: 0 0 0 4px rgba(108, 138, 199, .32);
+  opacity: 0;
+  animation: vicAparece .5s ease-out forwards;
+}
+.vic-hero-deco__nodo--fin {
+  width: 7px; height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  background: #fff;
+  box-shadow: 0 0 0 5px rgba(var(--vic-cian-rgb), .34);
+}
+.vic-hero-deco__nodo--1 { animation-delay: 1.0s; }
+.vic-hero-deco__nodo--2 { animation-delay: 1.5s; }
+.vic-hero-deco__nodo--3 { animation-delay: 2.0s; }
+@keyframes vicAparece { to { opacity: 1; } }
+
+/* En móvil el hero se apila y la ruta dejaría de conectar nada: se retira y
+   quedan solo los fragmentos, que sí siguen funcionando como fondo. */
+@media (max-width: 900px) {
+  .vic-hero-deco__ruta,
+  .vic-hero-deco__nodo,
+  .vic-hero-deco__etiqueta { display: none; }
+}
+
+/* ==========================================================================
+   6 · Tarjetas de beneficio e iconos
+   ========================================================================== */
+
+/* Área visual consistente en las cuatro tarjetas: reserva el mismo alto pase
+   lo que pase, para que los títulos arranquen a la misma altura aunque un
+   icono cambie de tamaño o mañana entre una ilustración. */
+.benefit-media {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  margin-bottom: 2px;
+}
+
+/* Hueco preparado para sustituir el icono por una imagen editorial sin tocar
+   la estructura de la tarjeta: se le pone la clase al contenedor y dentro va
+   un <img>. Mientras no exista la imagen, el icono ocupa su lugar. */
+.benefit-illustration {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--vic-radius-sm);
+  overflow: hidden;
+  background: var(--vic-primary-softer);
+}
+.benefit-illustration > img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Corte diagonal en la esquina del recuadro del icono: la misma pieza del
+   isotipo, aplicada al elemento más pequeño del sistema. */
+.vic-valor .vic-icono {
+  position: relative;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+  transition: background var(--vic-dur-media) var(--vic-ease-marca),
+              color var(--vic-dur-media) var(--vic-ease-marca);
+}
+.vic-card--hoverable:hover .vic-icono {
+  background: var(--vic-azul);
+  color: #fff;
+}
+.vic-card--hoverable:hover .vic-icono--acento {
+  background: var(--vic-guinda);
+  color: #fff;
+}
+
+/* ==========================================================================
+   7 · Ruta del Método Victoria
+   --------------------------------------------------------------------------
+   Los cinco pasos ya se leen como secuencia por el número de cada tarjeta;
+   la ruta lo hace visible de un vistazo. Es puramente decorativa: el orden
+   real vive en el HTML, que sigue siendo una lista de tarjetas numeradas.
+
+   El dibujo progresivo se engancha a [data-reveal].is-visible, la clase que
+   ya pone el IntersectionObserver de ui.js. Cero JavaScript nuevo.
+   ========================================================================== */
+.vic-metodo {
+  position: relative;
+}
+
+/* La línea vive detrás de las tarjetas, a la altura del número (24px de
+   padding + 20px de medio círculo = 44px desde arriba). */
+.vic-ruta {
+  position: absolute;
+  top: 42px;          /* 24px de padding + 20px de medio círculo, menos el trazo */
+  left: 0;
+  width: 100%;        /* explícito: un <svg> absoluto con left/right no siempre
+                         resuelve su ancho, y acababa midiendo su propio viewBox */
+  height: 4px;
+  z-index: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+.vic-ruta__linea {
+  fill: none;
+  stroke: url(#vicRutaGrad);
+  stroke-width: var(--vic-linea-media);
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  opacity: .75;
+  transition: stroke-dashoffset var(--vic-dur-ruta) var(--vic-ease-marca);
+}
+[data-reveal].is-visible .vic-ruta__linea,
+.is-visible .vic-ruta__linea { stroke-dashoffset: 0; }
+
+/* Nodo sobre cada número. Se pinta con box-shadow en vez de un elemento
+   extra: es un anillo que no ocupa caja y no puede desalinearse. */
+.vic-paso { position: relative; z-index: 1; }
+.vic-paso__num {
+  position: relative;
+  box-shadow: 0 0 0 4px rgba(var(--vic-guinda-rgb), .55), 0 0 0 5px rgba(var(--vic-cian-rgb), .35);
+  transition: box-shadow var(--vic-dur-media) var(--vic-ease-marca);
+}
+.vic-paso:hover .vic-paso__num {
+  box-shadow: 0 0 0 4px rgba(var(--vic-guinda-rgb), .55), 0 0 0 6px rgba(var(--vic-cian-rgb), .7);
+}
+
+/* Remate diagonal al final del recorrido: una pieza de la V que cierra la
+   secuencia en el quinto paso. */
+.vic-ruta__remate {
+  position: absolute;
+  top: 33px;
+  right: 4px;
+  width: 20px;
+  height: 22px;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--vic-dur-media) var(--vic-ease-marca) var(--vic-dur-ruta);
+}
+.is-visible .vic-ruta__remate { opacity: .85; }
+
+/* --- Recorrido vertical (móvil y tableta) --------------------------------
+   Cuando la rejilla se vuelve una columna, el SVG horizontal no sirve: no se
+   puede volver vertical solo cambiando su caja, porque el trazo seguiría
+   siendo la misma recta horizontal aplastada.
+
+   El tramo vertical se dibuja como ::after de cada tarjeta salvo la última.
+   Colgarlo de la tarjeta —y no del contenedor— es lo que lo mantiene
+   alineado: 24px de padding + 20px de medio círculo son coordenadas DE LA
+   TARJETA, así que da igual cuánto padding tenga el contenedor en cada
+   tamaño de pantalla. El dibujo progresivo es el mismo gesto, con scaleY.
+------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .vic-ruta,
+  .vic-ruta__remate { display: none; }
+
+  .vic-metodo-grid { position: relative; }
+
+  .vic-paso:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: 44px;
+    top: 44px;
+    /* Baja hasta el número de la tarjeta siguiente: el alto propio que le
+       falta más el hueco de la rejilla. */
+    height: calc(100% - 44px + 16px + 44px);
+    width: var(--vic-linea-media);
+    margin-left: calc(var(--vic-linea-media) / -2);
+    background: linear-gradient(to bottom, rgba(138, 166, 216, .8), rgba(44, 77, 157, .8));
+    opacity: .7;
+    z-index: -1;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform var(--vic-dur-ruta) var(--vic-ease-marca);
+  }
+  .is-visible .vic-paso:not(:last-child)::after { transform: scaleY(1); }
+}
+
+/* ==========================================================================
+   8 · Resultados y estadísticas
+   ========================================================================== */
+.vic-stat {
+  position: relative;
+  overflow: hidden;
+  transition: border-color var(--vic-dur-media) var(--vic-ease-marca),
+              transform var(--vic-dur-media) var(--vic-ease-marca);
+}
+
+/* Acento diagonal en la esquina superior: marca la tarjeta como dato de
+   marca sin gastar un borde entero. */
+.vic-stat::before {
+  content: "";
+  position: absolute;
+  top: 0; right: 0;
+  width: 46px; height: 46px;
+  background: linear-gradient(to bottom left, rgba(var(--vic-azul-rgb), .12) 0 50%, transparent 50%);
+  pointer-events: none;
+}
+.vic-stat:hover { border-color: rgba(var(--vic-azul-rgb), .45); }
+
+/* Cifras tabulares: sin esto los números bailan de ancho al animarse y las
+   cuatro tarjetas dejan de alinearse entre sí. */
+.vic-stat__num,
+.vic-cd__num,
+.vic-mono { font-variant-numeric: tabular-nums; }
+
+/* Jerarquía: el número manda, la etiqueta acompaña. */
+.vic-stat__label {
+  color: var(--vic-text-muted);
+  line-height: 1.45;
+}
+
+/* Aparición escalonada. El retraso se aplica a la tarjeta, no al número:
+   animar el valor hacia una cifra distinta de la real sería inventar datos. */
+.vic-grid--4 > .vic-stat { transition-delay: calc(var(--vic-stat-i, 0) * 90ms); }
+.vic-grid--4 > .vic-stat:nth-child(1) { --vic-stat-i: 0; }
+.vic-grid--4 > .vic-stat:nth-child(2) { --vic-stat-i: 1; }
+.vic-grid--4 > .vic-stat:nth-child(3) { --vic-stat-i: 2; }
+.vic-grid--4 > .vic-stat:nth-child(4) { --vic-stat-i: 3; }
+
+/* ==========================================================================
+   9 · Testimonios
+   ========================================================================== */
+
+/* Comilla de marca: construida con fragmentos diagonales en lugar de un
+   glifo tipográfico. La comilla del sistema es redonda y no pertenece a
+   este alfabeto visual; estas dos cuñas sí. */
+.vic-testimonio { position: relative; }
+.vic-testimonio__cita::before {
+  content: "";
+  display: block;
+  width: 30px; height: 20px;
+  margin-bottom: 14px;
+  background-color: rgba(var(--vic-cian-rgb), .75);
+  -webkit-mask-image: var(--vic-comilla);
+          mask-image: var(--vic-comilla);
+  -webkit-mask-size: contain; mask-size: contain;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  --vic-comilla: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 20'%3E%3Cpath d='M2 20 L10 0 L15 0 L9 20 Z' fill='%23fff'/%3E%3Cpath d='M16 20 L24 0 L29 0 L23 20 Z' fill='%23fff'/%3E%3C/svg%3E");
+}
+
+/* Marco del testimonio activo del carrusel. La clase la pone VicUI.rail()
+   con el mismo índice que ya usa para los puntos. */
+.vic-testimonio {
+  transition: border-color var(--vic-dur-media) var(--vic-ease-marca),
+              background var(--vic-dur-media) var(--vic-ease-marca),
+              box-shadow var(--vic-dur-media) var(--vic-ease-marca);
+}
+.vic-testimonio.is-actual {
+  border-color: rgba(var(--vic-cian-rgb), .5);
+  box-shadow: inset 3px 0 0 rgba(var(--vic-cian-rgb), .8);
+}
+
+/* Indicador del carrusel: los puntos de 6px se perdían sobre el fondo noche.
+   El activo pasa a barra, que además dice en qué dirección se avanza. */
+.vic-social .vic-rail__dot {
+  width: 8px; height: 8px;
+  background: rgba(255, 255, 255, .32);
+  transition: width var(--vic-dur-media) var(--vic-ease-marca),
+              background var(--vic-dur-media) var(--vic-ease-marca),
+              opacity var(--vic-dur-media) var(--vic-ease-marca);
+}
+.vic-social .vic-rail__dot.is-on {
+  width: 26px;
+  border-radius: var(--vic-radius-pill);
+  background: var(--vic-cian);
+  transform: none;   /* anula el scale(1.35) de victoria.css: aquí crece a lo ancho */
+}
+
+/* ==========================================================================
+   10 · Hueco de mascota (Vico)
+   --------------------------------------------------------------------------
+   El contenedor NO pinta nada por sí mismo: sin imagen no hay caja, ni
+   marco, ni silueta gris. Un placeholder genérico en producción se lee como
+   sitio a medio terminar, que es peor que no tener mascota.
+   ========================================================================== */
+.mascot-slot { display: none; }
+.mascot-slot:has(img) { display: block; }
+
+.mascot-slot img {
+  display: block;
+  width: 100%;
+  max-width: 210px;
+  height: auto;
+  margin-top: 26px;
+}
+
+@media (max-width: 900px) {
+  /* En móvil compite con el formulario: se reduce y se centra sobre el
+     bloque, o desaparece si el espacio ya está peleado. */
+  .mascot-slot img { max-width: 130px; margin: 0 auto 18px; }
+}
+@media (max-width: 520px) {
+  .mascot-slot { display: none !important; }
+}
+
+/* ==========================================================================
+   11 · Microinteracciones
+   --------------------------------------------------------------------------
+   Regla única: nada se mueve si nadie lo está tocando, salvo los fragmentos
+   del hero, que respiran 6px en 22 segundos. Todo lo demás responde a hover,
+   foco o entrada en viewport, y vuelve a su sitio.
+   ========================================================================== */
+.vic-card--hoverable {
+  transition: box-shadow var(--vic-dur-media) var(--vic-ease-marca),
+              transform var(--vic-dur-media) var(--vic-ease-marca),
+              border-color var(--vic-dur-media) var(--vic-ease-marca);
+}
+.vic-card--hoverable:hover {
+  transform: translateY(calc(var(--vic-elevacion) * -1));
+  border-color: rgba(var(--vic-azul-rgb), .4);
+}
+
+.vic-paso {
+  transition: background var(--vic-dur-media) var(--vic-ease-marca),
+              border-color var(--vic-dur-media) var(--vic-ease-marca),
+              transform var(--vic-dur-media) var(--vic-ease-marca);
+}
+.vic-paso:hover {
+  background: rgba(255, 255, 255, .07);
+  border-color: rgba(var(--vic-cian-rgb), .38);
+  transform: translateY(-2px);
+}
+
+/* Foco de teclado sobre fondo oscuro: la sombra azul de victoria.css se
+   pierde contra el guinda. Aquí se refuerza con el cian, que sí resalta. */
+.vic-section--impacto :focus-visible,
+.vic-social :focus-visible,
+.vic-footer :focus-visible {
+  box-shadow: 0 0 0 3px rgba(var(--vic-cian-rgb), .85);
+}
+
+/* ==========================================================================
+   12 · Movimiento reducido
+   --------------------------------------------------------------------------
+   victoria.css ya congela animaciones y transiciones globalmente. Aquí se
+   rematan los casos que dependen de un estado FINAL: si solo se anula la
+   transición, la ruta se quedaría sin dibujar y el remate invisible.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .vic-hero-deco__frag { animation: none; }
+  .vic-hero-deco__ruta { animation: none; stroke-dashoffset: 0; }
+  .vic-hero-deco__nodo { animation: none; opacity: 1; }
+  .vic-ruta__linea { transition: none; stroke-dashoffset: 0; }
+  .vic-ruta__remate { transition: none; opacity: .85; }
+  .vic-paso:not(:last-child)::after { transition: none; transform: scaleY(1); }
+  .vic-card--hoverable:hover,
+  .vic-paso:hover { transform: none; }
+}

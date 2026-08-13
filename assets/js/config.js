@@ -6,6 +6,21 @@
    ========================================================================== */
 
 window.CONFIG = {
+  /* --- Mascota (Vico) ------------------------------------------------------
+     null = no se pinta NADA. Ni caja, ni marco, ni silueta gris: un
+     placeholder genérico en producción se lee como sitio a medio terminar,
+     que es peor que no tener mascota.
+
+     Cuando exista el archivo, se pone la ruta aquí y aparece sola en el
+     bloque de diagnóstico gratuito. Ruta acordada:
+       mascota: { src: 'assets/brand/vico/vico-diagnostico.webp',
+                  alt: 'Vico, la mascota de VictoriaEDU, con una libreta',
+                  ancho: 420, alto: 520 }
+     `alt` describe a la mascota; si algún día se usa como puro adorno, se
+     deja en cadena vacía y el lector de pantalla la salta.
+  ------------------------------------------------------------------------ */
+  mascota: null,
+
   marca: {
     nombre: 'VictoriaEDU',
     razonSocial: 'Victoria EDU S.A.S.',
@@ -228,7 +243,15 @@ window.CATALOGO = [
     badge: { texto: 'Disponible', clase: 'vic-badge--solid' },
     meta: '2 exámenes · 70 reactivos c/u · 90 min c/u',
     pagina: 'simulacro-ipn-2026.html',
+    /* imagen        → la que se sirve hoy. SIEMPRE tiene que existir.
+       imagenAvif/Webp → variantes optimizadas, opcionales. En cuanto exista
+       el archivo se descomenta la línea y la tarjeta empieza a servirlo por
+       <picture>, con la SVG de siempre como respaldo. Mientras estén en null
+       no se emite ningún <source> y no hay forma de que quede una imagen
+       rota. Ruta acordada: assets/brand/programas/<nombre>.webp */
     imagen: 'assets/img/prog-simulacro.svg',
+    imagenAvif: null,   // 'assets/brand/programas/simulacro-ipn.avif'
+    imagenWebp: null,   // 'assets/brand/programas/simulacro-ipn.webp'
     imagenAlt: 'Laptop mostrando un examen en línea con cronómetro',
     /* Los 4 puntos de la tarjeta. Cortos a propósito: en la portada se ojean,
        no se leen. La lista larga sigue siendo `incluye`. */
@@ -260,6 +283,8 @@ window.CATALOGO = [
     meta: 'Arranca el 5 de octubre · 24 semanas',
     pagina: null,
     imagen: 'assets/img/prog-matematicas.svg',
+    imagenAvif: null,   // 'assets/brand/programas/matematicas-ipn.avif'
+    imagenWebp: null,   // 'assets/brand/programas/matematicas-ipn.webp'
     imagenAlt: 'Pizarrón con la gráfica de una función',
     puntos: [
       'De aritmética a cálculo',
@@ -287,6 +312,8 @@ window.CATALOGO = [
     meta: 'Siguiente generación por confirmar',
     pagina: null,
     imagen: 'assets/img/prog-admision.svg',
+    imagenAvif: null,   // 'assets/brand/programas/admision-ipn.avif'
+    imagenWebp: null,   // 'assets/brand/programas/admision-ipn.webp'
     imagenAlt: 'Lista del proceso de admisión junto a un edificio universitario',
     puntos: [
       'Las 4 áreas del examen',

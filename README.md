@@ -140,6 +140,45 @@ Tres reglas que conviene no romper al editarla:
 
 ---
 
+## El sistema gráfico
+
+`assets/css/victoria.css` es el design system (tokens, botones, tarjetas,
+rejillas). `assets/css/victoria-marca.css` va **después** y solo añade la piel:
+texturas, geometría de la V, rutas, separadores y microinteracciones. Si se
+borra ese segundo archivo, el sitio sigue funcionando y siendo legible — es la
+prueba de que es piel y no estructura.
+
+Todo color, ángulo, grosor y duración sale del bloque de tokens que abre el
+archivo. No hay valores de marca escritos a mano más abajo.
+
+| Pieza | Clase | Dónde se usa |
+|---|---|---|
+| Fragmentos V | `.v-pattern` + `-subtle` / `-medium` / `-dark` | `-subtle` en secciones claras · `-medium` solo en tarjetas · `-dark` en fondos de color |
+| Cuaderno Victoria | `.academic-grid` + `--claro` / `--oscuro` | Claro en "Qué hacemos"; el oscuro está integrado en `.vic-blueprint` (hero y método) |
+| Separadores | `.section-divider--*` | Entre las cuatro bandas de color de la portada |
+| Ruta del método | `.vic-ruta` | Recorre los cinco pasos; vertical en móvil |
+| Iconos de marca | `data-icono="materia\|tutor\|progreso\|tecnologia"` | Las cuatro tarjetas de "Qué hacemos" |
+| Hueco de mascota | `.mascot-slot` + `data-mascota` | Bloque de diagnóstico gratuito |
+
+Para pintar una textura en una sección hay que envolverla con `.vic-lienzo`, que
+crea el contexto de posicionamiento y sube el contenido por encima de la capa.
+
+**Dos cosas que conviene no "arreglar" a ojo:**
+
+- **Las opacidades de trama no son intercambiables.** Lo que se ve no es la
+  opacidad, es el contraste contra el fondo: un 5% de blanco sobre guinda
+  profundo casi no se nota, y ese mismo 5% sobre el azul institucional grita.
+  Por eso la variante oscura va más baja que la clara, al revés de lo que
+  sugeriría el número. Están calibradas mirándolas.
+- **La variante `-medium` es para tarjetas, no para secciones.** En un área
+  grande se lee como papel tapiz y le pelea la atención al contenido.
+
+Las rutas se dibujan al entrar en viewport enganchadas a `[data-reveal].is-visible`,
+la clase que ya pone el observer de `ui.js`: **no hay JavaScript nuevo**. Con
+`prefers-reduced-motion` quedan dibujadas en su estado final, no a medias.
+
+---
+
 ## El embudo
 
 El sitio no cobra: convence y entrega al alumno a la plataforma. El registro es el

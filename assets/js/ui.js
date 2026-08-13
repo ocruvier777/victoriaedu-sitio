@@ -364,6 +364,22 @@
     });
   }
 
+  /* --- Hueco de mascota -----------------------------------------------------
+     <div class="mascot-slot" data-mascota></div> se llena SOLO si
+     CONFIG.mascota trae una ruta. Sin ella el contenedor se queda vacío y el
+     CSS lo esconde (.mascot-slot { display:none } / :has(img) { display:block }),
+     así que no hay imagen rota ni hueco reservado esperando un archivo.
+  ------------------------------------------------------------------------ */
+  function pintarMascota() {
+    var hueco = document.querySelector('[data-mascota]');
+    if (!hueco || !C.mascota || !C.mascota.src) return;
+    var m = C.mascota;
+    hueco.innerHTML = '<img src="' + escapar(m.src) + '" alt="' + escapar(m.alt || '') + '"' +
+      (m.ancho ? ' width="' + m.ancho + '"' : '') +
+      (m.alto ? ' height="' + m.alto + '"' : '') +
+      ' loading="lazy" decoding="async">';
+  }
+
   /* --- Botón flotante de WhatsApp ------------------------------------------
      El público entra desde el celular y decide en segundos: el contacto tiene
      que estar siempre a un pulgar de distancia, no enterrado en el footer.
@@ -533,6 +549,11 @@
         d.classList.toggle('is-on', i === actual);
         d.setAttribute('aria-current', i === actual ? 'true' : 'false');
       });
+      /* La misma cuenta marca la tarjeta, no solo el punto: con el carrusel a
+         media tarjeta hay que poder ver cuál es la que "cuenta". Es puramente
+         visual, por eso va una clase y no un atributo ARIA — el orden real ya
+         lo da el DOM. */
+      hijos.forEach(function (el, i) { el.classList.toggle('is-actual', i === actual); });
     }
 
     function irA(i) {
@@ -769,6 +790,7 @@
     pintarBotonWhatsApp();
     activarEnlacesWhatsApp();
     activarEnlacesPlataforma();
+    pintarMascota();
     activarReveal();
     activarCopiar();
     activarCuentaRegresiva();

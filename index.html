@@ -9,7 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/victoria.css?v=6">
+<link rel="stylesheet" href="assets/css/victoria.css?v=7">
+<link rel="stylesheet" href="assets/css/victoria-marca.css?v=7">
 </head>
 <body>
 
@@ -19,6 +20,52 @@
      Tres cosas en la primera pantalla: qué es, para quién y cómo contactar.
      La bajada tenía 121 palabras y nadie las leía; ahora son 22. -->
 <section class="vic-section--impacto vic-blueprint" style="overflow:hidden">
+
+  <!-- Decoración del hero. Puramente visual: fragmentos de la V, la ruta
+       editorial que va del titular al panel de diagnóstico, y tres nodos que
+       nombran las etapas. Va detrás de todo (.vic-blueprint sube el contenido
+       a z-index 1) y no intercepta ningún clic. -->
+  <div class="vic-hero-deco" aria-hidden="true">
+    <!-- preserveAspectRatio="none" a propósito: así el viewBox se comporta
+         como un sistema de porcentajes y la ruta cae SIEMPRE en la banda
+         inferior vacía, por debajo de las cifras. Con "slice" el recorte
+         dependía del alto de la pantalla y la línea acababa cruzando el
+         párrafo. Las formas de aquí son abstractas y aguantan el estirado;
+         los nodos, que sí tienen que ser círculos perfectos, van fuera del
+         SVG como elementos posicionados. -->
+    <svg viewBox="0 0 1000 600" preserveAspectRatio="none" focusable="false">
+      <defs>
+        <!-- userSpaceOnUse: un degradado en objectBoundingBox sobre un trazo
+             casi plano degenera y deja de pintarse. -->
+        <linearGradient id="vicHeroRuta" gradientUnits="userSpaceOnUse" x1="80" y1="0" x2="600" y2="0">
+          <stop offset="0" stop-color="#6C8AC7" stop-opacity=".10"/>
+          <stop offset=".5" stop-color="#6C8AC7" stop-opacity=".5"/>
+          <stop offset="1" stop-color="#58A9C0" stop-opacity=".85"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Fragmentos: tres piezas del isotipo, no el isotipo -->
+      <g fill="#FFFFFF" opacity=".05">
+        <path class="vic-hero-deco__frag" d="M60 -40 L112 -40 L232 330 L180 330 Z"/>
+        <path class="vic-hero-deco__frag vic-hero-deco__frag--b" d="M890 60 L930 60 L836 400 L796 400 Z"/>
+        <path class="vic-hero-deco__frag vic-hero-deco__frag--c" d="M268 500 L312 500 L336 640 L292 640 Z"/>
+      </g>
+
+      <!-- Ruta editorial: corre por la banda inferior —que es puro relleno de
+           sección— y sube hasta la esquina del panel de diagnóstico. -->
+      <path class="vic-hero-deco__ruta" pathLength="100"
+            d="M104 556 H 372 C 470 556, 500 498, 578 442"
+            fill="none" stroke="url(#vicHeroRuta)" stroke-width="1.75" stroke-linecap="round"
+            vector-effect="non-scaling-stroke"/>
+    </svg>
+
+    <!-- Diagnóstico → aprendizaje → resultado. Fuera del SVG estirado para
+         que sigan siendo círculos y no elipses. -->
+    <span class="vic-hero-deco__nodo vic-hero-deco__nodo--1" style="left:10.4%;top:92.7%"></span>
+    <span class="vic-hero-deco__nodo vic-hero-deco__nodo--2" style="left:37.2%;top:92.7%"></span>
+    <span class="vic-hero-deco__nodo vic-hero-deco__nodo--3 vic-hero-deco__nodo--fin" style="left:57.8%;top:73.7%"></span>
+  </div>
+
   <div class="vic-container" style="padding-top:88px;padding-bottom:96px">
     <div class="vic-hero-grid">
       <div>
@@ -77,11 +124,17 @@
   </div>
 </section>
 
+<div class="section-divider section-divider--guinda-papel" aria-hidden="true"></div>
+
 <!-- ================= QUÉ HACEMOS + EQUIPO =================
      Antes eran dos secciones (Manifiesto y Motor) con ~360 palabras de prosa.
      Aquí van cuatro tarjetas de una línea; el texto largo entra por "Conoce
      más", en los bloques .vic-hidden del final de la sección. Nada se borró. -->
-<section id="que-hacemos" class="vic-section vic-section--luz">
+<section id="que-hacemos" class="vic-section vic-section--luz vic-lienzo">
+  <!-- Cuaderno Victoria, versión clara: cuadrícula milimétrica, línea mayor
+       cada cinco cuadros y algunas marcas de medición. Es la sección donde se
+       explica qué enseñamos, así que el papel cuadriculado dice algo. -->
+  <div class="academic-grid academic-grid--claro" aria-hidden="true"></div>
   <div class="vic-container">
     <div style="max-width:52ch;margin-bottom:44px">
       <div class="vic-eyebrow">01 · Qué hacemos</div>
@@ -90,26 +143,32 @@
     </div>
 
     <div class="vic-grid vic-grid--4" data-reveal>
+      <!-- El icono va dentro de .benefit-media para que las cuatro tarjetas
+           reserven la misma altura y los títulos arranquen alineados. Ese
+           contenedor es además el hueco donde entra una ilustración editorial
+           el día que exista: se le añade .benefit-illustration y un <img>, sin
+           tocar nada más de la tarjeta. Los iconos van aria-hidden porque el
+           <h3> de al lado ya dice lo mismo. -->
       <div class="vic-card vic-card--accent vic-card--hoverable vic-valor">
-        <span class="vic-icono" data-icono="reactivos"></span>
+        <span class="benefit-media"><span class="vic-icono" data-icono="materia"></span></span>
         <h3>Materia por materia</h3>
         <p>Cálculo, álgebra, física y química: las que reprueban generaciones enteras.</p>
         <button class="vic-btn vic-btn--ghost vic-btn--sm" type="button" data-mas="materias">Conoce más</button>
       </div>
       <div class="vic-card vic-card--accent vic-card--hoverable vic-valor">
-        <span class="vic-icono vic-icono--acento" data-icono="ia"></span>
+        <span class="benefit-media"><span class="vic-icono vic-icono--acento" data-icono="tutor"></span></span>
         <h3>Tutor IA 24/7</h3>
         <p>Explica el paso 3 a las 11 pm y avisa al profesor si algo no avanza.</p>
         <button class="vic-btn vic-btn--ghost vic-btn--sm" type="button" data-mas="tutor">Conoce más</button>
       </div>
       <div class="vic-card vic-card--accent vic-card--hoverable vic-valor">
-        <span class="vic-icono" data-icono="dkt"></span>
+        <span class="benefit-media"><span class="vic-icono" data-icono="progreso"></span></span>
         <h3>Sabes dónde estás parado</h3>
         <p>Cada ejercicio actualiza tu dominio por tema. No un promedio: una curva viva.</p>
         <button class="vic-btn vic-btn--ghost vic-btn--sm" type="button" data-mas="datos">Conoce más</button>
       </div>
       <div class="vic-card vic-card--accent vic-card--hoverable vic-valor">
-        <span class="vic-icono" data-icono="ingenieria"></span>
+        <span class="benefit-media"><span class="vic-icono" data-icono="tecnologia"></span></span>
         <h3>Tecnología propia</h3>
         <p>Plataforma, modelos e infraestructura hechos en casa por VictoriaDEV.</p>
         <button class="vic-btn vic-btn--ghost vic-btn--sm" type="button" data-mas="tecnologia">Conoce más</button>
@@ -222,7 +281,12 @@
 </section>
 
 <!-- ================= PROGRAMAS ================= -->
-<section id="programas" class="vic-section vic-section--gris">
+<section id="programas" class="vic-section vic-section--gris vic-lienzo">
+  <!-- Sutil, no media: en un área del tamaño de una sección la variante media
+       se lee como papel tapiz y le pelea la atención a las tarjetas. La media
+       es para superficies chicas, donde el mosaico necesita repetirse para
+       leerse como textura. -->
+  <div class="v-pattern v-pattern-subtle" aria-hidden="true"></div>
   <div class="vic-container">
     <div class="vic-spread" style="margin-bottom:44px;align-items:flex-end">
       <div>
@@ -235,6 +299,8 @@
   </div>
 </section>
 
+<div class="section-divider section-divider--gris-guinda" aria-hidden="true"></div>
+
 <!-- ================= MÉTODO ================= -->
 <section id="metodo" class="vic-section vic-section--impacto vic-blueprint">
   <div class="vic-container">
@@ -243,12 +309,42 @@
       <h2 class="vic-h2" style="margin:0;max-width:20ch">Cinco pasos. Ninguno opcional.</h2>
       <p style="font-size:17px;line-height:1.6;margin:0;max-width:38ch">La IA decide el orden y la dosis. El profesor decide el criterio.</p>
     </div>
-    <div class="vic-grid vic-metodo-grid" data-reveal>
+    <!-- La ruta que recorre los cinco pasos es decorativa: el orden real lo
+         dan los números de cada tarjeta, que siguen en el HTML. La línea se
+         dibuja sola al entrar en viewport, enganchada a la clase .is-visible
+         que ya pone el observer de ui.js — sin JavaScript nuevo.
+         preserveAspectRatio="none" estira la línea al ancho que toque; como
+         es horizontal, el grosor no se deforma, y pathLength normaliza el
+         trazo para que el dibujo dure lo mismo en cualquier pantalla. -->
+    <div class="vic-metodo" data-reveal>
+      <svg class="vic-ruta" viewBox="0 0 1000 4" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <defs>
+          <!-- gradientUnits="userSpaceOnUse" es obligatorio aquí: el trazo es
+               una recta horizontal, su bounding box tiene altura cero y un
+               degradado en objectBoundingBox sobre una caja degenerada
+               sencillamente no se pinta. -->
+          <linearGradient id="vicRutaGrad" gradientUnits="userSpaceOnUse" x1="40" y1="0" x2="960" y2="0">
+            <stop offset="0" stop-color="#8AA6D8"/>
+            <stop offset="1" stop-color="#2C4D9D"/>
+          </linearGradient>
+        </defs>
+        <!-- non-scaling-stroke: el SVG se estira a lo ancho, el grosor no. -->
+        <path class="vic-ruta__linea" pathLength="100" d="M40 2 H960" vector-effect="non-scaling-stroke"/>
+      </svg>
+
+      <!-- Remate: UNA cuña diagonal, el brazo de la V, no la V entera. Repetir
+           el isotipo como adorno lo gasta; tomarle una pieza lo cita. -->
+      <svg class="vic-ruta__remate" viewBox="0 0 20 22" aria-hidden="true" focusable="false">
+        <path d="M2 1 L9 1 L18 21 L11 21 Z" fill="#58A9C0" fill-opacity=".85"/>
+      </svg>
+
+      <div class="vic-grid vic-metodo-grid">
       <div class="vic-paso"><div class="vic-paso__num">1</div><h3 style="font-size:19px;margin:0">Diagnóstico</h3><p style="font-size:14px;line-height:1.55;margin:0">Mide tema por tema, no un promedio.</p></div>
       <div class="vic-paso"><div class="vic-paso__num">2</div><h3 style="font-size:19px;margin:0">Ruta por IA</h3><p style="font-size:14px;line-height:1.55;margin:0">Ordena los temas por impacto en tu puntaje.</p></div>
       <div class="vic-paso"><div class="vic-paso__num">3</div><h3 style="font-size:19px;margin:0">Clase con profesor</h3><p style="font-size:14px;line-height:1.55;margin:0">En vivo, explicando el criterio y no solo el procedimiento.</p></div>
       <div class="vic-paso"><div class="vic-paso__num">4</div><h3 style="font-size:19px;margin:0">Práctica dirigida</h3><p style="font-size:14px;line-height:1.55;margin:0">Ejercicios diarios que se ajustan a tus errores.</p></div>
       <div class="vic-paso"><div class="vic-paso__num">5</div><h3 style="font-size:19px;margin:0">Simulacro final</h3><p style="font-size:14px;line-height:1.55;margin:0">Ensayo completo en condiciones reales.</p></div>
+      </div>
     </div>
     <!-- La cita habla justo de la metodología: va aquí y no en el carrusel. -->
     <figure data-reveal style="margin:40px 0 0;padding:22px 26px;border-left:3px solid var(--vic-primary-light);background:rgba(255,255,255,.05);border-radius:12px;max-width:62ch">
@@ -259,7 +355,9 @@
 </section>
 
 <!-- ================= RESULTADOS ================= -->
-<section id="resultados" class="vic-section vic-section--luz">
+<section id="resultados" class="vic-section vic-section--luz vic-lienzo">
+  <!-- Aquí van cifras: la trama va al mínimo para no competir con ellas. -->
+  <div class="v-pattern v-pattern-subtle" aria-hidden="true"></div>
   <div class="vic-container">
     <div class="vic-eyebrow">04 · Nueve años dando clase</div>
     <h2 class="vic-h2" style="margin:0 0 40px;max-width:26ch">La trayectoria es de quien da la clase.</h2>
@@ -302,6 +400,12 @@
     </div>
   </div>
 </section>
+
+<!-- El separador se esconde solo si la banda de testimonios no se pinta
+     (CONFIG.testimonios vacío): ver la regla :has(+ .vic-hidden) en
+     victoria-marca.css. Sin eso quedaría una diagonal suelta entre dos
+     secciones que no son las que anuncia. -->
+<div class="section-divider section-divider--papel-noche" aria-hidden="true"></div>
 
 <!-- ================= PRUEBA SOCIAL =================
      La cita grande y los testimonios comparten banda a propósito: el cristal
@@ -350,7 +454,8 @@
 </section>
 
 <!-- ================= CIERRE ================= -->
-<section class="vic-section vic-section--tight" style="background:var(--vic-azul-profundo)">
+<section class="vic-section vic-section--tight vic-lienzo" style="background:var(--vic-azul-profundo)">
+  <div class="v-pattern v-pattern-dark" aria-hidden="true"></div>
   <div class="vic-container">
     <div class="vic-grid vic-grid--2" style="gap:64px;align-items:center">
       <div>
@@ -360,8 +465,17 @@
         <a class="vic-btn vic-btn--wa vic-btn--lg" data-wa="Hola, quiero informes sobre los programas de VictoriaEDU.">
           <span data-icono="whatsapp" data-icono-tam="20"></span>¿Prefieres WhatsApp?
         </a>
+
+        <!-- Hueco de Vico. Vacío hasta que CONFIG.mascota tenga una ruta; el
+             CSS esconde el contenedor mientras no haya <img> dentro. En
+             escritorio queda a un lado del texto, lejos del formulario; en
+             móvil se reduce, y por debajo de 520px desaparece para no
+             empujar el CTA fuera de la primera pantalla. -->
+        <div class="mascot-slot" data-mascota></div>
       </div>
-      <div style="background:#fff;border-radius:24px;padding:36px;box-shadow:var(--vic-shadow-lg)">
+      <div class="vic-lienzo" style="background:#fff;border-radius:24px;padding:36px;box-shadow:var(--vic-shadow-lg)">
+        <!-- Densidad media: aquí sí, es una tarjeta. -->
+        <div class="v-pattern v-pattern-medium" aria-hidden="true"></div>
         <div class="vic-stack" style="gap:18px">
           <div style="font-family:var(--vic-font-display);font-size:26px;font-weight:700;line-height:1.2">Examen de diagnóstico</div>
           <ul class="vic-lista-check" style="margin:0;font-size:16px">
@@ -378,16 +492,18 @@
   </div>
 </section>
 
+<div class="section-divider section-divider--azul-guinda" aria-hidden="true"></div>
+
 <footer data-vic-footer></footer>
 
-<script src="assets/js/config.js?v=6"></script>
-<script src="assets/js/api.js?v=6"></script>
-<script src="assets/js/ui.js?v=6"></script>
-<script src="assets/js/iconos.js?v=6"></script>
-<script src="assets/js/metricas.js?v=6"></script>
-<script src="assets/js/productos.js?v=6"></script>
-<script src="assets/js/datos-cortes.js?v=6"></script>
-<script src="assets/js/mini-cortes.js?v=6"></script>
-<script src="assets/js/pagina-inicio.js?v=6"></script>
+<script src="assets/js/config.js?v=7"></script>
+<script src="assets/js/api.js?v=7"></script>
+<script src="assets/js/ui.js?v=7"></script>
+<script src="assets/js/iconos.js?v=7"></script>
+<script src="assets/js/metricas.js?v=7"></script>
+<script src="assets/js/productos.js?v=7"></script>
+<script src="assets/js/datos-cortes.js?v=7"></script>
+<script src="assets/js/mini-cortes.js?v=7"></script>
+<script src="assets/js/pagina-inicio.js?v=7"></script>
 </body>
 </html>

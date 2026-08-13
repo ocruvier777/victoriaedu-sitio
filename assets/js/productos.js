@@ -37,10 +37,47 @@
       '</div></div>';
   }
 
+  /* --- Portada del programa ------------------------------------------------
+     El catálogo puede traer, además de `imagen` (la que se usa hoy), dos
+     variantes optimizadas opcionales: `imagenAvif` y `imagenWebp`. Cuando
+     existan, la tarjeta las sirve por <picture> con degradación en cascada
+     AVIF → WebP → la imagen de siempre. Mientras no existan, `<picture>` ni
+     aparece y la tarjeta se pinta exactamente igual que antes: no hay forma
+     de que este código deje un hueco roto por un archivo que falta.
+
+     `width`/`height` van siempre, aunque el CSS luego mande: son lo que
+     permite al navegador reservar el espacio antes de descargar nada, y sin
+     eso la rejilla de programas da un salto al cargar (CLS).
+
+     `prioritaria` marca la única portada que se carga sin `lazy`: la primera
+     de la portada, que suele entrar en el primer scroll.
+  ------------------------------------------------------------------------ */
+  var PORTADA_W = 640;
+  var PORTADA_H = 360;   /* 16:9, el mismo aspect-ratio que fija .vic-producto__img */
+
+  function portadaHTML(p, opts) {
+    var carga = opts && opts.prioritaria
+      ? ' loading="eager" fetchpriority="high"'
+      : ' loading="lazy" decoding="async"';
+
+    var img = '<img src="' + esc(p.imagen) + '" alt="' + esc(p.imagenAlt) + '"' +
+      ' width="' + PORTADA_W + '" height="' + PORTADA_H + '"' + carga + '>';
+
+    if (!p.imagenAvif && !p.imagenWebp) return img;
+
+    return '<picture>' +
+      (p.imagenAvif ? '<source srcset="' + esc(p.imagenAvif) + '" type="image/avif">' : '') +
+      (p.imagenWebp ? '<source srcset="' + esc(p.imagenWebp) + '" type="image/webp">' : '') +
+      img +
+    '</picture>';
+  }
+
   /**
    * Devuelve el HTML de una tarjeta de producto.
    * @param {Object} p producto del CATALOGO
-   * @param {{detallada?:boolean}} [opts] detallada = tienda; si no, portada
+   * @param {{detallada?:boolean, prioritaria?:boolean}} [opts]
+   *        detallada = tienda; si no, portada.
+   *        prioritaria = no aplicar lazy-load a la imagen.
    */
   function tarjetaProducto(p, opts) {
     opts = opts || {};
@@ -73,7 +110,7 @@
     return '' +
       '<article class="vic-card vic-card--flush vic-card--hoverable vic-producto' + (disponible ? '' : ' vic-producto--proximo') + '" id="' + esc(p.slug) + '">' +
         '<div class="vic-producto__img">' +
-          '<img src="' + esc(p.imagen) + '" alt="' + esc(p.imagenAlt) + '" loading="lazy">' +
+          portadaHTML(p, opts) +
         '</div>' +
         '<div class="vic-producto__body">' +
           '<div class="vic-row" style="gap:10px;margin-bottom:14px">' +

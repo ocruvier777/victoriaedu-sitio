@@ -45,22 +45,58 @@
     flecha: '<path d="M5 12h13M12.5 6l6 6-6 6"/>',
     /* Instagram */
     instagram: '<rect x="3.5" y="3.5" width="17" height="17" rx="4.8"/><circle cx="12" cy="12" r="4"/><circle cx="17.1" cy="6.9" r=".9"/>',
+
+    /* --- Los cuatro de "Qué hacemos" --------------------------------------
+       Comparten viewBox, grosor y remates con el resto del set, y además
+       entre ellos comparten una gramática propia: cada uno tiene al menos
+       un corte diagonal en el ángulo del isotipo. Es lo que hace que las
+       cuatro tarjetas se lean como una familia y no como cuatro iconos
+       elegidos por separado.
+    --------------------------------------------------------------------- */
+
+    /* Capas apiladas: una materia sobre otra. La diagonal es la propia
+       perspectiva de las hojas, no un adorno añadido. */
+    materia: '<path d="M12 3.2L20.3 8 12 12.8 3.7 8z"/><path d="M4.4 12.3L12 16.7l7.6-4.4"/><path d="M4.4 16.2L12 20.6l7.6-4.4"/>',
+
+    /* Globo de conversación con una V dentro: el tutor responde, y lo que
+       responde lleva la marca. La esquina inferior derecha va cortada en
+       diagonal en vez de redondeada. */
+    tutor: '<path d="M20.5 14.2a2.8 2.8 0 01-2.8 2.8h-6.4L6.5 20.5V17a2.8 2.8 0 01-2.8-2.8V6.8A2.8 2.8 0 016.5 4h11.2a2.8 2.8 0 012.8 2.8z"/><path d="M9.4 8.4l2.7 5.1 2.7-5.1"/>',
+
+    /* Ejes con tres nodos en ascenso: el dominio por tema, que es una curva
+       viva y no un promedio. */
+    progreso: '<path d="M4.2 3.6v16.2h16"/><path d="M7.6 16.4l3.6-4.2 3 2.4 4.6-6.2"/><circle cx="11.2" cy="12.2" r="1.5"/><circle cx="14.2" cy="14.6" r="1.5"/><circle cx="18.8" cy="8.4" r="1.5"/>',
+
+    /* Chip con el núcleo cortado en diagonal: infraestructura propia, hecha
+       en casa. Los pines dicen que está conectado a algo. */
+    tecnologia: '<path d="M8.6 7.6h6.3a1.5 1.5 0 011.5 1.5v3.8l-3.4 3.5H9.1a1.5 1.5 0 01-1.5-1.5V9.1a1.5 1.5 0 011.5-1.5z"/><path d="M10.2 4.4v3.2M14 4.4v3.2M10.2 16.4v3.2M14 16.4v3.2M4.4 10.2h3.2M4.4 14h3.2M16.4 10.2h3.2M16.4 14h3.2"/>',
   };
 
-  function svg(nombre, tam) {
+  /**
+   * @param {string} nombre  llave de TRAZOS
+   * @param {number} [tam]   lado en px (24 por defecto)
+   * @param {string} [titulo] nombre accesible. Por defecto NO se pone: la
+   *   inmensa mayoría de estos iconos van junto a un título que ya dice lo
+   *   mismo, y anunciarlo dos veces estorba a quien usa lector de pantalla.
+   *   Solo se pasa cuando el icono es la única fuente de la información.
+   */
+  function svg(nombre, tam, titulo) {
     var d = TRAZOS[nombre];
     if (!d) return '';
     tam = tam || 24;
+    var etiqueta = titulo
+      ? 'role="img" aria-label="' + String(titulo).replace(/"/g, '&quot;') + '"'
+      : 'aria-hidden="true"';
     return '<svg viewBox="0 0 24 24" width="' + tam + '" height="' + tam + '" fill="none" ' +
       'stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" ' +
-      'aria-hidden="true" focusable="false">' + d + '</svg>';
+      etiqueta + ' focusable="false">' + d + '</svg>';
   }
 
   function montar(raiz) {
     (raiz || document).querySelectorAll('[data-icono]').forEach(function (el) {
       if (el.firstElementChild) return;                 // ya montado
       var tam = parseInt(el.getAttribute('data-icono-tam'), 10) || 24;
-      el.innerHTML = svg(el.getAttribute('data-icono'), tam);
+      el.innerHTML = svg(el.getAttribute('data-icono'), tam, el.getAttribute('data-icono-titulo'));
     });
   }
 
