@@ -248,19 +248,55 @@ corre prisa.
 
 ---
 
-## Pendiente sin dueño: leads
+## Leads de los cursos que todavía no abren — a dónde llegan hoy
 
-El sitio todavía captura correos en dos lugares que la plataforma no cubre: la lista de
-espera de los productos `proximamente` (curso de matemáticas, curso de admisión) y los
-avisos de cambios en la convocatoria. Es gente que **no puede registrarse** en la
-plataforma porque todavía no hay nada que comprar.
+**Respuesta corta: a ningún lado.** Se guardan en el `localStorage` del navegador
+**del propio visitante**. No hay servidor de por medio, no se envía nada, y nadie del
+equipo los ve nunca.
 
-Hoy eso vive en el `localStorage` del navegador de cada quien, o sea que en la práctica
-se pierde. Se ve en `admin.html` pero solo en la máquina donde se capturó.
+`admin.html` los muestra, pero solo los que se capturaron en esa misma máquina y ese
+mismo navegador. Si un alumno deja su correo desde su celular, ahí no aparece — y si
+borra el caché, desaparecen también para él.
 
-Lo que lo arreglaría es un `POST /api/v1/leads` público (correo + nombre + teléfono +
-origen), con el mismo rate limit del registro. **Esto sí necesitaría CORS** para el
-dominio del sitio. No es urgente y no bloquea nada — lo dejo anotado para cuando toque.
+Esto importa porque el sitio **sí les promete algo**: el formulario dice *"Un solo
+correo cuando abra"*. Esa promesa hoy no se puede cumplir.
+
+### Qué formularios están en esa situación
+
+| Dónde | `origen` | Qué prometemos |
+|---|---|---|
+| "Avísame cuando abra" — curso de matemáticas y curso de admisión | `lista-espera` | Un correo cuando abra la generación |
+| "Avísenme de cambios" — convocatoria de segunda vuelta | `convocatoria-segunda-vuelta` | Un correo si el IPN mueve fechas |
+
+Los tres viven en `assets/js/api.js` → `registrarLead()`, y el formulario está en
+`assets/js/productos.js` y `assets/js/pagina-convocatoria.js`.
+
+### Lo que hace falta de tu lado
+
+Un `POST /api/v1/leads` público. Con eso el sitio deja de guardar en el navegador y
+empieza a mandarlos de verdad.
+
+```
+POST /api/v1/leads          (sin auth, como registro-publico)
+{ "correo": "...",          // obligatorio
+  "nombre": "",             // opcional
+  "telefono": "",           // opcional
+  "origen": "lista-espera", // de dónde salió
+  "producto": "curso-matematicas-ipn-2027" }   // opcional
+```
+
+Dos cosas que este endpoint sí necesita y el resto de la integración no:
+
+- **Rate limit**, el mismo criterio que `registro-publico` (y ojo con B6: 5 por IP por
+  hora es poco para un salón entero).
+- **CORS con el dominio del sitio.** Es la única parte de toda la integración donde el
+  sitio llama a tu API desde el navegador; todo lo demás son links normales. Hoy
+  `allow_origins=[settings.frontend_url]` acepta un solo origen, así que habría que
+  admitir dos.
+
+No bloquea el lanzamiento del simulacro —esos alumnos sí se registran en la
+plataforma—, pero mientras no exista, cada correo que capturamos de los cursos se
+pierde.
 
 ---
 

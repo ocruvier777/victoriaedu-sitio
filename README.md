@@ -364,21 +364,44 @@ ESIME", está haciendo una afirmación que el propio Poli no hace.
 
 ---
 
+## ⚠️ A dónde llegan los leads de los cursos que no han abierto
+
+**Hoy: a ningún lado.** Es lo primero que hay que saber antes de mandar tráfico a
+esos formularios.
+
+`registrarLead()` (`assets/js/api.js`) guarda en el `localStorage` **del navegador
+del visitante**. No hay servidor: no se envía nada y nadie del equipo lo ve. El
+panel de `admin.html` los lista, pero solo los capturados en esa misma máquina y
+ese mismo navegador — si el alumno lo dejó desde su celular, ahí no aparece.
+
+Son tres formularios:
+
+| Dónde | `origen` | Qué le prometemos al alumno |
+|---|---|---|
+| "Avísame cuando abra" — curso de matemáticas | `lista-espera` | Un correo cuando abra |
+| "Avísame cuando abra" — curso de admisión | `lista-espera` | Un correo cuando abra |
+| "Avísenme de cambios" — convocatoria | `convocatoria-segunda-vuelta` | Un correo si el IPN mueve fechas |
+
+**Esas promesas hoy no se pueden cumplir**, y el texto del formulario las hace
+explícitas ("Un solo correo cuando abra"). Es una decisión consciente mientras se
+resuelve, no un descuido: se dejó así porque el arreglo de verdad —un
+`POST /api/v1/leads` público en la plataforma— es del lado de Brando. El contrato
+del endpoint está en **[INTEGRACION-PLATAFORMA.md](INTEGRACION-PLATAFORMA.md)**.
+
+Es además la **única** parte de toda la integración que necesitaría CORS: el resto
+de los saltos a la plataforma son links normales.
+
+Mientras tanto, si de verdad hace falta capturar a esa gente, el canal que sí llega
+es el WhatsApp del pie y del botón flotante.
+
+---
+
 ## Para el back
 
 **Casi nada.** El sitio no llama a ninguna API: todos los saltos a la plataforma son
-links normales, así que no hace falta tocar CORS ni `FRONTEND_URL`. Lo que sí falta
-del lado de la plataforma está en
+links normales, así que no hace falta tocar CORS ni `FRONTEND_URL` — con la
+excepción de los leads, arriba. Lo que sí falta del lado de la plataforma está en
 **[INTEGRACION-PLATAFORMA.md](INTEGRACION-PLATAFORMA.md)**.
-
-Lo único que queda en `assets/js/api.js` es la captura de leads: la lista de espera
-de los productos `proximamente` y los avisos de la convocatoria. Es gente que **no
-puede registrarse** en la plataforma porque todavía no hay nada que comprar.
-
-Eso sigue viviendo en `localStorage`, lo que en la práctica significa que se pierde
-—solo se ve en el navegador donde se capturó—. Arreglarlo pide un
-`POST /api/v1/leads` público en la plataforma, y ese sí necesitaría CORS. No es
-urgente y no bloquea el embudo; está anotado en INTEGRACION-PLATAFORMA.md.
 
 ---
 
