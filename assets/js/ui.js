@@ -374,13 +374,17 @@
      así que no hay imagen rota ni hueco reservado esperando un archivo.
   ------------------------------------------------------------------------ */
   function pintarMascota() {
-    var hueco = document.querySelector('[data-mascota]');
-    if (!hueco || !C.mascota || !C.mascota.src) return;
-    var m = C.mascota;
-    hueco.innerHTML = '<img src="' + escapar(m.src) + '" alt="' + escapar(m.alt || '') + '"' +
-      (m.ancho ? ' width="' + m.ancho + '"' : '') +
-      (m.alto ? ' height="' + m.alto + '"' : '') +
-      ' loading="lazy" decoding="async">';
+    document.querySelectorAll('[data-mascota]').forEach(function (hueco) {
+      /* data-mascota="pensando" busca CONFIG.mascotaPensando; sin valor, la
+         mascota por defecto. Así una misma pieza sirve para varias poses sin
+         duplicar código ni marcado. */
+      var m = hueco.getAttribute('data-mascota') === 'pensando' ? C.mascotaPensando : C.mascota;
+      if (!m || !m.src) return;
+      hueco.innerHTML = '<img src="' + escapar(m.src) + '" alt="' + escapar(m.alt || '') + '"' +
+        (m.ancho ? ' width="' + m.ancho + '"' : '') +
+        (m.alto ? ' height="' + m.alto + '"' : '') +
+        ' loading="lazy" decoding="async">';
+    });
   }
 
   /* --- Botón flotante de WhatsApp ------------------------------------------

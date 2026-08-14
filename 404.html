@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>404 · Esta ruta no lleva a ninguna clase — VictoriaEDU</title>
+<!-- CLAVE para que esta página funcione de verdad: Netlify sirve 404.html EN LA
+     URL PEDIDA, sin redirigir. En /guias/algo-que-no-existe, una ruta relativa
+     como "assets/css/…" se resolvería contra /guias/ y no cargaría nada — ni
+     los estilos, ni el logo, ni los enlaces del menú que inyecta ui.js.
+     Con <base> todo lo relativo se ancla a la raíz y la página se ve igual sin
+     importar a qué profundidad la pidieron. -->
+<base href="/">
+<meta name="robots" content="noindex">
+<link rel="icon" href="uploads/victoriaedu_logo_transparent.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/victoria.css?v=18">
+<link rel="stylesheet" href="assets/css/victoria-marca.css?v=18">
+</head>
+<body class="v404-body">
+
+<!-- Netlify sirve este archivo con código HTTP 404 real por convención, sin
+     necesidad de _redirects ni netlify.toml. No hay ninguno en el repo y no
+     hace falta crearlo: añadir reglas de redirección sí podría romper rutas
+     válidas o convertir los 404 en 200. -->
+
+<!-- La navegación es la misma de todo el sitio: la pinta ui.js desde un solo
+     árbol (NAV), así que esta página no duplica ni un enlace. El CTA sale del
+     catálogo, por eso dice el precio vigente y no el del mock. -->
+<header data-vic-header data-cta="comprar"></header>
+
+<main class="v404">
+
+  <!-- ---------- Fondo ----------------------------------------------------
+       Cuadrícula académica, ejes cartesianos y fragmentos de la V. Todo CSS y
+       SVG en línea: ninguna imagen rasterizada. -->
+  <div class="v404__fondo" aria-hidden="true">
+    <svg class="v404__ejes" viewBox="0 0 700 900" preserveAspectRatio="xMinYMax meet" aria-hidden="true" focusable="false">
+      <g fill="none" stroke="rgba(255,255,255,.16)" stroke-width="1">
+        <path d="M64 120 V812 H700"/>
+        <path d="M58 300 h6M58 480 h6M58 660 h6"/>
+        <path d="M64 806 v6M204 806 v6M344 806 v6M484 806 v6M624 806 v6"/>
+      </g>
+      <g fill="rgba(255,255,255,.30)" font-family="JetBrains Mono, monospace" font-size="13">
+        <text x="30" y="305">10</text>
+        <text x="38" y="485">5</text>
+        <text x="60" y="840">0</text>
+        <text x="200" y="840">5</text>
+        <text x="337" y="840">10</text>
+        <text x="477" y="840">15</text>
+        <text x="617" y="840">20</text>
+        <text x="676" y="840">x</text>
+      </g>
+    </svg>
+
+    <!-- Fragmentos de la V: piezas del isotipo, nunca el isotipo entero. -->
+    <svg class="v404__frags" viewBox="0 0 1000 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+      <g fill="#FFFFFF" opacity=".035">
+        <path d="M556 -40 L610 -40 L742 470 L688 470 Z"/>
+        <path d="M742 -40 L790 -40 L688 470 L640 470 Z"/>
+        <path d="M300 620 L344 620 L378 900 L334 900 Z"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="vic-container v404__grid">
+
+    <!-- ---------- Columna izquierda ---------- -->
+    <div class="v404__texto">
+      <p class="v404__eyebrow">Ruta no encontrada</p>
+
+      <!-- aria-hidden: el <title> del documento y el <h1> ya dicen qué pasó.
+           Leer "cuatro cero cuatro" antes del titular no aporta nada. -->
+      <p class="v404__num" aria-hidden="true">404</p>
+
+      <h1 class="v404__titulo">Esta ruta no lleva a ninguna clase.</h1>
+      <p class="v404__desc">Parece que la página que buscas cambió de lugar o ya no está disponible.</p>
+
+      <div class="v404__botones">
+        <a class="vic-btn vic-btn--primary vic-btn--lg" href="index.html">Volver al inicio</a>
+        <a class="vic-btn vic-btn--secondary vic-btn--lg" href="tienda.html">Ver programas</a>
+      </div>
+
+      <!-- data-wa: ui.js le pone el href con el número de CONFIG.whatsapp, el
+           mismo que usa el resto del sitio. -->
+      <a class="v404__ayuda" data-wa="Hola, llegué a una página que no existe en victoriaedu.mx y necesito ayuda.">
+        <span data-icono="whatsapp" data-icono-tam="18"></span>¿Necesitas ayuda? Escríbenos por WhatsApp
+      </a>
+    </div>
+
+    <!-- ---------- Columna derecha: la escena ---------- -->
+    <div class="v404__escena">
+      <div class="v404__panel" aria-hidden="true"></div>
+
+      <!-- Vico. El contenedor se queda vacío —y el CSS lo esconde— mientras
+           CONFIG.mascotaPensando sea null, así que la página nunca enseña una
+           imagen rota ni un hueco reservado. -->
+      <div class="v404__vico mascot-slot" data-mascota="pensando"></div>
+
+      <!-- Decoración académica. Un solo SVG para que todo comparta grosor de
+           línea y escale junto. viewBox en las proporciones del panel. -->
+      <svg class="v404__deco" viewBox="0 0 970 830" fill="none" aria-hidden="true" focusable="false">
+        <g stroke-linecap="round" stroke-linejoin="round">
+
+          <!-- Signo de interrogación sobre Vico -->
+          <text class="v404__interrogacion" x="556" y="196" font-size="128" font-weight="800"
+                font-family="Creato Display, sans-serif" fill="#223A74" stroke="none">?</text>
+
+          <!-- Avión de papel y su estela: sale de la ruptura y se va -->
+          <path class="v404__estela" d="M712 392 C 762 404, 806 372, 818 316 S 848 250, 884 236"
+                stroke="#8AA6D8" stroke-width="2" stroke-dasharray="7 9" opacity=".85"/>
+          <g class="v404__avion">
+            <path d="M878 250 L946 208 L916 274 L903 250 Z" stroke="#223A74" stroke-width="2.2" fill="#FFFFFF"/>
+            <path d="M946 208 L903 250" stroke="#223A74" stroke-width="2.2"/>
+          </g>
+
+          <!-- Ruta de aprendizaje interrumpida -->
+          <g class="v404__ruta" stroke="#2C4D9D" stroke-width="2.4">
+            <path class="v404__ruta-a" d="M548 420 H612"/>
+            <path class="v404__ruta-b" d="M760 432 H906"/>
+          </g>
+          <g class="v404__nodos" fill="#FAF8F5" stroke="#2C4D9D" stroke-width="2.4">
+            <circle cx="548" cy="420" r="9"/>
+            <circle cx="620" cy="420" r="9"/>
+            <circle cx="768" cy="432" r="9"/>
+            <circle cx="900" cy="432" r="9"/>
+          </g>
+          <!-- Marcas de la ruptura, en guinda -->
+          <g class="v404__quiebre" stroke="#7A2233" stroke-width="3">
+            <path d="M676 356 v-24"/>
+            <path d="M650 366 l-16 -18"/>
+            <path d="M702 366 l16 -18"/>
+          </g>
+
+          <!-- Hoja de libreta, sin texto -->
+          <g class="v404__hoja">
+            <path d="M566 486 H700 V648 L688 640 L676 650 L664 640 L652 650 L640 640 L628 650 L616 640 L604 650 L592 640 L580 650 L566 640 Z"
+                  fill="#FFFFFF" stroke="#C9CBD3" stroke-width="2"/>
+            <path d="M582 486 V644" stroke="#B8453F" stroke-width="1.6" opacity=".55"/>
+            <g stroke="#C9CBD3" stroke-width="1.6" opacity=".9">
+              <path d="M596 520 H684"/><path d="M596 550 H684"/>
+              <path d="M596 580 H684"/><path d="M596 610 H684"/>
+            </g>
+            <g fill="#FFFFFF" stroke="#C9CBD3" stroke-width="1.6">
+              <circle cx="574" cy="512" r="4"/><circle cx="574" cy="556" r="4"/><circle cx="574" cy="600" r="4"/>
+            </g>
+          </g>
+
+          <!-- Regla -->
+          <g class="v404__regla">
+            <path d="M846 492 H900 V684 H846 Z" fill="#FFFFFF" stroke="#C9CBD3" stroke-width="2"/>
+            <g stroke="#9AA0AE" stroke-width="1.6">
+              <path d="M846 512 h18"/><path d="M846 532 h11"/><path d="M846 552 h18"/>
+              <path d="M846 572 h11"/><path d="M846 592 h18"/><path d="M846 612 h11"/>
+              <path d="M846 632 h18"/><path d="M846 652 h11"/>
+            </g>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </div>
+</main>
+
+<script src="assets/js/config.js?v=18"></script>
+<script src="assets/js/ui.js?v=18"></script>
+<script src="assets/js/iconos.js?v=18"></script>
+</body>
+</html>

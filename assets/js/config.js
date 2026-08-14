@@ -31,6 +31,21 @@ window.CONFIG = {
     alto: 2000,
   },
 
+  /* Vico en pose pensativa, para la página 404. Misma regla que arriba:
+     null = no se pinta nada, ni caja ni placeholder. La 404 se compone igual
+     con su decoración mientras tanto.
+
+     TODO(Óscar): falta el archivo. Cuando llegue, guardarlo como
+     assets/brand/vico/vico-pensando.webp y llenar este bloque:
+       mascotaPensando: {
+         src: 'assets/brand/vico/vico-pensando.webp',
+         alt: 'Vico observa confundido una ruta de aprendizaje interrumpida',
+         ancho: <ancho real>, alto: <alto real>,
+       }
+     Las dimensiones reales importan: son las que reservan el espacio y evitan
+     que la página salte al cargar la imagen. */
+  mascotaPensando: null,
+
   marca: {
     nombre: 'VictoriaEDU',
     razonSocial: 'Victoria EDU S.A.S. de C.V.',

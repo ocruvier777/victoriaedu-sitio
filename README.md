@@ -51,6 +51,7 @@ Lista de espera: `http://localhost:8000/admin.html` — clave `victoria2026`.
 | `ipn.html` | Guía del examen: estructura, áreas, cómo se califica, equipo y calendario |
 | `aciertos-ipn.html` | Cortes históricos del IPN en gráfica: 105 carreras, filtros y comparador contra tu puntaje |
 | `convocatoria-ipn-segunda-vuelta.html` | Página SEO de la convocatoria de segunda vuelta: fechas, requisitos y equipo necesario |
+| `404.html` | Página de error. Netlify la sirve sola, con código 404 real |
 | `admin.html` | Lista de espera capturada en este navegador |
 | `checkout.html` · `pago.html` | Redirecciones a la plataforma (el checkout viejo) |
 | `confirmacion.html` | Explica a dónde se fue la compra; no redirige, por si alguien llega con un folio `VE-` viejo |
@@ -183,8 +184,22 @@ Si algún día la tarjeta cambia de tono, la solución **no** es pintarles un
 recuadro blanco detrás: hay que pedir las ilustraciones ya compuestas contra el
 color nuevo.
 
+**La 404** no necesita `_redirects` ni `netlify.toml`: Netlify sirve `404.html`
+por convención y con el código HTTP correcto. No hay ninguno de esos archivos en
+el repo y **no conviene crearlos** — una regla de redirección mal puesta
+convierte los 404 en 200 o rompe rutas válidas.
+
+Lo que sí necesita, y es fácil de romper: **`<base href="/">` en su `<head>`**.
+Netlify sirve el 404 *en la URL pedida*, sin redirigir, así que en
+`/guias/algo-que-no-existe` una ruta relativa como `assets/css/…` se resolvería
+contra `/guias/` y no cargaría ni los estilos, ni el logo, ni los enlaces del
+menú que inyecta `ui.js`. Verificado sirviéndola desde una URL de cuatro
+niveles.
+
 **Vico.** `assets/brand/vico/vico-diagnostico.webp`, se activa desde
-`CONFIG.mascota`. Lleva un medallón claro detrás (`.mascot-slot::before`) y esa
+`CONFIG.mascota`. La pose pensativa de la 404 va en `CONFIG.mascotaPensando` y
+**todavía no existe el archivo**: mientras siga en `null` la página se compone
+con su decoración y no enseña ningún hueco. Lleva un medallón claro detrás (`.mascot-slot::before`) y esa
 es la parte que importa: el cuerpo de Vico es azul marino y la banda donde vive
 es azul profundo, así que sobre el fondo desnudo **la silueta se funde y se
 pierde la cola entera**. Es un círculo y no un recuadro a propósito — un

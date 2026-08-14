@@ -992,11 +992,264 @@
 }
 
 /* ==========================================================================
-   12 · Movimiento reducido
+   13 · Página 404
+   --------------------------------------------------------------------------
+   Reutiliza el header, los botones y los tokens del sistema; solo añade la
+   composición y la escena. Sin imágenes de fondo: cuadrícula, ejes y
+   fragmentos son CSS y SVG en línea.
+   ========================================================================== */
+/* El body manda el alto y la sección toma lo que sobra. Restarle al 100svh una
+   altura fija de header era adivinar: bastaban 3px de diferencia para que
+   apareciera una barra de scroll en una página que debe caber en una pantalla. */
+.v404-body {
+  background: var(--vic-noche);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+.v404 {
+  position: relative;
+  /* svh y no vh: en móvil, vh cuenta el alto SIN las barras del navegador, así
+     que la sección se pasa de largo y aparece un scroll que no debería. */
+  flex: 1;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(900px 620px at 82% 108%, rgba(var(--vic-azul-rgb), .30), transparent 66%),
+    radial-gradient(700px 500px at 8% 0%, rgba(var(--vic-azul-rgb), .16), transparent 62%),
+    var(--vic-noche);
+}
+
+/* --- Fondo: cuaderno + ejes + fragmentos --------------------------------- */
+.v404__fondo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.10) var(--vic-linea-fina), transparent var(--vic-linea-fina)),
+    linear-gradient(90deg, rgba(255,255,255,.10) var(--vic-linea-fina), transparent var(--vic-linea-fina)),
+    linear-gradient(rgba(255,255,255,.045) var(--vic-linea-fina), transparent var(--vic-linea-fina)),
+    linear-gradient(90deg, rgba(255,255,255,.045) var(--vic-linea-fina), transparent var(--vic-linea-fina));
+  background-size:
+    var(--vic-cuaderno-mayor) var(--vic-cuaderno-mayor),
+    var(--vic-cuaderno-mayor) var(--vic-cuaderno-mayor),
+    var(--vic-cuaderno-fino) var(--vic-cuaderno-fino),
+    var(--vic-cuaderno-fino) var(--vic-cuaderno-fino);
+}
+.v404__ejes {
+  position: absolute;
+  left: 0; bottom: 0;
+  width: min(52%, 700px);
+  height: min(86%, 900px);
+}
+.v404__frags { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* --- Rejilla ------------------------------------------------------------- */
+.v404__grid {
+  position: relative;
+  z-index: 1;
+  /* width:100% es obligatorio: .v404 es flex, así que el contenedor sería un
+     flex item y se encogería a su contenido en vez de tomar sus 1200px. */
+  width: 100%;
+  display: grid;
+  grid-template-columns: 54% 46%;
+  align-items: center;
+  gap: 32px;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+/* --- Columna de texto ---------------------------------------------------- */
+.v404__eyebrow {
+  font-family: var(--vic-font-body);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .58);
+  margin: 0 0 18px;
+}
+
+/* El 404 domina la composición. Los cortes diagonales se hacen con `mask` y
+   no pintando franjas encima: la máscara vuelve transparentes esas franjas y
+   deja ver el fondo REAL, así que el corte encaja aunque el fondo tenga
+   degradado o cuadrícula debajo. Pintarlas exigiría adivinar el color. */
+.v404__num {
+  font-family: var(--vic-font-display);
+  font-weight: 800;
+  font-size: clamp(104px, 15vw, 216px);
+  line-height: .84;
+  letter-spacing: -.02em;
+  color: var(--vic-blanco-calido);
+  margin: 0 0 18px;
+  /* El periodo va en `em` y no en px: así el corte escala con la cifra y el
+     NÚMERO de cortes es el mismo en cualquier pantalla. Con medidas fijas, el
+     404 de móvil —que es la mitad de alto— salía cruzado por el doble de
+     cortes y dejaba de leerse. */
+  -webkit-mask-image: repeating-linear-gradient(
+    calc(90deg - var(--vic-angulo)),
+    #000 0 .78em, transparent .78em .82em);
+          mask-image: repeating-linear-gradient(
+    calc(90deg - var(--vic-angulo)),
+    #000 0 .78em, transparent .78em .82em);
+}
+
+.v404__titulo {
+  font-size: clamp(28px, 3.4vw, 46px);
+  line-height: 1.08;
+  color: #fff;
+  margin: 0 0 16px;
+  max-width: 17ch;
+}
+.v404__desc {
+  font-size: clamp(16px, 1.3vw, 18px);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, .74);
+  margin: 0 0 28px;
+  max-width: 44ch;
+}
+.v404__botones { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 24px; }
+
+.v404__ayuda {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--vic-primary-light);
+}
+.v404__ayuda:hover { color: #fff; }
+
+/* --- Escena -------------------------------------------------------------- */
+.v404__escena {
+  position: relative;
+  min-height: min(74svh, 620px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* El panel entra desde el borde derecho de la ventana, no de la columna: por
+   eso el ancho va en vw y se sale del contenedor. Es un pentágono con el corte
+   diagonal a la izquierda, en el ángulo del isotipo. */
+.v404__panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 4%;
+  width: 60vw;
+  background-color: var(--vic-blanco-calido);
+  background-image:
+    linear-gradient(rgba(34,58,116,.05) var(--vic-linea-fina), transparent var(--vic-linea-fina)),
+    linear-gradient(90deg, rgba(34,58,116,.05) var(--vic-linea-fina), transparent var(--vic-linea-fina));
+  background-size: var(--vic-cuaderno-fino) var(--vic-cuaderno-fino);
+  clip-path: polygon(26% 0, 100% 0, 100% 100%, 24% 100%, 0 52%);
+}
+
+.v404__vico {
+  position: relative;
+  z-index: 2;
+  width: 46%;
+  max-width: 340px;
+  margin-right: 22%;
+}
+/* Sin imagen no hay caja: mismo criterio que el resto del sitio. */
+.v404__vico:not(:has(img)) { display: none; }
+.v404__vico img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.v404__deco {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* --- Animaciones: entrada suave y dibujo de la ruta ---------------------- */
+.v404__texto > * { animation: v404Entra .6s var(--vic-ease-marca) backwards; }
+.v404__texto > *:nth-child(2) { animation-delay: .06s; }
+.v404__texto > *:nth-child(3) { animation-delay: .12s; }
+.v404__texto > *:nth-child(4) { animation-delay: .18s; }
+.v404__texto > *:nth-child(5) { animation-delay: .24s; }
+.v404__texto > *:nth-child(6) { animation-delay: .30s; }
+@keyframes v404Entra { from { opacity: 0; transform: translateY(10px); } }
+
+.v404__ruta path,
+.v404__estela {
+  stroke-dasharray: 260;
+  stroke-dashoffset: 260;
+  animation: v404Dibuja 1.5s var(--vic-ease-marca) .35s forwards;
+}
+.v404__estela { animation-delay: .9s; }
+@keyframes v404Dibuja { to { stroke-dashoffset: 0; } }
+
+.v404__nodos circle,
+.v404__quiebre path { opacity: 0; animation: v404Aparece .45s ease-out .95s forwards; }
+.v404__interrogacion { opacity: 0; animation: v404Aparece .5s ease-out 1.25s forwards; }
+@keyframes v404Aparece { to { opacity: 1; } }
+
+/* 3px en 5s: el avión respira, no vuela. */
+.v404__avion { animation: v404Flota 5s ease-in-out 1.6s infinite; transform-origin: center; }
+@keyframes v404Flota {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+
+/* --- Tableta ------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .v404__grid { grid-template-columns: 52% 48%; gap: 20px; }
+  .v404__vico { width: 54%; margin-right: 16%; }
+  /* La regla y la hoja saturan cuando la escena se estrecha. */
+  .v404__hoja, .v404__regla { display: none; }
+}
+
+/* --- Móvil --------------------------------------------------------------- */
+@media (max-width: 760px) {
+  .v404 { min-height: 0; padding: 32px 0 48px; display: block; }
+  .v404__grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    padding-top: 8px;
+  }
+  .v404__botones .vic-btn { width: 100%; }
+  .v404__desc { max-width: none; }
+
+  /* El panel deja de ser un pentágono que entra por el borde: en una columna
+     estrecha, ese corte diagonal recortaría a Vico. Rectángulo redondeado. */
+  /* Altura propia: sin ella el panel es una franja delgada mientras no exista
+     la imagen de Vico, y la decoración queda diminuta. Con Vico dentro, él
+     manda y esta medida deja de aplicar. */
+  .v404__escena { min-height: 300px; padding: 26px 0; }
+  .v404__panel {
+    left: -16px;
+    right: -16px;
+    width: auto;
+    border-radius: var(--vic-radius-xl);
+    clip-path: none;
+  }
+  .v404__vico { width: 62%; max-width: 260px; margin-right: 18%; }
+  .v404__ejes { display: none; }
+}
+
+/* El botón flotante de WhatsApp sobra aquí: el enlace de ayuda ya está en el
+   contenido, y esta página está pensada para caber en una pantalla. */
+.v404-body .vic-fab-wa { display: none; }
+
+/* ==========================================================================
+   14 · Movimiento reducido
    --------------------------------------------------------------------------
    victoria.css ya congela animaciones y transiciones globalmente. Aquí se
    rematan los casos que dependen de un estado FINAL: si solo se anula la
-   transición, la ruta se quedaría sin dibujar y el remate invisible.
+   transición, la ruta se quedaría sin dibujar.
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
   .vic-hero-deco__frag { animation: none; }
@@ -1006,4 +1259,12 @@
   .vic-paso:not(:last-child)::after { transition: none; transform: scaleY(1); }
   .vic-card--hoverable:hover,
   .vic-paso:hover { transform: none; }
+
+  .v404__texto > * { animation: none; }
+  .v404__ruta path,
+  .v404__estela { animation: none; stroke-dashoffset: 0; }
+  .v404__nodos circle,
+  .v404__quiebre path,
+  .v404__interrogacion { animation: none; opacity: 1; }
+  .v404__avion { animation: none; }
 }
