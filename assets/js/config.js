@@ -8,7 +8,7 @@
 /* Versión del sitio. Se imprime en el pie, y ahí sirve para una cosa muy
    concreta: cuando alguien reporte "se ve raro", poder preguntarle qué versión
    trae y saber si está viendo caché vieja. Súbela cuando publiques. */
-window.VERSION_SITIO = '1.6.0';
+window.VERSION_SITIO = '1.7.0';
 
 window.CONFIG = {
   /* --- Mascota (Vico) ------------------------------------------------------
@@ -84,30 +84,72 @@ window.CONFIG = {
 
   /* --- Plataforma ----------------------------------------------------------
      El sitio ya NO cobra ni entrega nada por su cuenta: es el escaparate.
-     Todo lo que implique una cuenta —presentar el examen, ver respuestas,
-     pagar— vive en la plataforma, que sí tiene base de datos y sesión.
+     Todo lo que implique una cuenta —guardar tu resultado, la revisión de
+     respuestas, pagar— vive en la plataforma, que sí tiene base de datos.
 
-     El embudo es: clic → registro → examen gratis → resultados → compra.
-     El registro es el peaje, y es a propósito: las respuestas y explicaciones
-     solo se ven con cuenta, así que ahí es donde capturamos al alumno.
+     EL EMBUDO CAMBIÓ (plataforma #75/#79/#80/#81/#82, ya en su rama main):
+     el examen gratis ya NO exige cuenta para presentarse. Se contesta suelto
+     en /gratis/{id}, y al entregarlo la plataforma guarda un `claim_token` de
+     48 h en el navegador; la cuenta se pide para VER la calificación, que es
+     donde el alumno ya invirtió veinte minutos y el registro le cuesta menos.
 
-     examenGratis → id_publico del simulacro demo (precio 0) en la plataforma.
-                    Si Brando lo publica con otro id, se cambia AQUÍ y ya.
-     base         → sin diagonal final.
+         clic → /gratis/PUB-IPN-2026-GRATIS → contesta → registro o Google
+              → /gratis/resultado (aciertos y %) → upsell → /paquetes/ipn-2026
 
-     Para probar contra el ambiente de desarrollo, cambia `base` por
-     'https://dev-edu.victoriadev.com' y no toques nada más.
-     Contrato completo y pendientes del lado de la plataforma:
+     Ya no se manda `next=`: nunca se implementó del lado de la plataforma y
+     este flujo no lo necesita. El desvío post-registro lo decide la propia
+     plataforma cuando ve el claim pendiente.
+
+     AMBIENTES. La landing de producción habla SOLO con la plataforma de
+     producción; cualquier otro host —localhost, una preview, la rama dev—
+     habla con dev. Se resuelve por hostname a propósito, para que las ramas
+     `main` y `dev` del sitio NO diverjan: son el mismo código servido en dos
+     lugares, así que un merge nunca pelea por esta línea. El ambiente
+     resuelto se imprime en el pie cuando NO es producción, para que una
+     landing pública apuntando a dev se note a simple vista.
+
+     `abierto` es lo que decide si el botón manda a la plataforma o abre el
+     aviso de "todavía no". Hoy producción está cerrado porque la app de
+     producción aún no termina el flujo; se abre cambiando el false a true.
+
+     Contrato completo, estado de cada pendiente y qué falta para producción:
      ver INTEGRACION-PLATAFORMA.md.
   ------------------------------------------------------------------------ */
   plataforma: {
-    base: 'https://edu.victoriadev.com',
-    examenGratis: 'SIM-IPN-2026-DEMO',
+    /* Los únicos hosts que hablan con la plataforma de producción. Todo lo
+       demás cae en dev, que es el default seguro: un preview pegándole a
+       producción mete alumnos de prueba en la base real. */
+    hostsProduccion: ['victoriaedu.com.mx', 'www.victoriaedu.com.mx'],
+
+    ambientes: {
+      produccion: {
+        base: 'https://edu.victoriadev.com',
+        /* Cerrados hasta que la app de producción termine. El examen porque
+           su flujo vive en la rama main de la plataforma y todavía no se
+           publica; la compra porque Mercado Pago sigue en sandbox y sin
+           credenciales en prod, así que cobraría con dinero de mentiras. */
+        examenAbierto: false,
+        compraAbierta: false,
+      },
+      dev: {
+        base: 'https://dev-edu.victoriadev.com',
+        examenAbierto: true,
+        compraAbierta: true,
+      },
+    },
+
+    /* id_publico del examen gratis. Son 10 reactivos sacados de los dos
+       simulacros de venta (6 de V1 y 4 de V2), sin timer. */
+    examenGratis: 'PUB-IPN-2026-GRATIS',
+    /* Slug del paquete 2x1 de $199 (los dos simulacros). */
+    paquete: 'ipn-2026',
+
     rutas: {
+      gratis: '/gratis/',
+      paquete: '/paquetes/',
       registro: '/registro',
       login: '/login',
       simulacros: '/simulacros',
-      examen: '/examenes/',
     },
   },
 

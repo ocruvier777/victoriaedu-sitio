@@ -117,9 +117,12 @@
     /* El CTA del navbar es "examen gratis", no "comprar": pedir dinero antes de
        demostrar algo es lo que estamos corrigiendo. `comprar` sigue existiendo
        para la página del producto, que es donde el alumno ya viene decidido. */
+    /* Con `data-plataforma` en vez del href a mano: el header se pinta antes
+       que `activarEnlacesPlataforma()`, así que este CTA pasa por la misma
+       puerta que los del HTML y respeta el cierre del ambiente. */
     var botones = {
-      examen:   '<a class="vic-btn vic-btn--primary vic-btn--md vic-navbar__cta" href="' + urlExamenGratis() + '" data-metrica="examen_gratis_clic" data-metrica-lugar="navbar">Haz el examen gratis</a>',
-      comprar:  '<a class="vic-btn vic-btn--primary vic-btn--md vic-navbar__cta" href="' + urlComprar() + '" data-metrica="comprar_clic" data-metrica-lugar="navbar">2 exámenes por ' + precioCorto('simulacro-ipn-2026') + '</a>',
+      examen:   '<a class="vic-btn vic-btn--primary vic-btn--md vic-navbar__cta" data-plataforma="examen" data-metrica="examen_gratis_clic" data-metrica-lugar="navbar">Haz el examen gratis</a>',
+      comprar:  '<a class="vic-btn vic-btn--primary vic-btn--md vic-navbar__cta" data-plataforma="comprar" data-metrica="comprar_clic" data-metrica-lugar="navbar">2 exámenes por ' + precioCorto('simulacro-ipn-2026') + '</a>',
       programas:'<a class="vic-btn vic-btn--secondary vic-btn--md vic-navbar__cta" href="tienda.html">Ver programas</a>',
       ninguno:  '',
     };
@@ -285,7 +288,14 @@
           '<span>© ' + new Date().getFullYear() + ' ' + C.marca.razonSocial +
             ' · Hecho con <span style="color:#E2818F" aria-label="cariño" role="img">&#10084;</span> por ' +
             '<a href="https://victoriadev.com" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">VictoriaDEV</a>' +
-            ' · <span class="vic-mono" style="opacity:.7">v' + (window.VERSION_SITIO || '—') + '</span></span>' +
+            ' · <span class="vic-mono" style="opacity:.7">v' + (window.VERSION_SITIO || '—') +
+              /* El ambiente se imprime SOLO cuando no es producción. Sirve
+                 para lo que más miedo da de resolver el destino por hostname:
+                 que un día la landing pública quede apuntando a dev y nadie
+                 se entere. Si esta etiqueta aparece en victoriaedu.com.mx,
+                 hay un host fuera de `hostsProduccion`. */
+              (ambientePlataforma() === 'produccion' ? '' : ' · plataforma dev') +
+            '</span></span>' +
           '<span>La preparación no garantiza admisión. Nuestros resultados se reportan por generación.</span>' +
         '</div>' +
       '</div>';
@@ -294,29 +304,46 @@
   /* --- Salto a la plataforma -----------------------------------------------
      Todos los CTAs de conversión del sitio salen por aquí. La gracia de tener
      un solo constructor es que el dominio y los parámetros de atribución viven
-     en un lugar: si mañana la plataforma se muda a examen.victoriaedu.mx, se
-     cambia `CONFIG.plataforma.base` y no hay que perseguir diez botones.
+     en un lugar: si mañana la plataforma se muda a examen.victoriaedu.com.mx,
+     se cambia `CONFIG.plataforma` y no hay que perseguir diez botones.
 
-     `next`   → a dónde mandar al alumno DESPUÉS de crear su cuenta. La
-                plataforma lo lee del query (ver INTEGRACION-PLATAFORMA.md, B3);
-                mientras Brando no lo implemente, el parámetro viaja pero se
-                ignora y el alumno aterriza en su dashboard.
-     `origen` → de dónde vino. Es lo único que nos va a permitir saber cuántos
-                registros trae el sitio (INTEGRACION-PLATAFORMA.md, B5).
+     `origen` → de dónde vino. Hoy la plataforma todavía NO lo persiste
+                (INTEGRACION-PLATAFORMA.md, B5), así que viaja y se ignora. Se
+                manda igual porque el día que lo lea es lo único que nos va a
+                decir cuántos registros trae el sitio, y así no hay que volver
+                a tocar ningún botón.
+
+     Ya no se manda `next=`: el examen gratis se presenta sin cuenta y el
+     desvío post-registro lo decide la plataforma con el claim pendiente.
   ------------------------------------------------------------------------ */
-  function urlPlataforma(ruta, params) {
+
+  /* Qué plataforma nos toca. Se decide por hostname para que las ramas main y
+     dev del sitio sean el MISMO código: solo el host cambia. Cualquier host
+     que no esté en la lista de producción cae en dev, que es el default
+     seguro — un preview pegándole a producción ensucia la base real. */
+  function ambientePlataforma() {
     var p = C.plataforma;
-    var url = p.base.replace(/\/+$/, '') + ruta;
+    var host = (window.location.hostname || '').toLowerCase();
+    return (p.hostsProduccion || []).indexOf(host) !== -1 ? 'produccion' : 'dev';
+  }
+
+  function plataformaActual() {
+    var p = C.plataforma;
+    return p.ambientes[ambientePlataforma()];
+  }
+
+  function urlPlataforma(ruta, params) {
+    var url = plataformaActual().base.replace(/\/+$/, '') + ruta;
     var query = new URLSearchParams(params || {}).toString();
     return query ? url + '?' + query : url;
   }
 
-  /* El CTA primario del sitio. Aterriza en el registro, no en el examen: el
-     examen exige cuenta, y es mejor decirlo con el botón que fingir que no. */
+  /* El CTA primario del sitio. Aterriza DIRECTO en el examen, sin pasar por el
+     registro: se contesta sin cuenta y la plataforma pide el correo hasta la
+     calificación. Pedirlo antes era el peaje viejo. */
   function urlExamenGratis() {
     var p = C.plataforma;
-    return urlPlataforma(p.rutas.registro, {
-      next: p.rutas.examen + p.examenGratis,
+    return urlPlataforma(p.rutas.gratis + p.examenGratis, {
       origen: 'landing-examen-gratis',
     });
   }
@@ -329,12 +356,15 @@
     return p ? '$' + Number(p.precio).toLocaleString('es-MX') : '';
   }
 
-  /* El CTA de compra. Manda al listado de simulacros de la plataforma, que es
-     donde vive el pago real (comprobante + validación). */
+  /* El CTA de compra. Manda a la pantalla del paquete 2x1, que es donde vive
+     el botón de pago (Mercado Pago Checkout Pro). Esa pantalla exige sesión:
+     al visitante sin cuenta la plataforma lo desvía a /login. No es lo ideal
+     —se pierde el destino, porque `next=` nunca se implementó— pero el camino
+     que sí queremos que recorra es el otro: examen gratis, resultado, upsell.
+     Ver INTEGRACION-PLATAFORMA.md, B3. */
   function urlComprar() {
     var p = C.plataforma;
-    return urlPlataforma(p.rutas.registro, {
-      next: p.rutas.simulacros,
+    return urlPlataforma(p.rutas.paquete + p.paquete, {
       origen: 'landing-compra',
     });
   }
@@ -360,10 +390,102 @@
      Mismo truco que los de WhatsApp: <a data-plataforma="examen|comprar"> se
      completa desde aquí. Así ningún HTML tiene el dominio escrito a mano y
      mudarse de dominio sigue siendo un cambio de una línea en config.js.
+
+     Y aquí se aplica el cierre. Cuando el ambiente tiene ese CTA en `false`,
+     el enlace NO recibe href: se marca "Pronto" y al tocarlo explica por qué
+     y ofrece WhatsApp, que es el canal que sí contesta hoy. Se hace así y no
+     con `.vic-btn--disabled` porque esa clase apaga `pointer-events`, y un
+     botón muerto que no dice nada convierte una visita en un abandono.
+
+     Tampoco se esconde el botón. La página entera está escrita alrededor de
+     "haz el examen gratis"; quitarlo dejaría huecos y párrafos hablando de un
+     botón que no está. Mejor decir "pronto" y quedarse con el contacto.
   ------------------------------------------------------------------------ */
+  function plataformaAbierta(cual) {
+    var amb = plataformaActual();
+    return cual === 'comprar' ? !!amb.compraAbierta : !!amb.examenAbierto;
+  }
+
+  /* El aviso del CTA cerrado. Una función y dos textos: lo que cambia entre el
+     examen y la compra es la primera línea, no la estructura. */
+  function avisoCerrado(cual) {
+    var esCompra = cual === 'comprar';
+    var wa = esCompra
+      ? 'Hola, quiero comprar los simulacros del IPN. ¿Cómo le hago mientras abre el pago en línea?'
+      : 'Hola, quiero presentar el examen gratis del IPN. ¿Me avisan cuando abra?';
+
+    modal(
+      '<div class="vic-stack" style="gap:16px">' +
+        /* .vic-tag y no .vic-pill: la pastilla del hero es blanca sobre fondo
+           oscuro, y dentro de este modal claro se vuelve invisible. */
+        '<div><span class="vic-tag">Todavía no abre</span></div>' +
+        '<h2 style="font-size:26px;line-height:1.2;margin:0">' +
+          (esCompra ? 'El pago en línea abre en unos días.' : 'El examen gratis abre en unos días.') +
+        '</h2>' +
+        '<p style="font-size:16px;line-height:1.6;margin:0">' +
+          (esCompra
+            ? 'Estamos terminando de conectar el cobro en la plataforma. No queremos cobrarte por un lugar que todavía no te podemos entregar bien.'
+            : 'Estamos terminando de conectarlo con la plataforma. Cuando abra son 10 reactivos reales del IPN y se contestan sin crear cuenta.') +
+        '</p>' +
+        '<p style="font-size:16px;line-height:1.6;margin:0">' +
+          'Si tienes prisa, escríbenos por WhatsApp: ahí sí contestamos hoy.' +
+        '</p>' +
+        '<a class="vic-btn vic-btn--wa vic-btn--lg vic-btn--block" target="_blank" rel="noopener" href="' +
+          escapar(enlaceWhatsApp(wa)) + '" data-metrica="wa_desde_cerrado" data-metrica-lugar="' +
+          (esCompra ? 'aviso-compra' : 'aviso-examen') + '">' +
+          'Escribirnos por WhatsApp' +
+        '</a>' +
+        '<a class="vic-btn vic-btn--secondary vic-btn--lg vic-btn--block" href="tienda.html">Ver los programas</a>' +
+      '</div>',
+      { titulo: esCompra ? 'El pago en línea abre en unos días' : 'El examen gratis abre en unos días', ancho: '460px' }
+    );
+  }
+
+  /* Se puede llamar de nuevo cuando algo inyecta CTAs después de cargar (el
+     popup, el navbar). La marca evita enganchar dos veces el mismo botón, que
+     abriría dos avisos encimados. */
   function activarEnlacesPlataforma() {
     document.querySelectorAll('[data-plataforma]').forEach(function (a) {
-      a.href = a.getAttribute('data-plataforma') === 'comprar' ? urlComprar() : urlExamenGratis();
+      if (a.dataset.plataformaListo) return;
+      a.dataset.plataformaListo = '1';
+
+      var cual = a.getAttribute('data-plataforma') === 'comprar' ? 'comprar' : 'examen';
+
+      if (plataformaAbierta(cual)) {
+        a.href = cual === 'comprar' ? urlComprar() : urlExamenGratis();
+        return;
+      }
+
+      /* Cerrado. Sin href no es un enlace, así que hay que devolverle el rol y
+         el teclado a mano: un <a> sin href sale del orden de tabulación. */
+      a.removeAttribute('href');
+      a.setAttribute('role', 'button');
+      a.setAttribute('tabindex', '0');
+      a.setAttribute('aria-haspopup', 'dialog');
+
+      /* El evento cambia de nombre: si el clic no sale del sitio, contarlo como
+         `examen_gratis_clic` inflaría el embudo con gente que nunca llegó a la
+         plataforma. Y medido aparte dice algo útil: cuánta demanda se está
+         quedando en la puerta mientras esto sigue cerrado. */
+      a.setAttribute('data-metrica', cual === 'comprar' ? 'comprar_cerrado' : 'examen_gratis_cerrado');
+
+      /* La marca "Pronto" solo en los botones. En un enlace dentro de un
+         párrafo, una pastilla a media frase se lee como error de maquetación;
+         ahí basta con que el aviso salga al tocarlo. */
+      if (a.classList.contains('vic-btn') && !a.querySelector('.vic-btn__pronto')) {
+        a.classList.add('vic-btn--pronto');
+        var marca = document.createElement('span');
+        marca.className = 'vic-btn__pronto';
+        marca.textContent = 'Pronto';
+        a.appendChild(marca);
+      }
+
+      a.addEventListener('click', function (e) { e.preventDefault(); avisoCerrado(cual); });
+      a.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        e.preventDefault();
+        avisoCerrado(cual);
+      });
     });
   }
 
@@ -833,6 +955,8 @@
     urlPlataforma: urlPlataforma,
     urlExamenGratis: urlExamenGratis,
     urlComprar: urlComprar,
+    ambientePlataforma: ambientePlataforma,
+    plataformaAbierta: plataformaAbierta,
     precioCorto: precioCorto,
     enlaceWhatsApp: enlaceWhatsApp,
     activarEnlacesWhatsApp: activarEnlacesWhatsApp,

@@ -1,240 +1,305 @@
 # Integración sitio → plataforma
 
-**Para Brando.** Qué cambió en el sitio, qué falta del lado de la plataforma y en qué
-orden. Todo lo del sitio ya está hecho y funcionando; lo de abajo es lo tuyo.
+**Para Brando y para Óscar.** Qué cambió, qué falta y qué hay que tocar el día que
+la plataforma de producción esté lista.
 
-- **Sitio:** `ocruvier777/victoriaedu-sitio` (estático) · `victoriaedu.mx`
-- **Plataforma:** `brandosanchezr/victoria-edu` rama `dev` · `edu.victoriadev.com`
+- **Sitio:** `ocruvier777/victoriaedu-sitio` · rama `main` → **victoriaedu.com.mx** (en línea)
+- **Plataforma:** `brandosanchezr/victoria-edu` · `edu.victoriadev.com` (prod) · `dev-edu.victoriadev.com` (dev)
+
+> El dominio del sitio es **victoriaedu.com.mx**, no `victoriaedu.mx`. Ese
+> segundo no existe: no resuelve. Estuvo escrito en los `canonical` de dos
+> páginas y en este documento; ya se corrigió. Si vuelve a aparecer, es un
+> error de copiar y pegar, no un dominio alterno.
 
 ---
 
-## Por qué
+## Estado a hoy (14 de agosto de 2026)
 
-El sitio pedía dinero antes de demostrar nada: el botón principal era "Comprar
-simulacro — $299" y llevaba a un checkout propio. Ese checkout era de mentiras —
-guardaba los pedidos en `localStorage`, así que se perdían al cambiar de navegador y
-nadie más que ese alumno los veía.
+El embudo que describía la versión anterior de este documento —registro primero,
+examen después, con `?next=`— **ya no es el que existe**. Brando lo resolvió de
+otra forma, y mejor: el examen se presenta sin cuenta y la cuenta se pide para
+ver la calificación. Este documento describe el que sí hay.
 
-Tú ya construiste el flujo real en la plataforma (issue #74): registro público con
-auto-login, simulacros sueltos sin curso, comprobante y validación por admin. El sitio
-lo estaba duplicando, peor.
+| # | Pendiente original | Estado |
+|---|---|---|
+| B1 | Crear el examen demo | ✅ **Hecho, con otro id.** Es `PUB-IPN-2026-GRATIS`, no `SIM-IPN-2026-DEMO` |
+| B2 | "Comprar — $0" en el listado | ⚪ **Sin efecto.** El examen gratis ya no es un simulacro de $0 en `/simulacros`; vive aparte |
+| B3 | Soportar `?next=` | ❌ **No se hizo, y ya casi no hace falta.** Ver abajo: solo estorba en el CTA de compra |
+| B4 | Precio a $199 | ✅ **Hecho.** `migrate_precio_sim_ipn_199.py` baja V1/V2 de $249 a $199, y el paquete `ipn-2026` cuesta $199 |
+| B5 | Atribución (`origen`) | ❌ **Pendiente.** Nadie lee ni guarda el parámetro |
+| B6 | Rate limit del registro | ❌ **Pendiente**, y ahora pesa más: sigue en 5 altas por IP por hora |
+| B7 | `/registro` en `publicPaths` | ⚪ Cosmético, sin cambio |
 
-Entonces: **el sitio deja de cobrar y se vuelve el escaparate.** El botón principal
-ahora es "Haz el examen gratis" y todo lo que implique una cuenta —presentar, ver
-respuestas, pagar— salta a la plataforma. El registro es el peaje: como el endpoint de
-revisión ya es `require_role(["alumno"])`, no hay forma de ver las respuestas sin
-cuenta. Eso era exactamente lo que queríamos y ya estaba construido.
+---
+
+## El embudo que existe hoy
 
 ```
-victoriaedu.mx  "Haz el examen gratis"
+victoriaedu.com.mx   "Haz el examen gratis"
       ↓
-edu.victoriadev.com/registro?next=/examenes/SIM-IPN-2026-DEMO&origen=landing-examen-gratis
-      ↓  crea cuenta → auto-login → redirige a next=
-/examenes/SIM-IPN-2026-DEMO        ← 10 reactivos, precio 0, standalone
-      ↓
-/examenes/SIM-IPN-2026-DEMO/resultados/{intentoId}
-      ↓  respuestas + explicaciones  ← esto es el premio por registrarse
-/simulacros  →  "Comprar — $199"  →  comprobante  →  validas  →  desbloqueado
+edu.victoriadev.com/gratis/PUB-IPN-2026-GRATIS     ← SIN cuenta, 10 reactivos
+      ↓  entrega → la plataforma guarda un claim_token de 48 h en su navegador
+/registro  ·  /login  ·  o Google
+      ↓  auth.tsx ve el claim pendiente y desvía solo
+/gratis/resultado    → POST /intentos/reclamar → aciertos y porcentaje
+      ↓  banner de upsell
+/paquetes/ipn-2026   → "Pagar $199" → Mercado Pago Checkout Pro → webhook → acceso
 ```
+
+**Por qué es mejor que el anterior.** El peaje ya no está en la puerta sino
+después de veinte minutos de examen: cuando le pedimos el correo, el alumno ya
+invirtió algo y el registro le cuesta menos. Y el sitio puede prometer algo que
+casi nadie promete —"empiezas sin crear cuenta"— que es un argumento de venta,
+no una limitación.
+
+### Lo que el resultado gratis SÍ entrega
+
+Solo tres números: **aciertos, total y porcentaje** (`reclamar_intento`,
+`examen_service.py`). No hay desglose por materia, no hay revisión de respuestas
+y no hay explicaciones.
+
+**Esto obligó a corregir el sitio.** Prometía en siete lugares "ves cada
+respuesta explicada" y "en qué materia lo pierdes", que era verdad del embudo
+viejo y dejó de serlo. Ya está reescrito: el examen gratis da tu puntaje, y el
+desglose, la revisión y el plan se anuncian como parte del simulacro completo.
+Si algún día el resultado gratis devuelve más, se puede volver a prometer —
+pero se promete **después** de que exista, no antes.
 
 ---
 
 ## Contrato de URLs
 
-Esto es lo único que el sitio le pide a la plataforma. Vive en
-`assets/js/config.js` → `CONFIG.plataforma`, y se construye en `assets/js/ui.js`
-(`urlExamenGratis()` / `urlComprar()`).
-
-| Parámetro | Valor | Qué esperamos |
-|---|---|---|
-| `next` | `/examenes/SIM-IPN-2026-DEMO` o `/simulacros` | A dónde mandar al alumno **después** de crear la cuenta |
-| `origen` | `landing-examen-gratis` / `landing-compra` | De dónde vino, para poder atribuir |
-
-Las dos URLs exactas que el sitio genera hoy:
+Vive en `assets/js/config.js` → `CONFIG.plataforma`, y se construye en
+`assets/js/ui.js` (`urlExamenGratis()` / `urlComprar()`). Ningún HTML del sitio
+tiene el dominio escrito a mano.
 
 ```
-https://edu.victoriadev.com/registro?next=%2Fexamenes%2FSIM-IPN-2026-DEMO&origen=landing-examen-gratis
-https://edu.victoriadev.com/registro?next=%2Fsimulacros&origen=landing-compra
+{base}/gratis/PUB-IPN-2026-GRATIS?origen=landing-examen-gratis
+{base}/paquetes/ipn-2026?origen=landing-compra
 ```
 
-Los parámetros ya viajan. Hoy la plataforma los ignora y el alumno cae en `/dashboard`
-—el embudo funciona a medias pero no se rompe—, así que puedes hacer B1…B4 en el orden
-que quieras sin coordinarte conmigo.
+`origen` viaja y **hoy se ignora** (B5). Se manda igual porque el día que la
+plataforma lo persista, no habrá que tocar ningún botón del sitio.
 
-Si cambias el `id_publico` del examen demo o el dominio, avísame: son dos líneas en
-`config.js` del sitio y no hace falta tocar ningún botón.
+**Si cambias `id_publico` del examen o el slug del paquete, avísame:** son dos
+líneas en `config.js` y no hace falta tocar ningún botón ni ningún HTML.
+
+### Ambientes: el sitio los decide por hostname
+
+| Host del sitio | Plataforma con la que habla |
+|---|---|
+| `victoriaedu.com.mx`, `www.victoriaedu.com.mx` | `edu.victoriadev.com` (producción) |
+| cualquier otro: localhost, previews, la rama dev | `dev-edu.victoriadev.com` |
+
+Se hizo así para que las ramas `main` y `dev` del sitio **no diverjan**: son el
+mismo código servido en dos lugares, así que un merge nunca pelea por la línea
+del dominio. El default para hosts desconocidos es **dev**, que es el lado
+seguro: una preview pegándole a producción mete alumnos de prueba en la base
+real.
+
+Como red de seguridad, el pie imprime `· plataforma dev` cuando el ambiente
+resuelto no es producción. Si esa etiqueta aparece en victoriaedu.com.mx, hay un
+host fuera de `hostsProduccion` y hay que agregarlo.
 
 ---
 
-## B1 · Crear el examen demo · **bloqueante**
+## ⚠️ Producción está CERRADA a propósito
 
-10 reactivos, gratis, presentable sin curso.
+En `victoriaedu.com.mx` los dos CTAs están apagados desde `config.js`:
 
+```js
+produccion: { base: '…', examenAbierto: false, compraAbierta: false }
 ```
-id_publico:  SIM-IPN-2026-DEMO
-tipo:        simulacro
-precio:      0
-standalone:  true
-publicado:   true
-duracion_min: 20
-```
+
+Los botones no desaparecen —la página entera está escrita alrededor de ellos—:
+se marcan **"Pronto"** y al tocarlos abren un aviso que explica y ofrece
+WhatsApp, que es el canal que sí contesta hoy. Los clics se miden aparte
+(`examen_gratis_cerrado`, `comprar_cerrado`, `wa_desde_cerrado`) para no inflar
+el embudo con gente que nunca salió del sitio, y para saber cuánta demanda se
+está quedando en la puerta.
+
+Por qué cada uno:
+
+- **El examen** porque el flujo `/gratis` → claim → resultado viene de la rama
+  `dev` de la plataforma y la de producción todavía no lo da por terminado. La
+  ruta ya responde 200 en prod, pero eso no es lo mismo que estar listo.
+- **La compra** porque **Mercado Pago sigue en sandbox**: `mp_modo` viene con
+  default `"sandbox"` y las credenciales no están puestas en uat/prod. Un botón
+  de pago que cobra con dinero de mentiras es peor que un botón apagado.
+
+---
+
+## Para poner esto en producción
+
+En orden. Los tres primeros son de Brando; el último es de un minuto y es del
+sitio.
+
+### 1 · Plataforma: publicar el flujo del examen gratis en producción
+
+Que `main` de la plataforma quede desplegada en `edu.victoriadev.com` con:
+
+- `/gratis/{examenId}` y `/gratis/resultado` sirviendo,
+- `GET|POST /api/v1/public/examenes/…` y `POST /api/v1/intentos/reclamar` vivos,
+- el examen `PUB-IPN-2026-GRATIS` creado en la base de **producción**
+  (`python -m scripts.crear_examen_publico_gratis`, es idempotente),
+- el paquete `ipn-2026` disponible en `GET /api/v1/paquetes/ipn-2026`.
+
+Comprobación rápida, sin abrir el navegador:
 
 ```bash
-python -m scripts.import_examen_ipn seeds/ipn-2026/demo_10.json \
-  "Diagnóstico IPN — 10 reactivos" --id-publico SIM-IPN-2026-DEMO \
-  --curso IPN --precio 0 --duracion-min 20 --esperado 10
+curl -s https://edu.victoriadev.com/api/v1/public/examenes/PUB-IPN-2026-GRATIS \
+  | head -c 200                       # debe traer preguntas, no 404
 ```
 
-Luego agrega `"SIM-IPN-2026-DEMO"` a `SIMULACROS_OBJETIVO` en
-`backend/scripts/mark_standalone_simulacros.py:37` y corre el script.
+### 2 · Plataforma: Mercado Pago de sandbox a producción
 
-**La buena noticia:** no necesitas ninguna ruta pública nueva en FastAPI.
-`_verificar_acceso_examen` (`backend/app/services/examen_service.py:24-58`) ya deja
-pasar este caso tal cual está — `standalone` se salta el check de curso, y `precio > 0`
-es falso, así que nunca llega a consultar `desbloqueos_simulacro`. Un alumno recién
-registrado, con `cursos: []`, entra directo.
+- `MP_ACCESS_TOKEN` de producción y `MP_WEBHOOK_SECRET` en el `.env` de prod.
+- `MP_MODO=produccion` (con `sandbox` se usa el `init_point` de pruebas).
+- La `notification_url` del webhook apuntando al dominio de **producción**, y
+  dada de alta en el panel de MP.
+- **Una compra real de $199 de punta a punta** antes de anunciar nada. El
+  entitlement se otorga por webhook, no en el navegador: si el webhook no llega,
+  el alumno paga y no se le desbloquea nada, y eso se descubre con dinero de
+  verdad o no se descubre.
+- Confirmar que `examenes.precio` de `SIM-IPN-2026-V1` y `V2` dice **199** en la
+  base de producción (correr `migrate_precio_sim_ipn_199.py` ahí). Si dice otra
+  cosa, `desbloquear_simulacro` responde `monto_invalido` y **se rechazan todos
+  los pagos**.
 
-**Dos cosas de contenido, no de código:**
+### 3 · Plataforma: subir el rate limit del registro (B6)
 
-1. Los reactivos de `backend/seeds/ipn-2026/examen_1.json` tienen `"explicacion": null`.
-   Si el demo hereda eso, el premio por registrarse es un número pelón y el embudo
-   pierde su razón de ser — la promesa del sitio es literalmente "ves cada respuesta
-   explicada". Las 10 explicaciones hay que escribirlas.
-2. Esos 10 reactivos quedan quemados: cualquiera se registra y los ve. Mejor que no
-   salgan de los 139 de V1/V2.
+`REGISTRO_PUBLICO_LIMITE = 5` por IP por hora (`backend/app/routers/auth.py`).
+Con el examen gratis abierto al público esto es poco: un salón entero sale por
+la misma IP, y ahora **todos** tienen que registrarse para ver su calificación —
+antes se registraba solo el que ya venía convencido. El sexto alumno del grupo
+se topa con un 429 justo después de contestar veinte minutos de examen.
 
----
+### 4 · Sitio: abrir los botones
 
-## B2 · Un renglón en el listado · **bloqueante**
+Una línea por CTA en `assets/js/config.js`:
 
-`backend/app/services/examen_service.py:786`, dentro de `obtener_simulacros_sueltos`:
-
-```python
-# antes
-desbloqueado = desbloqueos_map.get(eid) == "activo"
-# después
-desbloqueado = ex["precio"] <= 0 or desbloqueos_map.get(eid) == "activo"
+```js
+produccion: { base: '…', examenAbierto: true, compraAbierta: true },
 ```
 
-El listado calcula `bloqueado` mirando **solo** `desbloqueos_simulacro`, sin considerar
-el precio. El gate de acceso sí considera el precio (`examen_service.py:47`). Esa
-diferencia hace que el demo aparezca en `/simulacros` con un botón **"Comprar — $0"**
-aunque entrar por la liga directa funcione perfecto.
+Y subir el `?v=` en los HTML más `VERSION_SITIO` (ver README). Se puede abrir
+solo el examen y dejar la compra cerrada: son flags independientes a propósito,
+porque el examen depende del punto 1 y la compra del punto 2.
 
-El deep link del sitio no pasa por el listado, así que el embudo funciona sin este fix.
-Pero cualquiera que llegue a `/simulacros` por su cuenta ve el botón absurdo.
-
----
-
-## B3 · Soportar `?next=` en registro y login · **bloqueante**
-
-Hoy no se lee ni un query param en toda la app (lo confirmé con grep) y el destino
-post-login está escrito a mano. Sin esto, el alumno que da clic en "examen gratis"
-termina en `/dashboard` mirando un tablero vacío, sin el examen que le prometimos.
-
-Cuatro puntos:
-
-1. **`frontend/src/lib/auth.tsx:134-158`** — `login(correo, password, dest?)`. Usar
-   `dest` en lugar del `/dashboard` fijo cuando venga.
-
-   Valídalo antes de usarlo: solo rutas relativas del mismo origen —que empiece con `/`
-   y **no** con `//`—. Si no cumple, ignóralo y usa el default. Sin ese guardarrail
-   cualquiera puede mandar `?next=https://sitio-falso.com` y tienes un open redirect
-   desde tu página de login, que es el peor lugar posible para tenerlo.
-
-2. **`frontend/src/components/auth/RegistroForm.tsx:38`** — leer
-   `useSearchParams().get("next")` y pasarlo al `login()` del auto-registro.
-
-3. **`frontend/src/app/registro/page.tsx:16-18`** y **`login/page.tsx:15-19`** — el
-   `router.push("/dashboard")` del caso "ya venía autenticado" también debe respetar
-   `next`. Si no, el alumno que ya tiene sesión abierta en otra pestaña nunca llega al
-   examen.
-
-4. **Los links cruzados registro ↔ login** (`registro/page.tsx:51` y su gemelo) tienen
-   que **conservar** `next` y `origen`. Es el caso más fácil de olvidar y pega justo al
-   alumno que ya nos conoce: da clic en "¿Ya tienes cuenta? Inicia sesión", se pierden
-   los parámetros y acaba en el dashboard.
+**Antes de abrir, recorrer el flujo completo contra dev** (ver más abajo). El
+sitio ya apunta a dev desde cualquier host que no sea victoriaedu.com.mx, así
+que basta con levantarlo en local o desplegar la rama `dev`.
 
 ---
 
-## B4 · Precio a $199 · **bloqueante**
+## Lo que sigue pendiente del lado de la plataforma
 
-El sitio ya anuncia **$199** en todos lados (`CONFIG.CATALOGO` y la página del
-producto). Necesito que `examenes.precio` de `SIM-IPN-2026-V1` y `SIM-IPN-2026-V2`
-diga exactamente lo mismo.
+### B3 · `?next=` — ya solo estorba en el CTA de compra
 
-No es cosmético: `desbloquear_simulacro` (`examen_service.py:618`) valida
-`monto == examen["precio"]` exacto y devuelve `monto_invalido` si no coincide. Si la
-base dice 249 y el sitio anuncia 199, **se rechazan todos los pagos**.
+El examen gratis ya no lo necesita. Pero el botón "2 exámenes por $199" del
+sitio manda a `/paquetes/ipn-2026`, que es una pantalla autenticada: al
+visitante sin sesión la plataforma lo rebota a `/login` **sin destino**, así que
+después de entrar aterriza en el dashboard y tiene que volver a buscar el
+paquete.
 
-`import_examen_ipn.py:283` tiene `--precio` con default `249.0`, así que lo más probable
-es que ese sea el valor que está hoy en Mongo. **Confírmame el valor real antes de que
-publiquemos**, y si el precio acordado cambia, dime y lo muevo en el sitio — ahí está en
-un solo lugar.
+No es urgente —el camino que queremos que recorra es el otro: examen, resultado,
+upsell— pero es el CTA que trae al que ya viene decidido a pagar, que es el más
+caro de perder.
 
----
+Cuando lo hagas, el guardarraíl de siempre: aceptar solo rutas relativas del
+mismo origen (que empiece con `/` y **no** con `//`). Sin eso, `?next=https://sitio-falso.com`
+es un open redirect desde tu página de login, que es el peor lugar posible.
 
-## B5 · Atribución · no bloqueante, pero es la única forma de medir
+### B5 · Atribución (`origen`)
 
-Sin esto no podemos saber cuántos registros trae el sitio. Y sin ese número no hay forma
-de decidir si vale la pena gastar en tráfico.
+Sin esto no sabemos cuántos registros trae el sitio, y sin ese número no hay
+forma de decidir si vale la pena gastar en tráfico.
 
-- `origen: str = ""` en `RegistroPublico` (`backend/app/models/user.py:17-24`)
-- Persistirlo en el documento de usuario (`backend/app/services/auth_service.py:74-87`)
-- `RegistroForm` lo lee del query y lo manda en el body
+- `origen: str = ""` en `RegistroPublico` (`backend/app/models/user.py`)
+- Persistirlo en el documento de usuario (`auth_service.py`)
+- Que `RegistroForm` lo lea del query y lo mande en el body
 - Mostrarlo en `/admin/usuarios`
 
-El sitio ya manda `?origen=landing-examen-gratis` / `landing-compra`.
+Ojo: con el flujo nuevo el alumno llega a `/registro` **desde la plataforma**
+(después del examen), no desde el sitio, así que el `origen` que manda la landing
+se pierde en el camino. Para que la atribución sirva, el que tiene que viajar es
+el del examen: guardarlo junto al intento anónimo y copiarlo al usuario en el
+reclamo. Si no, todo el tráfico del sitio va a aparecer como directo.
+
+### El endpoint de leads (`POST /api/v1/leads`)
+
+Sin cambios: sigue sin existir y los correos de las listas de espera se siguen
+guardando en el `localStorage` del visitante. Ver la sección del final.
 
 ---
 
-## B6 · Rate limit del registro · no bloqueante, pero explota en el peor momento
+## Verificación del flujo completo (contra dev)
 
-`registro-publico` permite **5 altas por IP por hora**
-(`REGISTRO_PUBLICO_LIMITE`, `backend/app/routers/auth.py:115-133`).
+El sitio ya apunta a dev desde cualquier host que no sea victoriaedu.com.mx: se
+levanta en local (`python3 -m http.server 8000`) o se despliega la rama `dev`, y
+no hay que cambiar ninguna configuración.
 
-Si Emiliano o Óscar meten esto en un live, o si un grupo de prepa lo abre desde el wifi
-de la escuela, el sexto alumno se topa con un error. Todos salen por la misma IP. Súbelo
-antes de mandarle tráfico.
+1. **Alumno nuevo, desde el celular** → "Haz el examen gratis" → cae directo en
+   los 10 reactivos, **sin que le pidan nada**.
+2. Contesta y entrega → le piden crear cuenta o entrar con Google.
+3. Se registra → **cae en `/gratis/resultado` con su calificación**, no en el
+   dashboard. (Aquí es donde se rompe si el claim no viaja.)
+4. **Cierra el navegador antes de registrarse y vuelve después** → el claim vive
+   48 h en `localStorage`: debe seguir pudiendo reclamarlo. Y pasadas las 48 h
+   debe ver el mensaje de expirado, no un error.
+5. **El mismo claim desde otra cuenta** → no debe revelar nada.
+6. Banner de upsell → `/paquetes/ipn-2026` → **compra real de $199** de punta a
+   punta: pago, webhook, y los dos simulacros desbloqueados.
+7. **Sin cuenta, tocar "2 exámenes por $199"** → hoy aterriza en el dashboard
+   después del login. Es B3; confirmar que al menos no se queda en blanco.
 
 ---
 
-## B7 · `/registro` en `publicPaths` · cosmético
+## Leads de los cursos que todavía no abren — a dónde llegan hoy
 
-`frontend/src/middleware.ts:4` → `const publicPaths = ["/login", "/registro"];`
+**Respuesta corta: a ningún lado.** Se guardan en el `localStorage` del navegador
+**del propio visitante**. No hay servidor de por medio, no se envía nada, y nadie
+del equipo los ve nunca.
 
-Hoy el middleware siempre hace `NextResponse.next()`, así que no rompe nada. Vale la
-pena por consistencia, antes de que alguien lo endurezca y se lleve el registro entre
-las patas.
+`admin.html` los muestra, pero solo los que se capturaron en esa misma máquina y
+ese mismo navegador. Si un alumno deja su correo desde su celular, ahí no aparece
+— y si borra el caché, desaparecen también para él.
 
----
+Esto importa porque el sitio **sí les promete algo**: el formulario dice *"Un solo
+correo cuando abra"*. Esa promesa hoy no se puede cumplir.
 
-## Nuevo: lo que el sitio ya está prometiendo
+| Dónde | `origen` | Qué prometemos |
+|---|---|---|
+| "Avísame cuando abra" — curso de matemáticas y curso de admisión | `lista-espera` | Un correo cuando abra la generación |
+| "Avísenme de cambios" — convocatoria de segunda vuelta | `convocatoria-segunda-vuelta` | Un correo si el IPN mueve fechas |
 
-Estos dos cambios de producto ya están publicados en el sitio. No hay nada que
-programar hoy en la plataforma, pero conviene que sepas lo que se está
-vendiendo, porque acaba aterrizando en tu lado.
+Los tres viven en `assets/js/api.js` → `registrarLead()`, y el formulario está en
+`assets/js/productos.js` y `assets/js/pagina-convocatoria.js`.
 
-**Taller de ejercicios en vivo cada fin de semana.** El sitio dice que viene
-incluido en los $199 del simulacro, que corre hasta el día del examen y que
-pasa dentro de la plataforma. Hoy la plataforma tiene clases en vivo
-(`clases_vivo`, Owncast) pero atadas a un curso; el simulacro standalone no
-tiene curso. Cuando toque, hay que decidir cómo se le da acceso a un alumno con
-`cursos: []` — probablemente lo más limpio sea que el desbloqueo del simulacro
-también habilite el taller.
+### Lo que hace falta de tu lado
 
-**Pasarela de pago.** El sitio dejó de nombrar SPEI, comprobante y validación
-manual: ahora dice "pagas desde la plataforma" y "al momento de pagar ves los
-métodos disponibles". Esto es a propósito, para que cuando conectes la pasarela
-no haya que reescribir el copy. Ojo con **B4**: mientras siga vivo
-`desbloquear_simulacro`, el monto se valida exacto contra `examenes.precio`.
+Un `POST /api/v1/leads` público. Con eso el sitio deja de guardar en el navegador
+y empieza a mandarlos de verdad.
 
-**Curso de Admisión: "pago único hasta que te quedes".** Si el alumno no
-alcanza lugar, sigue en el curso la siguiente convocatoria sin volver a pagar.
-Es una promesa comercial, no una funcionalidad — pero implica que un alumno
-puede reaparecer en la generación siguiente sin un pago nuevo asociado, y eso
-sí toca la forma de contarlos. Está marcado como `proximamente`, así que no
-corre prisa.
+```
+POST /api/v1/leads          (sin auth, como registro-publico)
+{ "correo": "...",          // obligatorio
+  "nombre": "",             // opcional
+  "telefono": "",           // opcional
+  "origen": "lista-espera", // de dónde salió
+  "producto": "curso-matematicas-ipn-2027" }   // opcional
+```
+
+Dos cosas que este endpoint sí necesita y el resto de la integración no:
+
+- **Rate limit**, el mismo criterio que `registro-publico` (y ojo con B6).
+- **CORS con el dominio del sitio.** Es la única parte de toda la integración
+  donde el sitio llama a tu API desde el navegador; todo lo demás son links
+  normales. Hoy `allow_origins=[settings.frontend_url]` acepta un solo origen,
+  así que habría que admitir `https://victoriaedu.com.mx` además.
+
+Mientras tanto, si de verdad hace falta capturar a esa gente, el canal que sí
+llega es el WhatsApp del pie y del botón flotante.
 
 ---
 
@@ -243,7 +308,7 @@ corre prisa.
 Hay una 404 diseñada y funcionando en el sitio (`404.html`). Va en dos sitios
 distintos y cada uno pide algo diferente.
 
-### En el sitio, cuando lo montes en el dominio real
+### En el sitio
 
 nginx **no** sirve una página de error personalizada por su cuenta: sin esto
 devuelve su pantalla blanca de "404 Not Found".
@@ -262,8 +327,6 @@ relativas se resolverían contra `/guias/` y no cargaría ni el CSS ni el logo.
 Next 14 App Router ya tiene su convención: **`frontend/src/app/not-found.tsx`**.
 Ahí NO va el menú del sitio — la app tiene su propio layout, y el visitante
 puede estar logueado.
-
-Lo que cambia respecto a la versión del sitio:
 
 | | Sitio | App |
 |---|---|---|
@@ -301,93 +364,27 @@ Dos detalles que costaron y evitarás repetir:
 
 ## Fuera de alcance — no toques esto
 
-- **CORS / `FRONTEND_URL`.** No hace falta. Todos los saltos son links normales; el
-  sitio nunca llama a tu API desde el navegador. Déjalo con un solo origen.
-- **Login con Google.** No bloquea el embudo, hazlo cuando quieras. Solo que respete el
-  mismo `?next=` de B3.
-- **Pasarela de pago.** Sigue siendo comprobante + validación manual. No cambia nada.
+- **CORS / `FRONTEND_URL`.** Solo hace falta para el endpoint de leads, cuando
+  exista. Todos los demás saltos son links normales; el sitio nunca llama a tu
+  API desde el navegador.
+- **Login con Google.** Ya está y ya sirve en el flujo del examen gratis.
 
 ---
 
-## Leads de los cursos que todavía no abren — a dónde llegan hoy
+## Lo que hay que decidir aparte (no es de Brando, es de los tres)
 
-**Respuesta corta: a ningún lado.** Se guardan en el `localStorage` del navegador
-**del propio visitante**. No hay servidor de por medio, no se envía nada, y nadie del
-equipo los ve nunca.
+El sitio es `victoriaedu.com.mx` y la plataforma es `edu.victoriadev.com`. El
+alumno da clic en "examen gratis" y salta a un dominio que no se parece a la
+marca — y con el flujo nuevo eso pasa **antes** de que le pidamos nada, así que
+pega menos que antes. Pero cuando llega el momento de registrarse, sigue estando
+en un dominio ajeno.
 
-`admin.html` los muestra, pero solo los que se capturaron en esa misma máquina y ese
-mismo navegador. Si un alumno deja su correo desde su celular, ahí no aparece — y si
-borra el caché, desaparecen también para él.
-
-Esto importa porque el sitio **sí les promete algo**: el formulario dice *"Un solo
-correo cuando abra"*. Esa promesa hoy no se puede cumplir.
-
-### Qué formularios están en esa situación
-
-| Dónde | `origen` | Qué prometemos |
-|---|---|---|
-| "Avísame cuando abra" — curso de matemáticas y curso de admisión | `lista-espera` | Un correo cuando abra la generación |
-| "Avísenme de cambios" — convocatoria de segunda vuelta | `convocatoria-segunda-vuelta` | Un correo si el IPN mueve fechas |
-
-Los tres viven en `assets/js/api.js` → `registrarLead()`, y el formulario está en
-`assets/js/productos.js` y `assets/js/pagina-convocatoria.js`.
-
-### Lo que hace falta de tu lado
-
-Un `POST /api/v1/leads` público. Con eso el sitio deja de guardar en el navegador y
-empieza a mandarlos de verdad.
-
-```
-POST /api/v1/leads          (sin auth, como registro-publico)
-{ "correo": "...",          // obligatorio
-  "nombre": "",             // opcional
-  "telefono": "",           // opcional
-  "origen": "lista-espera", // de dónde salió
-  "producto": "curso-matematicas-ipn-2027" }   // opcional
-```
-
-Dos cosas que este endpoint sí necesita y el resto de la integración no:
-
-- **Rate limit**, el mismo criterio que `registro-publico` (y ojo con B6: 5 por IP por
-  hora es poco para un salón entero).
-- **CORS con el dominio del sitio.** Es la única parte de toda la integración donde el
-  sitio llama a tu API desde el navegador; todo lo demás son links normales. Hoy
-  `allow_origins=[settings.frontend_url]` acepta un solo origen, así que habría que
-  admitir dos.
-
-No bloquea el lanzamiento del simulacro —esos alumnos sí se registran en la
-plataforma—, pero mientras no exista, cada correo que capturamos de los cursos se
-pierde.
-
----
-
-## Verificación
-
-Cuando termines B1–B4, avísame y lo probamos juntos. Yo apunto el sitio a
-`dev-edu.victoriadev.com` (una línea en `config.js`) y recorremos:
-
-1. **Alumno nuevo** → clic en "examen gratis" → registro → **cae en el examen**, no en
-   el dashboard → contesta → ve resultados con respuestas y explicaciones.
-2. **Alumno con cuenta, deslogueado** → clic → "¿Ya tienes cuenta? Inicia sesión" →
-   login → **cae en el examen** (este es el que se rompe si se pierden los params).
-3. **Alumno ya logueado en otra pestaña** → clic → entra directo al examen.
-4. **`/simulacros`** muestra "Presentar" en el demo, no "Comprar — $0".
-5. **Compra real de prueba de $199** de punta a punta contra dev: que
-   `desbloquear_simulacro` no responda `monto_invalido`.
-6. **Móvil**, que es por donde va a llegar casi todo el tráfico.
-
----
-
-## Lo que hay que decidir aparte (no es tuyo, es de los tres)
-
-El sitio es `victoriaedu.mx` y la plataforma es `edu.victoriadev.com`. El alumno da clic
-en "examen gratis" y salta a un dominio que no se parece a la marca, justo en el paso
-donde le pedimos nombre, correo, teléfono y contraseña.
-
-Eso pega exactamente donde nos duele: el argumento para hacer todo este cambio fue que
-nadie da sus datos sin haber visto nada. Un dominio ajeno en el momento del registro
-juega en contra de eso.
-
-No bloquea el lanzamiento, pero la solución es barata: `examen.victoriaedu.mx` apuntando
-al mismo nginx, o servir la plataforma bajo `victoriaedu.mx/app`. Config de nginx más un
+La solución es barata: `examen.victoriaedu.com.mx` apuntando al mismo nginx, o
+servir la plataforma bajo `victoriaedu.com.mx/app`. Config de nginx más un
 certificado. Vale la pena antes de gastar el primer peso en tráfico.
+
+**Dos correos que hay que confirmar.** `CONFIG.marca` publica
+`hola@victoriaedu.mx` e `instituciones@victoriaedu.mx`, en el dominio que no
+resuelve. Si el correo vive en `victoriaedu.com.mx`, hay que cambiarlos; si vive
+aparte, hay que verificar que esas cuentas reciben. No se tocaron porque es una
+decisión de ustedes, no un typo evidente como los `canonical`.

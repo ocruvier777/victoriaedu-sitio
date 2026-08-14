@@ -121,13 +121,17 @@
       var lista = opts.horizontal ? puntosDe(p) : (p.incluye || []);
       cuerpo = '<p style="font-size:16px;line-height:1.6;margin:0 0 20px">' + esc(p.resumen) + '</p>' +
         listaCheck(lista);
+      // `data-plataforma` en vez del href a mano: estas tarjetas se pintan
+      // desde JS, así que hay que pasarlas por la misma puerta que el HTML
+      // (ui.js) para que respeten el cierre del ambiente. Quien las pinta
+      // llama a activarEnlacesPlataforma() al terminar.
       accion = disponible
-        ? '<a class="vic-btn vic-btn--primary vic-btn--lg" href="' + esc(window.VicUI.urlComprar()) +
-            '" data-metrica="comprar_clic" data-metrica-lugar="tienda">' +
+        ? '<a class="vic-btn vic-btn--primary vic-btn--lg" data-plataforma="comprar"' +
+            ' data-metrica="comprar_clic" data-metrica-lugar="tienda">' +
             (p.precioLista && p.precioLista > p.precio ? 'Llévate los dos por ' : 'Comprar — ') +
             esc(window.VicUI.precioCorto(p.id)) + '</a>' +
-          '<a class="vic-btn vic-btn--secondary vic-btn--lg" href="' + esc(window.VicUI.urlExamenGratis()) +
-            '" data-metrica="examen_gratis_clic" data-metrica-lugar="tienda">Pruébalo gratis primero</a>' +
+          '<a class="vic-btn vic-btn--secondary vic-btn--lg" data-plataforma="examen"' +
+            ' data-metrica="examen_gratis_clic" data-metrica-lugar="tienda">Pruébalo gratis primero</a>' +
           (p.pagina ? '<a class="vic-producto__link" href="' + esc(p.pagina) + '">Ver el programa completo →</a>' : '')
         : '<button class="vic-btn vic-btn--secondary vic-btn--lg" type="button" data-lista-espera="' +
             esc(p.id) + '">Avísame cuando abra</button>';

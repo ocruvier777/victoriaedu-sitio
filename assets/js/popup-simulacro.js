@@ -62,20 +62,26 @@
         '<button class="vic-modal__cerrar" type="button" aria-label="Cerrar">✕</button>' +
         '<div class="vic-popup__cinta">Gratis · 10 reactivos</div>' +
         '<h2 id="popupTitulo" style="font-size:26px;line-height:1.2;margin:0 0 12px">Ya sabes cuánto pide tu carrera. ¿Sabes cuánto sacas tú?</h2>' +
-        '<p style="font-size:16px;line-height:1.6;margin:0 0 20px">Contesta 10 reactivos reales del examen del IPN y mira tu resultado con las respuestas explicadas una por una. No cuesta nada.</p>' +
+        '<p style="font-size:16px;line-height:1.6;margin:0 0 20px">Contesta 10 reactivos reales del examen del IPN y mira cuántos aciertos llevas hoy. No cuesta nada y no te pedimos cuenta para empezar.</p>' +
         '<ul class="vic-lista-check" style="margin:0 0 24px;font-size:15px">' +
           '<li>10 reactivos como los del examen real</li>' +
-          '<li>Tu puntaje y en qué materia lo pierdes</li>' +
-          '<li>Cada respuesta explicada, no solo la palomita</li>' +
+          '<li>Se contesta sin crear cuenta</li>' +
+          '<li>Tu puntaje y tu porcentaje de aciertos</li>' +
         '</ul>' +
         '<div class="vic-popup__acciones">' +
-          '<a class="vic-btn vic-btn--primary vic-btn--lg" href="' + window.VicUI.urlExamenGratis() + '" data-metrica="examen_gratis_clic" data-metrica-lugar="popup">Haz el examen gratis</a>' +
+          /* data-plataforma en vez del href a mano: así este botón también
+             respeta el cierre del ambiente, como el resto del sitio. */
+          '<a class="vic-btn vic-btn--primary vic-btn--lg" data-plataforma="examen" data-metrica="examen_gratis_clic" data-metrica-lugar="popup">Haz el examen gratis</a>' +
           '<button class="vic-btn vic-btn--ghost vic-btn--lg" type="button" data-seguir>Seguir leyendo</button>' +
         '</div>' +
-        '<p style="font-size:13px;line-height:1.5;margin:14px 0 0;opacity:.7">Creas tu cuenta y lo presentas al instante.</p>' +
+        '<p style="font-size:13px;line-height:1.5;margin:14px 0 0;opacity:.7">Lo presentas de una vez; la cuenta se crea al final para guardar tu resultado.</p>' +
       '</div>';
 
     document.body.appendChild(overlay);
+    /* El CTA nace después de que ui.js ya recorrió la página, así que hay que
+       pedirle que lo complete: es quien decide si lleva a la plataforma o
+       abre el aviso de "todavía no". */
+    window.VicUI.activarEnlacesPlataforma();
     requestAnimationFrame(function () { overlay.classList.add('vic-popup--on'); });
 
     onKey = function (e) { if (e.key === 'Escape') cerrar(overlay); };

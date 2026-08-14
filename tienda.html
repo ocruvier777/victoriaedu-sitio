@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/victoria.css?v=20">
-<link rel="stylesheet" href="assets/css/victoria-marca.css?v=20">
+<link rel="stylesheet" href="assets/css/victoria.css?v=21">
+<link rel="stylesheet" href="assets/css/victoria-marca.css?v=21">
 </head>
 <body>
 
@@ -61,7 +61,7 @@
       <div class="vic-card">
         <div class="vic-paso__num" style="margin-bottom:14px">1</div>
         <h3 style="font-size:19px;margin:0 0 10px">Lo pruebas gratis</h3>
-        <p style="font-size:15px;line-height:1.55;margin:0">10 reactivos reales del IPN, con las respuestas explicadas. Antes de pagar nada.</p>
+        <p style="font-size:15px;line-height:1.55;margin:0">10 reactivos reales del IPN, sin crear cuenta para empezar. Antes de pagar nada.</p>
       </div>
       <div class="vic-card">
         <div class="vic-paso__num" style="margin-bottom:14px">2</div>
@@ -102,12 +102,12 @@
 
 <footer data-vic-footer></footer>
 
-<script src="assets/js/config.js?v=20"></script>
-<script src="assets/js/api.js?v=20"></script>
-<script src="assets/js/ui.js?v=20"></script>
-<script src="assets/js/iconos.js?v=20"></script>
-<script src="assets/js/metricas.js?v=20"></script>
-<script src="assets/js/productos.js?v=20"></script>
+<script src="assets/js/config.js?v=21"></script>
+<script src="assets/js/api.js?v=21"></script>
+<script src="assets/js/ui.js?v=21"></script>
+<script src="assets/js/iconos.js?v=21"></script>
+<script src="assets/js/metricas.js?v=21"></script>
+<script src="assets/js/productos.js?v=21"></script>
 <script>
 (function () {
   var rail = document.getElementById('catalogoRail');
@@ -121,6 +121,10 @@
       prioritaria: i === 0,
     });
   }).join('');
+
+  // Las tarjetas traen data-plataforma sin href: ui.js es quien decide si
+  // llevan a la plataforma o abren el aviso de "todavía no".
+  window.VicUI.activarEnlacesPlataforma();
 
   window.VicUI.rail(rail, { etiqueta: 'Programas de VictoriaEDU', navEn: '#catalogoNav' });
 

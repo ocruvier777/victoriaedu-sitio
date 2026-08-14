@@ -3,19 +3,43 @@
 Sitio estático: portada, catálogo, página de producto y tres páginas de contenido
 sobre el examen del IPN.
 
+En línea en **victoriaedu.com.mx** (no `victoriaedu.mx`: ese dominio no existe).
+Se publica solo: cada push a `main` sale a producción.
+
 **El sitio ya no cobra.** Es el escaparate. Todo lo que implica una cuenta
-—presentar el examen, ver respuestas, pagar— vive en la plataforma
-(`edu.victoriadev.com`), que sí tiene base de datos, sesión y validación de
-comprobante. El botón principal es **"Haz el examen gratis"** y salta al registro
-de la plataforma con un `next=` que lo deja en el examen demo.
+—guardar tu resultado, la revisión de respuestas, pagar— vive en la plataforma
+(`edu.victoriadev.com`), que sí tiene base de datos y sesión. El botón principal
+es **"Haz el examen gratis"** y manda directo al examen, sin registro de por
+medio: la cuenta se pide al final, para enseñar la calificación.
 
 El flujo completo, qué falta del lado de la plataforma y las instrucciones para
 Brando están en **[INTEGRACION-PLATAFORMA.md](INTEGRACION-PLATAFORMA.md)**.
 
+> **Hoy los botones de la plataforma están cerrados en producción**, porque la
+> app de producción todavía no termina el flujo y Mercado Pago sigue en sandbox.
+> Se ven marcados "Pronto" y abren un aviso con el WhatsApp. Se abren con dos
+> flags en `config.js`; ver "El embudo".
+
+### Las dos ramas
+
+| Rama | Dónde | Plataforma |
+|---|---|---|
+| `main` | victoriaedu.com.mx (público) | producción, con los botones cerrados |
+| `dev` | local o donde se despliegue | dev, con todo abierto para probar |
+
+**Las dos ramas tienen el mismo código.** Lo que cambia es el host: el sitio
+resuelve la plataforma y los flags a partir de él, no de la rama. Por eso `dev`
+no acumula un diff que después haya que arrastrar a `main` — es una rama para
+probar cambios del sitio, no una copia con otra configuración. Basta con
+levantar `dev` en local (`python3 -m http.server 8000`) para tener el flujo
+completo contra la plataforma de dev.
+
 > El checkout propio (`checkout.html` → `pago.html` → `confirmacion.html`) se
 > retiró: guardaba los pedidos en `localStorage`, o sea que se perdían al cambiar
 > de navegador. Los archivos siguen ahí, convertidos en redirecciones, porque hay
-> ligas compartidas apuntando a ellos.
+> ligas compartidas apuntando a ellos. **Con la compra cerrada no redirigen**:
+> se quedan con su texto y el botón abre el aviso, porque saltar a la plataforma
+> para que ahí rebote a un login sin destino es el peor de los dos finales.
 
 ---
 
@@ -47,9 +71,9 @@ sed -i 's/?v=20/?v=21/g' *.html    # y sube VERSION_SITIO en config.js
 pregunta a quien reporte "se ve raro" para saber si está viendo caché vieja. Si
 no acompaña al `?v=`, deja de servir para eso.
 
-Para probar contra el ambiente de desarrollo de la plataforma, cambia
-`CONFIG.plataforma.base` a `https://dev-edu.victoriadev.com` en
-`assets/js/config.js`. Es lo único que hay que tocar.
+**En local ya apuntas a la plataforma de dev**, sin tocar nada: el ambiente se
+resuelve por hostname y solo `victoriaedu.com.mx` habla con producción. Ver
+"Los dos ambientes", más abajo.
 
 Lista de espera: `http://localhost:8000/admin.html` — clave `victoria2026`.
 
@@ -275,29 +299,61 @@ la clase que ya pone el observer de `ui.js`: **no hay JavaScript nuevo**. Con
 
 ## El embudo
 
-El sitio no cobra: convence y entrega al alumno a la plataforma. El registro es el
-peaje, y es a propósito — las respuestas y explicaciones del examen solo se ven con
-cuenta, así que ahí es donde se captura al alumno, con base de datos detrás.
+El sitio no cobra: convence y entrega al alumno a la plataforma. **El peaje ya no
+está en la puerta**: el examen gratis se contesta sin cuenta, y la cuenta se pide
+para ver la calificación — cuando el alumno ya invirtió veinte minutos y le
+cuesta menos registrarse.
 
 ```
-victoriaedu.mx   "Haz el examen gratis"
+victoriaedu.com.mx   "Haz el examen gratis"
       ↓
-edu.victoriadev.com/registro?next=/examenes/SIM-IPN-2026-DEMO&origen=landing-examen-gratis
-      ↓  crea cuenta → auto-login → aterriza en el examen
-10 reactivos gratis  →  resultados con respuestas explicadas
-      ↓
-/simulacros  →  "Comprar — $199"  →  comprobante  →  validación  →  desbloqueado
+edu.victoriadev.com/gratis/PUB-IPN-2026-GRATIS      ← 10 reactivos, SIN cuenta
+      ↓  al entregar, la plataforma le guarda un claim de 48 h
+/registro · /login · Google  →  /gratis/resultado   ← aciertos y porcentaje
+      ↓  upsell
+/paquetes/ipn-2026  →  "Pagar $199"  →  Mercado Pago  →  webhook  →  desbloqueado
 ```
 
 Todos los CTAs salen por `VicUI.urlExamenGratis()` / `urlComprar()`
 (`assets/js/ui.js`), que leen `CONFIG.plataforma`. En el HTML basta
-`<a data-plataforma="examen">` o `="comprar"`: ninguna página tiene el dominio
-escrito a mano, igual que con `data-wa`.
+`<a data-plataforma="examen">` o `="comprar"`, **sin `href`**: ninguna página
+tiene el dominio escrito a mano, igual que con `data-wa`.
 
-**Lo que falta del lado de la plataforma** —el examen demo, el soporte de `next=`,
-el precio a $199— está en **[INTEGRACION-PLATAFORMA.md](INTEGRACION-PLATAFORMA.md)**.
-Mientras Brando no haga esos cambios el embudo funciona a medias: el alumno se
-registra bien, pero aterriza en su dashboard en vez de en el examen.
+**El resultado gratis solo da aciertos y porcentaje.** Ni desglose por materia,
+ni revisión de respuestas, ni explicaciones: eso viene con el simulacro
+completo. El sitio lo prometía —era verdad del embudo anterior— y se corrigió en
+las siete páginas donde aparecía. Si algún día el resultado gratis devuelve más,
+se puede volver a prometer, pero después de que exista.
+
+### Los dos ambientes, y por qué las ramas no divergen
+
+| Host del sitio | Plataforma |
+|---|---|
+| `victoriaedu.com.mx` · `www.` | `edu.victoriadev.com` (producción) |
+| localhost, previews, la rama `dev` | `dev-edu.victoriadev.com` |
+
+Se resuelve **por hostname**, no por rama. Así `main` y `dev` son el mismo
+código servido en dos lugares y un merge nunca pelea por la línea del dominio.
+El default para hosts desconocidos es dev, que es el lado seguro: una preview
+apuntando a producción mete alumnos de prueba en la base real. Si el host es
+nuevo y sí es público, se agrega a `hostsProduccion`.
+
+Como red de seguridad, **el pie imprime `· plataforma dev`** cuando el ambiente
+no es producción. Si esa etiqueta aparece en victoriaedu.com.mx, hay un host
+fuera de la lista.
+
+### Los botones están cerrados en producción
+
+`examenAbierto` y `compraAbierta` están en `false` para producción: la app de
+producción todavía no termina el flujo del examen, y Mercado Pago sigue en
+sandbox. Los botones **no se esconden** —la página está escrita alrededor de
+ellos y quitarlos dejaría huecos—: se marcan "Pronto" y abren un aviso con el
+WhatsApp, que es el canal que sí contesta hoy.
+
+Se abren cambiando `false` por `true` en `CONFIG.plataforma.ambientes.produccion`.
+Son dos flags independientes a propósito: el examen y la compra dependen de
+cosas distintas. **Qué tiene que estar listo antes de abrir cada uno está en
+[INTEGRACION-PLATAFORMA.md](INTEGRACION-PLATAFORMA.md)**.
 
 ### Medición
 
@@ -306,7 +362,11 @@ el Pixel de Meta) y a la consola si no hay pixel instalado. Es el enchufe, no la
 analítica: el día que se instale un pixel, los eventos ya están fluyendo.
 
 Se declara en el HTML con `data-metrica="nombre" data-metrica-lugar="dónde"`.
-Eventos: `examen_gratis_clic`, `comprar_clic`, `lead_enviado`.
+Eventos: `examen_gratis_clic`, `comprar_clic`, `lead_enviado`, y mientras los
+botones sigan cerrados, `examen_gratis_cerrado`, `comprar_cerrado` y
+`wa_desde_cerrado`. Los de cierre van aparte para no inflar el embudo con clics
+que nunca salieron del sitio — y porque miden algo que si no, no sabríamos:
+cuánta demanda se está quedando en la puerta.
 
 El `lugar` importa: como el embudo cruza a otro dominio, es lo único que permite
 saber qué CTA carga el embudo y cuál sobra.
@@ -327,15 +387,26 @@ Todo lo que hay que tocar está en **`assets/js/config.js`**:
 - [x] **`banco`** — se eliminó. Los datos bancarios vivían aquí para el checkout
       propio, con una CLABE de ejemplo que nadie podía pagar. El cobro ahora es de
       la plataforma, así que el sitio ya no publica ninguna cuenta.
-- [ ] **`plataforma.base`** — apunta a producción (`edu.victoriadev.com`). Para
-      probar contra dev, cámbialo a `dev-edu.victoriadev.com`. **No publiques
-      apuntando a dev.**
-- [ ] **`plataforma.examenGratis`** — hoy `SIM-IPN-2026-DEMO`. Ese examen todavía
-      no existe: lo tiene que crear Brando (ver INTEGRACION-PLATAFORMA.md, B1).
-      **Hasta entonces el CTA principal lleva a un examen que no está.**
+- [x] **`plataforma`** — ya no hay un `base` que cambiar a mano: el ambiente se
+      resuelve por hostname y hay uno de producción y uno de dev. Lo que sí hay
+      que revisar es `hostsProduccion` si algún día se agrega un dominio público.
+- [x] **`plataforma.examenGratis`** — es `PUB-IPN-2026-GRATIS` y **ya existe**:
+      10 reactivos, sin timer, sacados de los dos simulacros de venta. Verificado
+      en dev y en producción.
+- [ ] **Abrir los botones.** `examenAbierto` y `compraAbierta` están en `false`
+      para producción a propósito. Qué tiene que estar listo del lado de la
+      plataforma antes de ponerlos en `true` —incluido sacar a Mercado Pago de
+      sandbox— está en **[INTEGRACION-PLATAFORMA.md](INTEGRACION-PLATAFORMA.md)**,
+      sección "Para poner esto en producción".
 - [ ] **Precio $199** — el `precio` del catálogo tiene que coincidir **exacto** con
-      `examenes.precio` de la plataforma o el backend rechaza todos los pagos con
-      `monto_invalido`. Confirmar con Brando antes de publicar.
+      `examenes.precio` **en la base de producción** o el backend rechaza todos los
+      pagos con `monto_invalido`. Existe la migración que lo baja de $249 a $199;
+      confirmar con Brando que ya corrió en prod.
+- [ ] **Los dos correos de `marca`** — `hola@victoriaedu.mx` e
+      `instituciones@victoriaedu.mx` están en un dominio que **no resuelve**. El
+      sitio vive en `victoriaedu.com.mx`. Si el correo está en otro lado,
+      verifica que esas cuentas reciben; si no, hay que cambiarlos. No se
+      tocaron porque es decisión de ustedes.
 - [ ] **`marca.telefono`** — hoy `+52 55 0000 0000`.
 - [ ] **`admin.clave`** — la compuerta de `admin.html` es visual, no seguridad: la
       clave está en el JavaScript del sitio y cualquiera puede leerla. Solo protege

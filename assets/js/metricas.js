@@ -22,9 +22,19 @@
      <a data-metrica="examen_gratis_clic" data-metrica-lugar="hero">
 
    Eventos que emite hoy:
-     examen_gratis_clic  → alguien salió al registro para el examen gratis
-     comprar_clic        → alguien salió a la plataforma a comprar
-     lead_enviado        → alguien dejó su correo en una lista de espera
+     examen_gratis_clic     → alguien salió a la plataforma a presentar el examen
+     comprar_clic           → alguien salió a la plataforma a comprar
+     lead_enviado           → alguien dejó su correo en una lista de espera
+     examen_gratis_cerrado  → tocó el botón del examen mientras está cerrado
+     comprar_cerrado        → tocó el botón de compra mientras está cerrado
+     wa_desde_cerrado       → desde ese aviso se fue a WhatsApp
+
+   Los tres últimos son temporales, mientras la plataforma de producción
+   termina. Están separados de los `_clic` a propósito: un clic que no sale
+   del sitio no es una salida al embudo, y contarlo junto inflaría la única
+   cifra que sirve para decidir si vale la pena pagar tráfico. Medidos aparte
+   dicen algo que no sabríamos de otro modo — cuánta demanda se está quedando
+   en la puerta— y cuánta de esa se rescata por WhatsApp.
 
    `lugar` dice DESDE DÓNDE salió (hero, navbar, popup, producto-final…), que
    es lo que permite saber qué CTA carga el embudo y cuál sobra.

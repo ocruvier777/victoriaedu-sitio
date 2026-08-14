@@ -213,6 +213,26 @@ img { max-width: 100%; }
   opacity: .5; cursor: not-allowed; pointer-events: none; transform: none;
 }
 
+/* CTA que todavía no lleva a ningún lado: la plataforma aún no abre ese paso.
+   NO es `--disabled` a propósito. Esa clase apaga `pointer-events`, y este
+   botón sí tiene que responder al clic —abre el aviso con el WhatsApp—, que
+   es la diferencia entre aplazar a alguien y perderlo. Se ve apagado, pero
+   no está muerto. */
+.vic-btn--pronto { opacity: .82; }
+.vic-btn--pronto:hover { opacity: 1; transform: none; }
+.vic-btn__pronto {
+  font-family: var(--vic-font-mono);
+  font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  padding: 3px 7px; border-radius: 999px; line-height: 1;
+  /* currentColor sobre su propio fondo: así la pastilla funciona igual en el
+     botón azul del hero que en uno claro, sin una variante por color. */
+  background: color-mix(in srgb, currentColor 18%, transparent);
+  border: 1px solid color-mix(in srgb, currentColor 34%, transparent);
+}
+@supports not (background: color-mix(in srgb, red 50%, transparent)) {
+  .vic-btn__pronto { background: rgba(255, 255, 255, .2); border-color: rgba(255, 255, 255, .38); }
+}
+
 /* --- Tarjetas ----------------------------------------------------------- */
 .vic-card {
   background: var(--vic-blanco);
