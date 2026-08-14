@@ -51,16 +51,16 @@
      este tiene un punto de amarillo que lo acerca a una hoja impresa. */
   --vic-blanco-calido: #FAF8F5;
 
-  /* Cian institucional, muy controlado: se usa SOLO en nodos de ruta y en el
-     remate de la V. Es un cian apagado a propósito — un cian saturado sobre
-     guinda se lee como interfaz de videojuego, que es justo lo que no somos. */
+  /* Cian institucional, muy controlado: nodos de ruta, comillas y acentos
+     puntuales. Es un cian apagado a propósito — un cian saturado sobre guinda
+     se lee como interfaz de videojuego, que es justo lo que no somos. */
   --vic-cian: #58A9C0;
   --vic-cian-rgb: 88, 169, 192;
 
   /* --- Geometría ---------------------------------------------------------
      El ángulo del isotipo. Todo corte diagonal del sitio —separadores,
-     fragmentos, remates— usa este mismo valor, que es lo que hace que se
-     lean como familia y no como adornos sueltos. */
+     fragmentos, tramas— usa este mismo valor, que es lo que hace que se lean
+     como familia y no como adornos sueltos. */
   --vic-angulo: 18deg;
   --vic-corte: 26px;
 
@@ -675,12 +675,29 @@
 
 /* La línea vive detrás de las tarjetas, a la altura del número (24px de
    padding + 20px de medio círculo = 44px desde arriba). */
+/* La línea arranca en el centro del número 1 y termina en el del número 5, en
+   vez de correr de borde a borde: antes se pasaba ~124px del último nodo.
+
+   El cálculo sale de la propia rejilla. Con cinco columnas iguales y hueco g,
+   cada tarjeta mide w = (100% - 4g)/5, y el último número está a (w - 44px)
+   del borde derecho — el mismo 44px del primero (24 de padding + 20 de medio
+   círculo). Así se mantiene pegado a los nodos a cualquier ancho, sin JS. */
+.vic-metodo {
+  --vic-paso-gap: 16px;   /* el mismo gap de .vic-metodo-grid */
+  --vic-nodo-off: 44px;   /* 24px de padding + 20px de medio círculo */
+}
 .vic-ruta {
   position: absolute;
-  top: 42px;          /* 24px de padding + 20px de medio círculo, menos el trazo */
-  left: 0;
-  width: 100%;        /* explícito: un <svg> absoluto con left/right no siempre
-                         resuelve su ancho, y acababa midiendo su propio viewBox */
+  top: 42px;
+  left: var(--vic-nodo-off);
+  /* El ancho va explícito y NO con `right`: un <svg> es elemento reemplazado,
+     así que con left+right+width:auto no se estira — se queda con el tamaño
+     de su viewBox y se pasaba de largo del último nodo.
+
+     La distancia entre el centro del primer número y el del último son cuatro
+     tarjetas más cuatro huecos. Con w = (100% - 4g)/5, eso sale 0.8·(100% + g),
+     que es lo que dice el cálculo de abajo. */
+  width: calc(80% + var(--vic-paso-gap) * 0.8);
   height: 4px;
   z-index: 0;
   pointer-events: none;
@@ -711,20 +728,10 @@
   box-shadow: 0 0 0 4px rgba(var(--vic-guinda-rgb), .55), 0 0 0 6px rgba(var(--vic-cian-rgb), .7);
 }
 
-/* Remate diagonal al final del recorrido: una pieza de la V que cierra la
-   secuencia en el quinto paso. */
-.vic-ruta__remate {
-  position: absolute;
-  top: 33px;
-  right: 4px;
-  width: 20px;
-  height: 22px;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity var(--vic-dur-media) var(--vic-ease-marca) var(--vic-dur-ruta);
-}
-.is-visible .vic-ruta__remate { opacity: .85; }
+/* (Aquí vivía un remate diagonal al final del recorrido. Se retiró: la línea
+   ahora termina exactamente en el quinto número y ese nodo cierra la
+   secuencia. La cuña quedaba contra el borde de la última tarjeta, sin nada
+   que la anclara.) */
 
 /* --- Recorrido vertical (móvil y tableta) --------------------------------
    Cuando la rejilla se vuelve una columna, el SVG horizontal no sirve: no se
@@ -737,10 +744,15 @@
    TARJETA, así que da igual cuánto padding tenga el contenedor en cada
    tamaño de pantalla. El dibujo progresivo es el mismo gesto, con scaleY.
 ------------------------------------------------------------------------- */
-@media (max-width: 900px) {
-  .vic-ruta,
-  .vic-ruta__remate { display: none; }
+/* La ruta horizontal solo tiene sentido con las cinco tarjetas en fila. Entre
+   1024 y 860px la rejilla pasa a dos columnas y tres filas, y ahí una línea
+   recta no conecta nada: cruzaría por encima. Mejor ninguna que una que
+   miente. */
+@media (max-width: 1024px) {
+  .vic-ruta { display: none; }
+}
 
+@media (max-width: 859px) {
   .vic-metodo-grid { position: relative; }
 
   .vic-paso:not(:last-child)::after {
@@ -956,7 +968,6 @@
   .vic-hero-deco__ruta { animation: none; stroke-dashoffset: 0; }
   .vic-hero-deco__nodo { animation: none; opacity: 1; }
   .vic-ruta__linea { transition: none; stroke-dashoffset: 0; }
-  .vic-ruta__remate { transition: none; opacity: .85; }
   .vic-paso:not(:last-child)::after { transition: none; transform: scaleY(1); }
   .vic-card--hoverable:hover,
   .vic-paso:hover { transform: none; }

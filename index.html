@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/victoria.css?v=14">
-<link rel="stylesheet" href="assets/css/victoria-marca.css?v=14">
+<link rel="stylesheet" href="assets/css/victoria.css?v=16">
+<link rel="stylesheet" href="assets/css/victoria-marca.css?v=16">
 </head>
 <body>
 
@@ -53,10 +53,14 @@
 
       <!-- Ruta editorial: corre por la banda inferior —que es puro relleno de
            sección— y sube hasta la esquina del panel de diagnóstico. -->
+      <!-- SIN vector-effect="non-scaling-stroke": con él, stroke-dasharray se
+           mide en píxeles de pantalla e IGNORA pathLength, así que el guion de
+           100 dejaba de cubrir el trazo entero y la ruta se dibujaba rota. El
+           grosor se deforma un pelo al estirarse el viewBox; a 1.75px no se
+           nota, y es decoración. -->
       <path class="vic-hero-deco__ruta" pathLength="100"
             d="M104 556 H 372 C 470 556, 500 498, 578 442"
-            fill="none" stroke="url(#vicHeroRuta)" stroke-width="1.75" stroke-linecap="round"
-            vector-effect="non-scaling-stroke"/>
+            fill="none" stroke="url(#vicHeroRuta)" stroke-width="1.75" stroke-linecap="round"/>
     </svg>
 
     <!-- Diagnóstico → aprendizaje → resultado. Fuera del SVG estirado para
@@ -332,15 +336,16 @@
             <stop offset="1" stop-color="#2C4D9D"/>
           </linearGradient>
         </defs>
-        <!-- non-scaling-stroke: el SVG se estira a lo ancho, el grosor no. -->
-        <path class="vic-ruta__linea" pathLength="100" d="M40 2 H960" vector-effect="non-scaling-stroke"/>
+        <!-- El SVG se posiciona por CSS justo entre el primer y el último
+             número, así que aquí la línea va de borde a borde. Sin
+             non-scaling-stroke: rompía el dibujo progresivo (ver el hero). -->
+        <path class="vic-ruta__linea" pathLength="100" d="M0 2 H1000"/>
       </svg>
 
-      <!-- Remate: UNA cuña diagonal, el brazo de la V, no la V entera. Repetir
-           el isotipo como adorno lo gasta; tomarle una pieza lo cita. -->
-      <svg class="vic-ruta__remate" viewBox="0 0 20 22" aria-hidden="true" focusable="false">
-        <path d="M2 1 L9 1 L18 21 L11 21 Z" fill="#58A9C0" fill-opacity=".85"/>
-      </svg>
+      <!-- El remate diagonal se retiró: ahora que la línea termina exactamente
+           en el quinto número, ese nodo ya cierra la secuencia. La cuña
+           quedaba flotando contra el borde de la última tarjeta, sin nada que
+           la anclara, y se leía como un adorno perdido. -->
 
       <div class="vic-grid vic-metodo-grid">
       <div class="vic-paso"><div class="vic-paso__num">1</div><h3 style="font-size:19px;margin:0">Diagnóstico</h3><p style="font-size:14px;line-height:1.55;margin:0">Mide tema por tema, no un promedio.</p></div>
@@ -500,14 +505,14 @@
 
 <footer data-vic-footer></footer>
 
-<script src="assets/js/config.js?v=14"></script>
-<script src="assets/js/api.js?v=14"></script>
-<script src="assets/js/ui.js?v=14"></script>
-<script src="assets/js/iconos.js?v=14"></script>
-<script src="assets/js/metricas.js?v=14"></script>
-<script src="assets/js/productos.js?v=14"></script>
-<script src="assets/js/datos-cortes.js?v=14"></script>
-<script src="assets/js/mini-cortes.js?v=14"></script>
-<script src="assets/js/pagina-inicio.js?v=14"></script>
+<script src="assets/js/config.js?v=16"></script>
+<script src="assets/js/api.js?v=16"></script>
+<script src="assets/js/ui.js?v=16"></script>
+<script src="assets/js/iconos.js?v=16"></script>
+<script src="assets/js/metricas.js?v=16"></script>
+<script src="assets/js/productos.js?v=16"></script>
+<script src="assets/js/datos-cortes.js?v=16"></script>
+<script src="assets/js/mini-cortes.js?v=16"></script>
+<script src="assets/js/pagina-inicio.js?v=16"></script>
 </body>
 </html>
