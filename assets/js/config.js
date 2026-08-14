@@ -8,7 +8,7 @@
 /* Versión del sitio. Se imprime en el pie, y ahí sirve para una cosa muy
    concreta: cuando alguien reporte "se ve raro", poder preguntarle qué versión
    trae y saber si está viendo caché vieja. Súbela cuando publiques. */
-window.VERSION_SITIO = '1.5.0';
+window.VERSION_SITIO = '1.6.0';
 
 window.CONFIG = {
   /* --- Mascota (Vico) ------------------------------------------------------

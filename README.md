@@ -30,8 +30,22 @@ python3 -m http.server 8000
 ```
 
 > **Si ves la página sin estilos**, es caché del navegador. Los archivos llevan
-> `?v=6` justo para evitarlo: al cambiar CSS o JS, **sube ese número en todos los
+> `?v=20` justo para evitarlo: al cambiar CSS o JS, **sube ese número en todos los
 > `.html`** (o recarga con Ctrl+Shift+R).
+
+**El `?v=` y `VERSION_SITIO` se suben juntos, y no es opcional.** El visitante que
+ya estuvo aquí tiene el CSS anterior guardado; si la URL no cambia, el navegador
+ni pregunta. Se publica HTML nuevo con estilos viejos, que es peor que no
+publicar: el bloque nuevo sale sin sus reglas. Pasó con el carrusel de
+fundadores, que se subió con el `?v=` de la versión anterior.
+
+```bash
+sed -i 's/?v=20/?v=21/g' *.html    # y sube VERSION_SITIO en config.js
+```
+
+`VERSION_SITIO` (`assets/js/config.js`) se imprime en el pie: es lo que se le
+pregunta a quien reporte "se ve raro" para saber si está viendo caché vieja. Si
+no acompaña al `?v=`, deja de servir para eso.
 
 Para probar contra el ambiente de desarrollo de la plataforma, cambia
 `CONFIG.plataforma.base` a `https://dev-edu.victoriadev.com` en
@@ -159,6 +173,7 @@ archivo. No hay valores de marca escritos a mano más abajo.
 | Separadores | `.section-divider--*` | Las 6 páginas públicas, 16 en total |
 | Ruta del método | `.vic-ruta` | Recorre los cinco pasos; vertical en móvil |
 | Carrusel de programas | `.vic-catalogo` + `.vic-producto--horizontal` | Catálogo de la tienda |
+| Diapositiva de fundador | `.vic-autor` dentro de `.vic-rail--ancho` | "Quiénes están detrás", en el simulacro |
 | Ilustraciones de beneficio | `.benefit-illustration` | Las cuatro tarjetas de "Qué hacemos" |
 | Iconos de marca | `data-icono="materia\|tutor\|progreso\|tecnologia"` | Reserva: los cuatro iconos siguen en `iconos.js` por si hay que volver atrás |
 | Hueco de mascota | `.mascot-slot` + `data-mascota` | Bloque de diagnóstico gratuito |
@@ -229,6 +244,18 @@ banda de testimonios, que resolvía este mismo problema.
 En el carrusel las tarjetas usan los 4 `puntos` y no la lista `incluye`: en un
 riel todas miden lo que la más alta, y con siete líneas el simulacro dejaba a
 las otras dos con un hueco enorme sobre el precio.
+
+**Los tres fundadores también son un carrusel**, no tres columnas. La sección
+"Quiénes están detrás" del simulacro presentaba a Óscar solo, con su retrato a
+media página; al entrar Emiliano y Brando, en tres columnas cada cara se encogía
+a un tercio de ancho — y la cara es justo lo que da confianza en una página de
+venta. Con `.vic-rail--ancho` cada fundador recupera la composición original
+(retrato grande + bio) y se pasan de uno en uno. Va sobre el mismo `VicUI.rail`
+del catálogo, con las flechas colgadas del encabezado (`opts.navEn`).
+
+Las tres tarjetas viven **en el HTML**, no en una cadena de JS: son texto
+indexable, y la bio de una persona real no se genera desde una plantilla. Sin
+JavaScript el riel se sigue arrastrando con el dedo.
 
 **Dos cosas que conviene no "arreglar" a ojo:**
 
@@ -314,15 +341,32 @@ Todo lo que hay que tocar está en **`assets/js/config.js`**:
       clave está en el JavaScript del sitio y cualquiera puede leerla. Solo protege
       la lista de espera, pero no metas ahí nada que no puedas enseñar.
 - [x] **Testimonios: ya son reales.** Los del mockup eran inventados y se
-      eliminaron. Los siete que hay ahora en **`CONFIG.testimonios`** son
-      reseñas públicas de Facebook a los cursos que Óscar dio en Oriéntate MX,
-      atribuidas a él **como profesor** — nunca como alumnos de VictoriaEDU,
-      que sería falso. Reglas al editarlas: la cita no se reescribe (recorte con
-      "…", sustitución entre [corchetes]); los anónimos llevan `anonimo: true` y
-      se pintan sin monograma para que no compitan con los verificables.
+      eliminaron. Los diez de **`CONFIG.testimonios`** vienen de **dos orígenes
+      que no se mezclan**, y la diferencia manda cómo se pintan:
+      - **Reseñas públicas de Facebook** a los cursos que Óscar dio en Oriéntate
+        MX (cinco con nombre, más dos viejas anónimas). Se citan con nombre
+        porque quien las escribió las publicó.
+      - **Mensajes privados de WhatsApp** de los alumnos del curso de
+        matemáticas de la segunda vuelta de Emiliano, agosto 2026. Un mensaje
+        privado no es una reseña: nadie lo escribió para publicarse. Van **sin
+        nombre, sin foto y sin captura** — la captura enseñaría número, grupo y
+        foto de perfil.
+
+      Todos se atribuyen al profesor **como profesor** — nunca como alumnos de
+      VictoriaEDU, que sería falso — y el pie del carrusel distingue los dos
+      orígenes: decir "antes de VictoriaEDU" de todos envejecía a los recientes.
+      Reglas al editarlas: la cita no se reescribe (recorte con "…", sustitución
+      entre [corchetes]); los anónimos llevan `anonimo: true` y se pintan sin
+      monograma para que no compitan con los verificables.
       **Pendiente:** revisa tu contrato con Oriéntate MX por cláusulas de no
       competencia o no captación antes de publicar, y guarda el permiso por
       escrito de los cinco que aparecen con nombre.
+- [ ] **TODO(Emiliano) — el "sí" de los tres de WhatsApp.** Pídeselo por escrito
+      en el mismo chat ("¿te parece si publicamos esto en la página, sin tu
+      nombre?") y guarda la captura de la respuesta. Si alguno autoriza aparecer
+      con nombre, quítale el `anonimo` y ponlo; si alguno dice que no, se borra
+      la entrada y ya. **Es bloqueante:** son alumnos de un grupo que está
+      corriendo ahorita, no reseñas que ellos hicieran públicas.
 - [ ] **Ainara vs. "Andy López".** La selección traía una reseña de "Andy López"
       cortada a media frase; la captura que llegó es de **Ainara López Joachin**
       y sí está completa. Se publicó la de Ainara. Si son dos reseñas distintas,
