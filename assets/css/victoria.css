@@ -829,6 +829,18 @@ img { max-width: 100%; }
 .vic-persona__rol { display: block; font-size: 13px; line-height: 1.4; color: var(--vic-text-muted); margin-top: 3px; }
 .vic-persona__mas { display: block; font-size: 13px; font-weight: 600; color: var(--vic-azul); margin-top: 7px; }
 
+/* Diapositiva de fundador (carrusel del simulacro) -------------------------
+   Es la composición que tenía la sección cuando presentaba a uno solo: retrato
+   grande a la izquierda, bio a la derecha. Ahora son tres y se pasan de una en
+   una, en vez de encogerse a tres columnas donde la cara ya no se lee.        */
+.vic-autor { display: grid; grid-template-columns: .4fr .6fr; gap: 56px; align-items: center; }
+.vic-autor__foto {
+  border-radius: 20px; overflow: hidden; aspect-ratio: 4/5;
+  background: var(--vic-bg-subtle);
+}
+/* object-position alto: centrado, el recorte 4/5 corta la frente. */
+.vic-autor__foto img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 12%; display: block; }
+
 /* Tarjeta de valor con "Conoce más" al pie --------------------------------- */
 .vic-valor { display: flex; flex-direction: column; gap: 12px; }
 .vic-valor h3 { font-size: 20px; margin: 0; }
@@ -1284,8 +1296,7 @@ img { max-width: 100%; }
   .vic-hero-grid { grid-template-columns: 1fr !important; gap: 48px; }
   .vic-metodo-grid { grid-template-columns: repeat(2, 1fr); }
   .vic-paso { min-height: 0; }
-  /* #autorGrid ya no es foto + texto: son los tres fundadores en .vic-grid--3,
-     que aguanta las tres columnas hasta 860 y ahí baja sola a una. */
+  .vic-autor { gap: 36px; }
   .vic-checkout, .vic-confirm { grid-template-columns: 1fr; gap: 40px; }
   /* En una columna el resumen va primero: es la referencia de lo que se paga. */
   .vic-checkout > aside { order: -1; }
@@ -1335,9 +1346,10 @@ img { max-width: 100%; }
   .vic-navbar__links .vic-navbar__cta { display: flex; margin-top: 14px; }
 
   .vic-grid--2, .vic-grid--3, .vic-grid--4 { grid-template-columns: 1fr; }
-  /* Apilados a ancho completo, los tres retratos 4/5 eran una galería de caras
-     de 500px de alto cada una. Se acotan al ancho cómodo de lectura. */
-  #autorGrid > div { max-width: 420px; }
+  /* En una columna el retrato 4/5 a ancho completo se comía la pantalla entera
+     antes de llegar al nombre. Se acota y la bio queda a la vista. */
+  .vic-autor { grid-template-columns: 1fr; gap: 26px; }
+  .vic-autor__foto { max-width: 300px; }
   .vic-section { padding: 64px 0; }
   .vic-h2 { font-size: clamp(26px, 6vw, 34px); }
   .vic-summary { position: static; }

@@ -160,56 +160,78 @@
      Cada línea dice lo que esa persona hace DE VERDAD hoy; ninguna reparte
      mérito ajeno. TODO(Óscar): si Emiliano o Brando tuvieron un papel concreto
      en el simulacro (revisar los reactivos de mate, calcular el reporte),
-     dilo aquí con esas palabras: es más fuerte que la bio general. -->
+     dilo aquí con esas palabras: es más fuerte que la bio general.
+
+     Va en carrusel de diapositiva completa (.vic-rail--ancho), no en tres
+     columnas: en tres columnas el retrato se encoge a un tercio y la cara —que
+     es justo lo que da confianza en una página de venta— deja de leerse. Así
+     cada fundador conserva la composición de retrato grande + bio que tenía la
+     sección cuando era de uno solo. -->
 <section class="vic-section vic-section--blanco">
   <div class="vic-container">
-    <div class="vic-eyebrow">05 · Quiénes están detrás</div>
-    <h2 class="vic-h2" style="margin:0 0 16px;max-width:24ch">Tres ingenieros del Poli, con nombre y apellido.</h2>
-    <p class="vic-lead" style="margin:0 0 48px;max-width:62ch">El simulacro no salió de una plantilla comprada. Los reactivos, la clase y la plataforma tienen a alguien detrás que responde por ellos.</p>
-    <div class="vic-grid vic-grid--3" style="gap:40px" id="autorGrid">
-
+    <div class="vic-spread" style="align-items:flex-end;gap:24px;margin-bottom:32px">
       <div>
-        <div style="border-radius:20px;overflow:hidden;aspect-ratio:4/5;background:var(--vic-bg-subtle);margin-bottom:20px">
-          <img src="uploads/oscar.jpeg" alt="Ing. Óscar Cruz" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:50% 12%;display:block">
-        </div>
-        <h3 style="font-size:22px;line-height:1.2;margin:0 0 4px">Ing. Óscar Cruz</h3>
-        <p style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--vic-azul);margin:0 0 14px">Contenido y reporte</p>
-        <p style="font-size:16px;line-height:1.6;margin:0 0 16px">Ingeniero aeronáutico egresado del IPN. Nueve años preparando aspirantes al examen de admisión y Demand Forecaster en GAFSACOMM, donde trabaja con modelos predictivos todos los días. El simulacro y su reporte los diseñó él, reactivo por reactivo.</p>
-        <div class="vic-row" style="gap:8px">
-          <span class="vic-tag">Egresado IPN</span>
-          <span class="vic-tag">9 años en admisión</span>
-          <span class="vic-tag">Diplomado UNIR · IA educativa</span>
-        </div>
+        <div class="vic-eyebrow">05 · Quiénes están detrás</div>
+        <h2 class="vic-h2" style="margin:0 0 16px;max-width:24ch">Tres ingenieros del Poli, con nombre y apellido.</h2>
+        <p class="vic-lead" style="margin:0;max-width:62ch">El simulacro no salió de una plantilla comprada. Los reactivos, la clase y la plataforma tienen a alguien detrás que responde por ellos.</p>
       </div>
+      <!-- Las flechas y el contador cuelgan de aquí, como en el catálogo: solas
+           encima de la diapositiva abrían un hueco. -->
+      <div id="autoresNav"></div>
+    </div>
 
-      <div>
-        <div style="border-radius:20px;overflow:hidden;aspect-ratio:4/5;background:var(--vic-bg-subtle);margin-bottom:20px">
-          <img src="uploads/emiliano.jpeg" alt="Ing. Emiliano Ricardez" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:50% 12%;display:block">
-        </div>
-        <h3 style="font-size:22px;line-height:1.2;margin:0 0 4px">Ing. Emiliano Ricardez</h3>
-        <p style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--vic-azul);margin:0 0 14px">Matemáticas y clase en vivo</p>
-        <p style="font-size:16px;line-height:1.6;margin:0 0 16px">Ingeniero aeronáutico egresado del IPN y campeón en concursos de matemáticas. Es quien está frente al grupo: ahorita da el curso de matemáticas para la segunda vuelta, con clase de fin de semana y grabaciones para los que no alcanzan el horario.</p>
-        <div class="vic-row" style="gap:8px">
-          <span class="vic-tag">Egresado IPN</span>
-          <span class="vic-tag">Matemáticas</span>
-          <span class="vic-tag">Clase en vivo</span>
-        </div>
+    <div class="vic-rail-wrap">
+      <div class="vic-rail vic-rail--ancho" id="autoresRail">
+
+        <article class="vic-autor">
+          <div class="vic-autor__foto">
+            <img src="uploads/oscar.jpeg" alt="Ing. Óscar Cruz" loading="lazy">
+          </div>
+          <div>
+            <h3 style="font-size:clamp(26px,2.6vw,34px);line-height:1.14;margin:0 0 6px">Ing. Óscar Cruz</h3>
+            <p style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--vic-azul);margin:0 0 18px">Contenido y reporte</p>
+            <p style="font-size:18px;line-height:1.6;margin:0 0 22px;max-width:52ch">Ingeniero aeronáutico egresado del IPN. Nueve años preparando aspirantes al examen de admisión y Demand Forecaster en GAFSACOMM, donde trabaja con modelos predictivos todos los días. El simulacro y su reporte los diseñó él, reactivo por reactivo.</p>
+            <div class="vic-row" style="gap:10px">
+              <span class="vic-tag" style="font-size:13px;padding:8px 12px">Egresado IPN</span>
+              <span class="vic-tag" style="font-size:13px;padding:8px 12px">9 años en admisión</span>
+              <span class="vic-tag" style="font-size:13px;padding:8px 12px">Diplomado UNIR · IA en educación</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="vic-autor">
+          <div class="vic-autor__foto">
+            <img src="uploads/emiliano.jpeg" alt="Ing. Emiliano Ricardez" loading="lazy">
+          </div>
+          <div>
+            <h3 style="font-size:clamp(26px,2.6vw,34px);line-height:1.14;margin:0 0 6px">Ing. Emiliano Ricardez</h3>
+            <p style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--vic-azul);margin:0 0 18px">Matemáticas y clase en vivo</p>
+            <p style="font-size:18px;line-height:1.6;margin:0 0 22px;max-width:52ch">Ingeniero aeronáutico egresado del IPN y campeón en concursos de matemáticas. Es quien está frente al grupo: ahorita da el curso de matemáticas para la segunda vuelta, con clase de fin de semana y grabaciones para los que no alcanzan el horario.</p>
+            <div class="vic-row" style="gap:10px">
+              <span class="vic-tag" style="font-size:13px;padding:8px 12px">Egresado IPN</span>
+              <span class="vic-tag" style="font-size:13px;padding:8px 12px">Matemáticas</span>
+              <span class="vic-tag" style="font-size:13px;padding:8px 12px">Clase en vivo</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="vic-autor">
+          <div class="vic-autor__foto">
+            <img src="uploads/brando.jpeg" alt="Ing. Brando Sánchez" loading="lazy">
+          </div>
+          <div>
+            <h3 style="font-size:clamp(26px,2.6vw,34px);line-height:1.14;margin:0 0 6px">Ing. Brando Sánchez</h3>
+            <p style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--vic-azul);margin:0 0 18px">Plataforma</p>
+            <p style="font-size:18px;line-height:1.6;margin:0 0 22px;max-width:52ch">Ingeniero en Sistemas Computacionales por ESCOM-IPN y Software Developer en Oracle México. Construye la plataforma donde presentas el simulacro y por donde te llega el reporte, sin depender de nada que no controlemos.</p>
+            <div class="vic-row" style="gap:10px">
+              <span class="vic-tag" style="font-size:13px;padding:8px 12px">ESCOM-IPN</span>
+              <span class="vic-tag" style="font-size:13px;padding:8px 12px">Oracle México</span>
+              <span class="vic-tag" style="font-size:13px;padding:8px 12px">Plataforma propia</span>
+            </div>
+          </div>
+        </article>
+
       </div>
-
-      <div>
-        <div style="border-radius:20px;overflow:hidden;aspect-ratio:4/5;background:var(--vic-bg-subtle);margin-bottom:20px">
-          <img src="uploads/brando.jpeg" alt="Ing. Brando Sánchez" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:50% 12%;display:block">
-        </div>
-        <h3 style="font-size:22px;line-height:1.2;margin:0 0 4px">Ing. Brando Sánchez</h3>
-        <p style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--vic-azul);margin:0 0 14px">Plataforma</p>
-        <p style="font-size:16px;line-height:1.6;margin:0 0 16px">Ingeniero en Sistemas Computacionales por ESCOM-IPN y Software Developer en Oracle México. Construye la plataforma donde presentas el simulacro y por donde te llega el reporte, sin depender de nada que no controlemos.</p>
-        <div class="vic-row" style="gap:8px">
-          <span class="vic-tag">ESCOM-IPN</span>
-          <span class="vic-tag">Oracle México</span>
-          <span class="vic-tag">Plataforma propia</span>
-        </div>
-      </div>
-
     </div>
   </div>
 </section>
@@ -305,5 +327,15 @@
 <script src="assets/js/metricas.js?v=19"></script>
 <script src="assets/js/datos-cortes.js?v=19"></script>
 <script src="assets/js/mini-cortes.js?v=19"></script>
+<script>
+/* Carrusel de los tres fundadores. Las tarjetas ya están en el HTML —son texto
+   indexable y una bio de una persona real no se genera desde JS—; esto solo
+   les añade flechas, puntos y teclado. Sin JS el riel sigue arrastrándose con
+   el dedo, que es como lo va a usar la mayoría. */
+window.VicUI.rail(document.getElementById('autoresRail'), {
+  etiqueta: 'Fundadores de VictoriaEDU',
+  navEn: '#autoresNav',
+});
+</script>
 </body>
 </html>
