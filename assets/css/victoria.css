@@ -1284,8 +1284,8 @@ img { max-width: 100%; }
   .vic-hero-grid { grid-template-columns: 1fr !important; gap: 48px; }
   .vic-metodo-grid { grid-template-columns: repeat(2, 1fr); }
   .vic-paso { min-height: 0; }
-  #autorGrid { grid-template-columns: 1fr !important; gap: 36px; }
-  #autorGrid > div:first-child { max-width: 380px; }
+  /* #autorGrid ya no es foto + texto: son los tres fundadores en .vic-grid--3,
+     que aguanta las tres columnas hasta 860 y ahí baja sola a una. */
   .vic-checkout, .vic-confirm { grid-template-columns: 1fr; gap: 40px; }
   /* En una columna el resumen va primero: es la referencia de lo que se paga. */
   .vic-checkout > aside { order: -1; }
@@ -1335,6 +1335,9 @@ img { max-width: 100%; }
   .vic-navbar__links .vic-navbar__cta { display: flex; margin-top: 14px; }
 
   .vic-grid--2, .vic-grid--3, .vic-grid--4 { grid-template-columns: 1fr; }
+  /* Apilados a ancho completo, los tres retratos 4/5 eran una galería de caras
+     de 500px de alto cada una. Se acotan al ancho cómodo de lectura. */
+  #autorGrid > div { max-width: 420px; }
   .vic-section { padding: 64px 0; }
   .vic-h2 { font-size: clamp(26px, 6vw, 34px); }
   .vic-summary { position: static; }

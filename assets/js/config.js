@@ -182,10 +182,24 @@ window.CONFIG = {
                    más ligeros, para que no compitan con los verificables.
        destacado → true en uno solo: se pinta en oscuro y cierra el carrusel.
 
-     ATRIBUCIÓN: son reseñas públicas de Facebook a los cursos que Óscar dio en
-     Oriéntate MX. Se atribuyen a él como profesor, que es lo cierto. NO se
-     presentan como alumnos de VictoriaEDU — eso sí sería falso. El orden es
-     deliberado: primero los que llevan nombre y fecha comprobables.
+     ATRIBUCIÓN — hay DOS orígenes y no se mezclan:
+
+     1. Óscar Cruz · reseñas PÚBLICAS de Facebook a los cursos que dio en
+        Oriéntate MX. Son públicas, llevan nombre y se citan con él.
+     2. Emiliano Ricardez · mensajes PRIVADOS (WhatsApp y DM) de los alumnos
+        del curso de matemáticas de la segunda vuelta, agosto 2026. Un mensaje
+        privado NO es una reseña pública: nadie lo escribió para publicarse.
+        Por eso van sin nombre, sin foto y sin captura — solo la cita.
+
+     TODO(Emiliano) ANTES DE PUBLICAR: pídele a cada uno un "sí" por escrito en
+     el mismo chat ("¿te parece si publicamos esto en la página, sin tu
+     nombre?") y guarda la captura de la respuesta. Si alguno autoriza aparecer
+     con nombre, quítale el `anonimo` y ponlo. Si alguno dice que no, se borra
+     la entrada y ya. No se publica ninguna captura de pantalla: el fondo de
+     WhatsApp deja ver el número, el grupo y la foto de perfil.
+
+     NINGUNO se presenta como alumno de VictoriaEDU cuando no lo es. El orden
+     es deliberado: primero los verificables con nombre, luego los recientes.
   ------------------------------------------------------------------------ */
   testimonios: [
     {
@@ -221,6 +235,33 @@ window.CONFIG = {
       detalle: 'Alumna de Óscar Cruz · abril 2024',
       iniciales: 'AL',
     },
+    /* --- Curso de matemáticas de la segunda vuelta · Emiliano Ricardez -------
+       Agosto de 2026, el grupo que está corriendo AHORITA. Van aquí, después
+       de los verificables con nombre y antes de los viejos, porque son los
+       únicos que hablan de una clase que el visitante todavía puede tomar.
+       Se conservan las palabras del alumno; entre [corchetes] va lo nuestro y
+       "…" marca lo que se recortó. Solo se añadieron comas y puntos donde el
+       mensaje no los traía — de otro modo la cita se lee como un descuido
+       nuestro, no como un mensaje escrito de prisa en el celular. */
+    {
+      cita: 'Una vez que entré a sus grupos de estudio me di cuenta [de] la facilidad con la que explica y, sobre todo, que nos facilita mucho la comprensión… En poco más de 1 mes que llevamos siento que he avanzado bastante.',
+      nombre: 'Estudiante del curso de matemáticas',
+      detalle: 'Grupo de Emiliano Ricardez · segunda vuelta IPN, agosto 2026',
+      anonimo: true,
+    },
+    {
+      cita: 'Estoy viendo las clases grabadas y qué chulada de enseñanza.',
+      nombre: 'Estudiante del curso de matemáticas',
+      detalle: 'Grupo de Emiliano Ricardez · segunda vuelta IPN, agosto 2026',
+      anonimo: true,
+    },
+    {
+      cita: 'Todavía no manejo bien la plataforma, pero aprendí. Muchas gracias, es muy bueno como profesor, estoy muy feliz.',
+      nombre: 'Estudiante del curso de matemáticas',
+      detalle: 'Grupo de Emiliano Ricardez · segunda vuelta IPN, agosto 2026',
+      anonimo: true,
+    },
+
     {
       cita: 'Excelente manera de explicar los temas. En poco tiempo pude dominar temas que se me hacían difíciles.',
       nombre: 'Alumno del curso de Cálculo',

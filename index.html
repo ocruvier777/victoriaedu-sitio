@@ -203,17 +203,17 @@
           </span>
         </button>
         <button class="vic-persona" type="button" data-mas="emiliano">
-          <span class="vic-persona__foto"><img src="uploads/emiliano.jpeg" alt="Ing. Emiliano" loading="lazy"></span>
+          <span class="vic-persona__foto"><img src="uploads/emiliano.jpeg" alt="Ing. Emiliano Ricardez" loading="lazy"></span>
           <span>
-            <span class="vic-persona__nom">Ing. Emiliano</span>
-            <span class="vic-persona__rol">Operaciones y pensamiento cuantitativo</span>
+            <span class="vic-persona__nom">Ing. Emiliano Ricardez</span>
+            <span class="vic-persona__rol">Matemáticas y clase en vivo</span>
             <span class="vic-persona__mas">Ver perfil →</span>
           </span>
         </button>
         <button class="vic-persona" type="button" data-mas="brando">
-          <span class="vic-persona__foto"><img src="uploads/brando.jpeg" alt="Ing. Brando" loading="lazy"></span>
+          <span class="vic-persona__foto"><img src="uploads/brando.jpeg" alt="Ing. Brando Sánchez" loading="lazy"></span>
           <span>
-            <span class="vic-persona__nom">Ing. Brando</span>
+            <span class="vic-persona__nom">Ing. Brando Sánchez</span>
             <span class="vic-persona__rol">Arquitectura y desarrollo de plataforma</span>
             <span class="vic-persona__mas">Ver perfil →</span>
           </span>
@@ -273,14 +273,15 @@
     </div>
 
     <div class="vic-hidden" id="mas-emiliano">
-      <h3 style="font-size:24px;margin:0 0 6px">Ing. Emiliano</h3>
-      <p style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--vic-azul);margin:0 0 16px">Operaciones y pensamiento cuantitativo</p>
+      <h3 style="font-size:24px;margin:0 0 6px">Ing. Emiliano Ricardez</h3>
+      <p style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--vic-azul);margin:0 0 16px">Matemáticas y clase en vivo</p>
       <p style="font-size:16px;line-height:1.65;margin:0 0 18px">Ingeniero aeronáutico del IPN, campeón en concursos de matemáticas y especialista en operaciones aeronáuticas y finanzas. Convierte problemas complejos en explicaciones claras y accionables.</p>
-      <div class="vic-row" style="gap:8px"><span class="vic-tag">Matemáticas</span><span class="vic-tag">Operaciones</span><span class="vic-tag">Finanzas</span></div>
+      <p style="font-size:16px;line-height:1.65;margin:0 0 18px">Hoy da el curso de matemáticas para la segunda vuelta del IPN: clase de fin de semana, grupos de estudio y grabaciones para quien no alcanza el horario. Los testimonios de este mes salen de ese grupo.</p>
+      <div class="vic-row" style="gap:8px"><span class="vic-tag">Matemáticas</span><span class="vic-tag">Clase en vivo</span><span class="vic-tag">Operaciones</span><span class="vic-tag">Finanzas</span></div>
     </div>
 
     <div class="vic-hidden" id="mas-brando">
-      <h3 style="font-size:24px;margin:0 0 6px">Ing. Brando</h3>
+      <h3 style="font-size:24px;margin:0 0 6px">Ing. Brando Sánchez</h3>
       <p style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--vic-azul);margin:0 0 16px">Arquitectura y desarrollo de plataforma</p>
       <p style="font-size:16px;line-height:1.65;margin:0 0 18px">Ingeniero en Sistemas Computacionales por ESCOM-IPN y Software Developer en Oracle México. Experiencia en análisis de imágenes y datos, sistemas y desarrollo con Java, C/C++ y Python.</p>
       <div class="vic-row" style="gap:8px"><span class="vic-tag">Software</span><span class="vic-tag">Datos</span><span class="vic-tag">Java · Python</span></div>
@@ -395,7 +396,10 @@
         <div class="vic-stat__label">generaciones acompañadas</div>
       </div>
     </div>
-    <p class="vic-hint" style="margin:0 0 56px;max-width:70ch">Cifras del historial docente de Óscar Cruz, incluidas las generaciones que preparó antes de fundar VictoriaEDU. Los resultados varían por alumno y no garantizan admisión.</p>
+    <!-- Estas cuatro cifras son de Óscar y de nadie más: repartirlas entre los
+         tres las volvería falsas. Lo que sí faltaba era decir que no es el
+         único que da clase, y eso va en la línea de abajo. -->
+    <p class="vic-hint" style="margin:0 0 56px;max-width:70ch">Cifras del historial docente de Óscar Cruz, incluidas las generaciones que preparó antes de fundar VictoriaEDU. Emiliano Ricardez da el curso de matemáticas de la segunda vuelta y Brando Sánchez construye la plataforma. Los resultados varían por alumno y no garantizan admisión.</p>
 
     <div class="vic-spread" style="align-items:flex-end;margin-bottom:22px">
       <div>
@@ -433,7 +437,11 @@
     <div class="vic-social__enc">
       <div>
         <h3 style="font-size:24px;margin:0 0 6px;color:#fff">Lo que dicen sus alumnos</h3>
-        <p style="font-size:14px;line-height:1.5;margin:0;color:rgba(255,255,255,.62);max-width:60ch">Reseñas de alumnos de los cursos que Óscar Cruz impartió antes de VictoriaEDU.</p>
+        <!-- El pie tiene que distinguir los dos orígenes: los de Óscar son de
+             cursos anteriores a VictoriaEDU, los de Emiliano son del grupo que
+             está corriendo ahorita. Meterlos todos bajo "antes de VictoriaEDU"
+             envejecía los recientes y era falso. -->
+        <p style="font-size:14px;line-height:1.5;margin:0;color:rgba(255,255,255,.62);max-width:60ch">Alumnos de Óscar Cruz en los cursos que dio antes de VictoriaEDU, y del curso de matemáticas que Emiliano Ricardez da ahorita para la segunda vuelta.</p>
       </div>
       <div id="testimoniosNav"></div>
     </div>
