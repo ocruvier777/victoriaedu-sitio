@@ -119,7 +119,7 @@
        para la página del producto, que es donde el alumno ya viene decidido. */
     var botones = {
       examen:   '<a class="vic-btn vic-btn--primary vic-btn--md vic-navbar__cta" href="' + urlExamenGratis() + '" data-metrica="examen_gratis_clic" data-metrica-lugar="navbar">Haz el examen gratis</a>',
-      comprar:  '<a class="vic-btn vic-btn--primary vic-btn--md vic-navbar__cta" href="' + urlComprar() + '" data-metrica="comprar_clic" data-metrica-lugar="navbar">Comprar simulacro — ' + precioCorto('simulacro-ipn-2026') + '</a>',
+      comprar:  '<a class="vic-btn vic-btn--primary vic-btn--md vic-navbar__cta" href="' + urlComprar() + '" data-metrica="comprar_clic" data-metrica-lugar="navbar">2 exámenes por ' + precioCorto('simulacro-ipn-2026') + '</a>',
       programas:'<a class="vic-btn vic-btn--secondary vic-btn--md vic-navbar__cta" href="tienda.html">Ver programas</a>',
       ninguno:  '',
     };
@@ -749,8 +749,27 @@
       m: host.querySelector('[data-cr="m"]'), s: host.querySelector('[data-cr="s"]'),
     };
     var pad = function (n) { return String(n).padStart(2, '0'); };
+
+    /* Al pasar la fecha, el contador NO puede quedarse en 00:00:00:00 ni la
+       página seguir diciendo "faltan 0 días": eso se lee como algo roto justo
+       el día que el producto por fin abre.
+
+       Cualquier elemento con data-vence="texto" cambia su contenido por ese
+       texto cuando la ventana ya se abrió. Es el mismo patrón declarativo de
+       data-wa y data-plataforma: la frase vive en el HTML, no en el JS. */
+    var yaAbrio = false;
+    var marcarVencida = function () {
+      if (yaAbrio) return;
+      yaAbrio = true;
+      host.classList.add('is-vencida');
+      document.querySelectorAll('[data-vence]').forEach(function (el) {
+        el.textContent = el.getAttribute('data-vence');
+      });
+    };
+
     var tick = function () {
-      var d = Math.max(0, objetivo - Date.now());
+      var d = objetivo - Date.now();
+      if (d <= 0) { marcarVencida(); d = 0; }
       if (campos.d) campos.d.textContent = pad(Math.floor(d / 86400000));
       if (campos.h) campos.h.textContent = pad(Math.floor(d / 3600000) % 24);
       if (campos.m) campos.m.textContent = pad(Math.floor(d / 60000) % 60);

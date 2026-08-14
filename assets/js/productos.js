@@ -45,9 +45,16 @@
         '<div class="vic-precio__nota">Te avisamos al abrir</div>' +
       '</div>';
     }
+    /* El precio de lista solo se pinta si existe y es mayor: un tachado con el
+       mismo número —o peor, con uno menor— convierte el descuento en ruido. */
+    var hayLista = p.precioLista && p.precioLista > p.precio;
     return '<div class="vic-precio">' +
+      (hayLista
+        ? '<div class="vic-precio__lista"><s>' + window.formatoMXN(p.precioLista) + '</s>' +
+            '<span class="vic-precio__ahorro">2x1</span></div>'
+        : '') +
       '<div class="vic-precio__num">' + window.formatoMXN(p.precio) + '</div>' +
-      '<div class="vic-precio__nota">pago único</div>' +
+      '<div class="vic-precio__nota">' + (hayLista ? 'los dos exámenes' : 'pago único') + '</div>' +
     '</div>';
   }
 
@@ -116,7 +123,9 @@
         listaCheck(lista);
       accion = disponible
         ? '<a class="vic-btn vic-btn--primary vic-btn--lg" href="' + esc(window.VicUI.urlComprar()) +
-            '" data-metrica="comprar_clic" data-metrica-lugar="tienda">Comprar — ' + esc(window.VicUI.precioCorto(p.id)) + '</a>' +
+            '" data-metrica="comprar_clic" data-metrica-lugar="tienda">' +
+            (p.precioLista && p.precioLista > p.precio ? 'Llévate los dos por ' : 'Comprar — ') +
+            esc(window.VicUI.precioCorto(p.id)) + '</a>' +
           '<a class="vic-btn vic-btn--secondary vic-btn--lg" href="' + esc(window.VicUI.urlExamenGratis()) +
             '" data-metrica="examen_gratis_clic" data-metrica-lugar="tienda">Pruébalo gratis primero</a>' +
           (p.pagina ? '<a class="vic-producto__link" href="' + esc(p.pagina) + '">Ver el programa completo →</a>' : '')

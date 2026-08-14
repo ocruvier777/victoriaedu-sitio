@@ -8,7 +8,7 @@
 /* Versión del sitio. Se imprime en el pie, y ahí sirve para una cosa muy
    concreta: cuando alguien reporte "se ve raro", poder preguntarle qué versión
    trae y saber si está viendo caché vieja. Súbela cuando publiques. */
-window.VERSION_SITIO = '1.3.0';
+window.VERSION_SITIO = '1.4.0';
 
 window.CONFIG = {
   /* --- Mascota (Vico) ------------------------------------------------------
@@ -245,12 +245,22 @@ window.CATALOGO = [
     id: 'simulacro-ipn-2026',
     slug: 'simulacro-ipn-2026',
     nombre: 'Simulacro IPN 2026',
-    resumen: 'Dos exámenes de 70 reactivos con todas las materias del examen real, inglés incluido. Incluye el taller de ejercicios en vivo de cada fin de semana hasta el día del examen, más reporte por área y plan de estudio revisado por un profesor.',
+    resumen: 'Dos exámenes por el precio de uno: cada uno vale $199 y te llevas los dos. Más el taller de ejercicios en vivo de cada fin de semana hasta el día del examen, de regalo.',
+    /* El paquete son DOS exámenes y cada uno vale $199 por separado: $398 de
+       lista, $199 a pagar. Ese es el 2x1 y por eso `precioLista` sí lleva
+       número aquí — es un precio real de venta unitaria, no un número inflado
+       para tachar. Si algún día se deja de vender el examen suelto a $199,
+       este 398 hay que quitarlo: un precio tachado que nunca existió es
+       publicidad engañosa, no un descuento.
+
+       TODO(Óscar): definir hasta cuándo corre el 2x1. Una promoción sin
+       vigencia declarada no se puede cerrar después sin quedar mal con quien
+       la vio. Si es permanente, mejor decirlo así de claro. */
     precio: 199,
-    precioLista: null,
+    precioLista: 398,
     moneda: 'MXN',
     estado: 'disponible',
-    badge: { texto: 'Disponible', clase: 'vic-badge--solid' },
+    badge: { texto: '2x1 · Disponible', clase: 'vic-badge--solid' },
     meta: '2 exámenes · 70 reactivos c/u · 90 min c/u',
     pagina: 'simulacro-ipn-2026.html',
     /* imagen        → la que se sirve. SIEMPRE tiene que existir.
@@ -270,12 +280,13 @@ window.CATALOGO = [
     /* Los 4 puntos de la tarjeta. Cortos a propósito: en la portada se ojean,
        no se leen. La lista larga sigue siendo `incluye`. */
     puntos: [
-      '2 exámenes como el real',
+      '2 exámenes por el precio de uno',
       '140 reactivos, inglés incluido',
-      'Taller en vivo cada fin de semana',
+      'Taller en vivo de regalo',
       'Reporte por materia y plan con IA',
     ],
     incluye: [
+      'Dos exámenes por el precio de uno: $199 cada uno por separado, los dos por $199',
       'Dos exámenes de 70 reactivos: la mitad del examen real cada uno',
       'Todas las materias que evalúa el IPN, inglés incluido',
       '90 minutos cronometrados por examen, desde tu casa',

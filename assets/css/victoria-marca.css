@@ -501,6 +501,13 @@
    borde superior a todo color pesaba de más. */
 .vic-producto--proximo .vic-producto__pie { border-top-color: var(--vic-border-subtle); }
 
+/* --- Cuenta regresiva vencida ---------------------------------------------
+   Cuando la ventana de lanzamiento ya se abrió, los cuatro cuadros en ceros
+   se leen como un contador roto. Se ocultan y queda solo el texto de
+   data-vence, que ya dice lo que hay que decir.
+------------------------------------------------------------------------- */
+[data-cuenta-regresiva].is-vencida .vic-cd { display: none; }
+
 /* --- Precio ---------------------------------------------------------------
    Sale por clases, no por estilos en línea, porque la misma tarjeta se pinta
    sobre papel blanco y sobre cristal oscuro.
@@ -513,6 +520,34 @@
   line-height: 1.1;
 }
 .vic-precio__nota { font-size: 13px; color: var(--vic-text-muted); margin-top: 2px; }
+
+/* Precio de lista tachado + sello del 2x1. Va ARRIBA del precio real y más
+   chico: el número que se paga tiene que seguir siendo el que más pesa. */
+.vic-precio__lista {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 2px;
+  font-size: 14px;
+  color: var(--vic-text-muted);
+}
+.vic-precio__ahorro {
+  font-family: var(--vic-font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  padding: 3px 8px;
+  border-radius: var(--vic-radius-pill);
+  background: var(--vic-success-soft);
+  color: var(--vic-success-text);
+}
+/* Sobre el cristal oscuro del carrusel, el verde institucional pierde
+   contraste; el cian del sistema es el equivalente legible. */
+.vic-producto--horizontal .vic-precio__lista { color: rgba(255, 255, 255, .62); }
+.vic-producto--horizontal .vic-precio__ahorro {
+  background: rgba(var(--vic-cian-rgb), .22);
+  color: #fff;
+}
 .vic-precio--proximo .vic-precio__num { font-size: 20px; color: var(--vic-text-muted); }
 
 .vic-producto__meta { font-size: 14px; color: var(--vic-text-muted); }
