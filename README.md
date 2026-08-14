@@ -184,17 +184,27 @@ Si algún día la tarjeta cambia de tono, la solución **no** es pintarles un
 recuadro blanco detrás: hay que pedir las ilustraciones ya compuestas contra el
 color nuevo.
 
-**La 404** no necesita `_redirects` ni `netlify.toml`: Netlify sirve `404.html`
-por convención y con el código HTTP correcto. No hay ninguno de esos archivos en
-el repo y **no conviene crearlos** — una regla de redirección mal puesta
-convierte los 404 en 200 o rompe rutas válidas.
+**La 404 hay que conectarla en el hosting definitivo.** El Netlify actual es
+solo la vista previa para revisión; ahí `404.html` se sirve por convención y no
+hay que hacer nada. **nginx —el destino real— no lo hace solo**: necesita una
+línea en su server block, o devolverá su página blanca de "404 Not Found":
 
-Lo que sí necesita, y es fácil de romper: **`<base href="/">` en su `<head>`**.
-Netlify sirve el 404 *en la URL pedida*, sin redirigir, así que en
+```nginx
+error_page 404 /404.html;
+```
+
+No hay `_redirects` ni `netlify.toml` en el repo y **no conviene crearlos**: una
+regla de redirección mal puesta convierte los 404 en 200 o rompe rutas válidas.
+
+Lo que sí es fácil de romper: **`<base href="/">` en su `<head>`**. Una página de
+error se sirve *en la URL pedida*, sin redirigir, así que en
 `/guias/algo-que-no-existe` una ruta relativa como `assets/css/…` se resolvería
 contra `/guias/` y no cargaría ni los estilos, ni el logo, ni los enlaces del
-menú que inyecta `ui.js`. Verificado sirviéndola desde una URL de cuatro
-niveles.
+menú. Verificado sirviéndola desde una URL de cuatro niveles.
+
+**Para portarla a la app**, se quita el `<header>` y la composición funciona
+igual: nada más depende de él. Los valores para reconstruirla están en
+INTEGRACION-PLATAFORMA.md.
 
 **Vico.** `assets/brand/vico/vico-diagnostico.webp`, se activa desde
 `CONFIG.mascota`. La pose pensativa de la 404 va en `CONFIG.mascotaPensando` y

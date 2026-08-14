@@ -4,10 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>404 · Esta ruta no lleva a ninguna clase — VictoriaEDU</title>
-<!-- CLAVE para que esta página funcione de verdad: Netlify sirve 404.html EN LA
-     URL PEDIDA, sin redirigir. En /guias/algo-que-no-existe, una ruta relativa
-     como "assets/css/…" se resolvería contra /guias/ y no cargaría nada — ni
-     los estilos, ni el logo, ni los enlaces del menú que inyecta ui.js.
+<!-- CLAVE para que esta página funcione de verdad, en Netlify y en nginx por
+     igual: una página de error se sirve EN LA URL PEDIDA, sin redirigir. En
+     /guias/algo-que-no-existe, una ruta relativa como "assets/css/…" se
+     resolvería contra /guias/ y no cargaría nada — ni los estilos, ni el logo,
+     ni los enlaces del menú que inyecta ui.js.
      Con <base> todo lo relativo se ancla a la raíz y la página se ve igual sin
      importar a qué profundidad la pidieron. -->
 <base href="/">
@@ -16,19 +17,31 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/victoria.css?v=18">
-<link rel="stylesheet" href="assets/css/victoria-marca.css?v=18">
+<link rel="stylesheet" href="assets/css/victoria.css?v=19">
+<link rel="stylesheet" href="assets/css/victoria-marca.css?v=19">
 </head>
 <body class="v404-body">
 
-<!-- Netlify sirve este archivo con código HTTP 404 real por convención, sin
-     necesidad de _redirects ni netlify.toml. No hay ninguno en el repo y no
-     hace falta crearlo: añadir reglas de redirección sí podría romper rutas
-     válidas o convertir los 404 en 200. -->
+<!-- CÓMO SE SIRVE ESTA PÁGINA
+     El Netlify actual es solo la vista previa para revisión. En el hosting
+     definitivo hay que conectarla a mano:
+
+       · Netlify, Vercel, GitHub Pages, S3 → sirven /404.html por convención,
+         no hay que hacer nada.
+       · nginx (el destino real, el mismo de la plataforma) → NO lo hace solo.
+         Necesita una línea en el server block:
+             error_page 404 /404.html;
+         Sin ella, nginx devuelve su página blanca de "404 Not Found".
+
+     Ver INTEGRACION-PLATAFORMA.md para el detalle. -->
 
 <!-- La navegación es la misma de todo el sitio: la pinta ui.js desde un solo
      árbol (NAV), así que esta página no duplica ni un enlace. El CTA sale del
-     catálogo, por eso dice el precio vigente y no el del mock. -->
+     catálogo, por eso dice el precio vigente y no el del mock.
+
+     OJO si esta página se porta a la app: allí NO va este header. Se quita el
+     <header> y la composición funciona igual — no hay nada más que dependa de
+     él. -->
 <header data-vic-header data-cta="comprar"></header>
 
 <main class="v404">
@@ -97,7 +110,10 @@
       <!-- Vico. El contenedor se queda vacío —y el CSS lo esconde— mientras
            CONFIG.mascotaPensando sea null, así que la página nunca enseña una
            imagen rota ni un hueco reservado. -->
-      <div class="v404__vico mascot-slot" data-mascota="pensando"></div>
+      <!-- Sin la clase .mascot-slot a propósito: esa pieza es la del bloque de
+           diagnóstico y trae su medallón circular y un tope de 260px que aquí
+           dejaban a Vico pequeño. Este hueco tiene sus propias reglas. -->
+      <div class="v404__vico" data-mascota="pensando"></div>
 
       <!-- Decoración académica. Un solo SVG para que todo comparta grosor de
            línea y escale junto. viewBox en las proporciones del panel. -->
@@ -163,8 +179,8 @@
   </div>
 </main>
 
-<script src="assets/js/config.js?v=18"></script>
-<script src="assets/js/ui.js?v=18"></script>
-<script src="assets/js/iconos.js?v=18"></script>
+<script src="assets/js/config.js?v=19"></script>
+<script src="assets/js/ui.js?v=19"></script>
+<script src="assets/js/iconos.js?v=19"></script>
 </body>
 </html>

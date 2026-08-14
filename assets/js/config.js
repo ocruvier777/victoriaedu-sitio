@@ -8,7 +8,7 @@
 /* Versión del sitio. Se imprime en el pie, y ahí sirve para una cosa muy
    concreta: cuando alguien reporte "se ve raro", poder preguntarle qué versión
    trae y saber si está viendo caché vieja. Súbela cuando publiques. */
-window.VERSION_SITIO = '1.4.0';
+window.VERSION_SITIO = '1.5.0';
 
 window.CONFIG = {
   /* --- Mascota (Vico) ------------------------------------------------------
@@ -32,19 +32,13 @@ window.CONFIG = {
   },
 
   /* Vico en pose pensativa, para la página 404. Misma regla que arriba:
-     null = no se pinta nada, ni caja ni placeholder. La 404 se compone igual
-     con su decoración mientras tanto.
-
-     TODO(Óscar): falta el archivo. Cuando llegue, guardarlo como
-     assets/brand/vico/vico-pensando.webp y llenar este bloque:
-       mascotaPensando: {
-         src: 'assets/brand/vico/vico-pensando.webp',
-         alt: 'Vico observa confundido una ruta de aprendizaje interrumpida',
-         ancho: <ancho real>, alto: <alto real>,
-       }
-     Las dimensiones reales importan: son las que reservan el espacio y evitan
-     que la página salte al cargar la imagen. */
-  mascotaPensando: null,
+     null = no se pinta nada, ni caja ni placeholder. */
+  mascotaPensando: {
+    src: 'assets/brand/vico/vico-pensando.webp',
+    alt: 'Vico observa confundido una ruta de aprendizaje interrumpida',
+    ancho: 1600,
+    alto: 2000,
+  },
 
   marca: {
     nombre: 'VictoriaEDU',

@@ -238,6 +238,67 @@ corre prisa.
 
 ---
 
+## La 404, en el sitio y en la app
+
+Hay una 404 diseñada y funcionando en el sitio (`404.html`). Va en dos sitios
+distintos y cada uno pide algo diferente.
+
+### En el sitio, cuando lo montes en el dominio real
+
+nginx **no** sirve una página de error personalizada por su cuenta: sin esto
+devuelve su pantalla blanca de "404 Not Found".
+
+```nginx
+error_page 404 /404.html;
+```
+
+Ojo con una cosa que ya está resuelta del lado del HTML y conviene no deshacer:
+la página lleva `<base href="/">`. Una página de error se sirve **en la URL
+pedida**, sin redirigir, así que en `/guias/algo-que-no-existe` las rutas
+relativas se resolverían contra `/guias/` y no cargaría ni el CSS ni el logo.
+
+### En la app
+
+Next 14 App Router ya tiene su convención: **`frontend/src/app/not-found.tsx`**.
+Ahí NO va el menú del sitio — la app tiene su propio layout, y el visitante
+puede estar logueado.
+
+Lo que cambia respecto a la versión del sitio:
+
+| | Sitio | App |
+|---|---|---|
+| Menú superior | El del sitio | Ninguno, o el de la app |
+| Botón principal | Volver al inicio | **Ir a mi dashboard** (`/dashboard`) |
+| Botón secundario | Ver programas | **Ver mis simulacros** (`/simulacros`) |
+| Enlace de ayuda | WhatsApp | El mismo WhatsApp |
+
+Los textos que sí se conservan: eyebrow "RUTA NO ENCONTRADA", el 404, el
+titular "Esta ruta no lleva a ninguna clase." y la descripción.
+
+**Los valores del diseño**, por si lo reconstruyes con Tailwind y el design
+system en vez de copiar el CSS:
+
+```
+fondo        #210A0F (guinda profundo)
+panel        #FAF8F5 (blanco cálido), clip-path: polygon(26% 0, 100% 0, 100% 100%, 24% 100%, 0 52%)
+404          Creato Display 800, blanco cálido, clamp(104px, 15vw, 216px), line-height .84
+azul         #2C4D9D  ·  azul claro #8AA6D8  ·  guinda de las marcas #7A2233
+ángulo de los cortes diagonales: 18deg (el del isotipo)
+cuadrícula   24px fina + 120px mayor, blanco a .045 y .10 de opacidad
+```
+
+Dos detalles que costaron y evitarás repetir:
+
+- Los cortes del "404" se hacen con `mask-image`, no pintando franjas encima:
+  la máscara deja ver el fondo real y el corte encaja aunque debajo haya
+  degradado. Y el periodo va en `em`, no en px — con px, en móvil el número
+  sale cruzado por el doble de cortes y deja de leerse.
+- La imagen de Vico es `assets/brand/vico/vico-pensando.webp` (1600×2000, con
+  alfa). Va sobre el panel claro: sobre fondo oscuro su cuerpo azul marino se
+  funde y se pierde la silueta.
+
+---
+
 ## Fuera de alcance — no toques esto
 
 - **CORS / `FRONTEND_URL`.** No hace falta. Todos los saltos son links normales; el

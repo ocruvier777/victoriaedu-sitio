@@ -1152,9 +1152,11 @@
 .v404__vico {
   position: relative;
   z-index: 2;
-  width: 46%;
-  max-width: 340px;
-  margin-right: 22%;
+  /* Vico manda en esta mitad: su alto define la escena. El límite en svh es
+     lo que impide que en pantallas bajas empuje la página y aparezca scroll. */
+  width: 70%;
+  max-width: min(430px, 54svh);
+  margin-right: 14%;
 }
 /* Sin imagen no hay caja: mismo criterio que el resto del sitio. */
 .v404__vico:not(:has(img)) { display: none; }
