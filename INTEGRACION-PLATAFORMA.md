@@ -4,7 +4,7 @@
 la plataforma de producción esté lista.
 
 - **Sitio:** `ocruvier777/victoriaedu-sitio` · rama `main` → **victoriaedu.com.mx** (en línea)
-- **Plataforma:** `brandosanchezr/victoria-edu` · `edu.victoriadev.com` (prod) · `dev-edu.victoriadev.com` (dev)
+- **Plataforma:** `brandosanchezr/victoria-edu` · `campus.victoriaedu.com.mx` (prod) · `dev-edu.victoriadev.com` (dev)
 
 > El dominio del sitio es **victoriaedu.com.mx**, no `victoriaedu.mx`. Ese
 > segundo no existe: no resuelve. Estuvo escrito en los `canonical` de dos
@@ -37,7 +37,7 @@ ver la calificación. Este documento describe el que sí hay.
 ```
 victoriaedu.com.mx   "Haz el examen gratis"
       ↓
-edu.victoriadev.com/gratis/PUB-IPN-2026-GRATIS     ← SIN cuenta, 10 reactivos
+campus.victoriaedu.com.mx/gratis/PUB-IPN-2026-GRATIS ← SIN cuenta, 10 reactivos
       ↓  entrega → la plataforma guarda un claim_token de 48 h en su navegador
 /registro  ·  /login  ·  o Google
       ↓  auth.tsx ve el claim pendiente y desvía solo
@@ -88,7 +88,7 @@ líneas en `config.js` y no hace falta tocar ningún botón ni ningún HTML.
 
 | Host del sitio | Plataforma con la que habla |
 |---|---|
-| `victoriaedu.com.mx`, `www.victoriaedu.com.mx` | `edu.victoriadev.com` (producción) |
+| `victoriaedu.com.mx`, `www.victoriaedu.com.mx` | `campus.victoriaedu.com.mx` (producción) |
 | cualquier otro: localhost, previews, la rama dev | `dev-edu.victoriadev.com` |
 
 Se hizo así para que las ramas `main` y `dev` del sitio **no diverjan**: son el
@@ -103,26 +103,29 @@ host fuera de `hostsProduccion` y hay que agregarlo.
 
 ---
 
-## ⚠️ Producción está CERRADA a propósito
+## ⚠️ En producción el examen ABRIÓ; la compra sigue cerrada
 
-En `victoriaedu.com.mx` los dos CTAs están apagados desde `config.js`:
+En `victoriaedu.com.mx` los dos CTAs son flags independientes en `config.js`:
 
 ```js
-produccion: { base: '…', examenAbierto: false, compraAbierta: false }
+produccion: {
+  base: 'https://campus.victoriaedu.com.mx',
+  examenAbierto: true,      // el examen gratis ya sale a la plataforma
+  compraAbierta: false,     // Mercado Pago sigue en sandbox
+}
 ```
 
-Los botones no desaparecen —la página entera está escrita alrededor de ellos—:
-se marcan **"Pronto"** y al tocarlos abren un aviso que explica y ofrece
-WhatsApp, que es el canal que sí contesta hoy. Los clics se miden aparte
-(`examen_gratis_cerrado`, `comprar_cerrado`, `wa_desde_cerrado`) para no inflar
-el embudo con gente que nunca salió del sitio, y para saber cuánta demanda se
-está quedando en la puerta.
+El botón de compra no desaparece —la página entera está escrita alrededor de
+él—: se marca **"Pronto"** y al tocarlo abre un aviso que explica y ofrece
+WhatsApp, que es el canal que sí contesta hoy. Esos clics se miden aparte
+(`comprar_cerrado`, `wa_desde_cerrado`) para no inflar el embudo con gente que
+nunca salió del sitio, y para saber cuánta demanda se está quedando en la puerta.
 
 Por qué cada uno:
 
-- **El examen** porque el flujo `/gratis` → claim → resultado viene de la rama
-  `dev` de la plataforma y la de producción todavía no lo da por terminado. La
-  ruta ya responde 200 en prod, pero eso no es lo mismo que estar listo.
+- **El examen** ya está abierto: el flujo `/gratis` → claim → resultado está
+  publicado y la landing del simulacro, que recibe tráfico pagado, se apoya
+  entera en ese CTA.
 - **La compra** porque **Mercado Pago sigue en sandbox**: `mp_modo` viene con
   default `"sandbox"` y las credenciales no están puestas en uat/prod. Un botón
   de pago que cobra con dinero de mentiras es peor que un botón apagado.
@@ -136,7 +139,7 @@ sitio.
 
 ### 1 · Plataforma: publicar el flujo del examen gratis en producción
 
-Que `main` de la plataforma quede desplegada en `edu.victoriadev.com` con:
+Que `main` de la plataforma quede desplegada en `campus.victoriaedu.com.mx` con:
 
 - `/gratis/{examenId}` y `/gratis/resultado` sirviendo,
 - `GET|POST /api/v1/public/examenes/…` y `POST /api/v1/intentos/reclamar` vivos,
@@ -147,7 +150,7 @@ Que `main` de la plataforma quede desplegada en `edu.victoriadev.com` con:
 Comprobación rápida, sin abrir el navegador:
 
 ```bash
-curl -s https://edu.victoriadev.com/api/v1/public/examenes/PUB-IPN-2026-GRATIS \
+curl -s https://campus.victoriaedu.com.mx/api/v1/public/examenes/PUB-IPN-2026-GRATIS \
   | head -c 200                       # debe traer preguntas, no 404
 ```
 
@@ -182,9 +185,10 @@ Una línea por CTA en `assets/js/config.js`:
 produccion: { base: '…', examenAbierto: true, compraAbierta: true },
 ```
 
-Y subir el `?v=` en los HTML más `VERSION_SITIO` (ver README). Se puede abrir
-solo el examen y dejar la compra cerrada: son flags independientes a propósito,
-porque el examen depende del punto 1 y la compra del punto 2.
+Y subir el `?v=` en los HTML más `VERSION_SITIO` (ver README). Son flags
+independientes a propósito, porque el examen depende del punto 1 y la compra del
+punto 2: **`examenAbierto` ya está en `true`** y `compraAbierta` sigue en `false`
+esperando el punto 2.
 
 **Antes de abrir, recorrer el flujo completo contra dev** (ver más abajo). El
 sitio ya apunta a dev desde cualquier host que no sea victoriaedu.com.mx, así
@@ -373,15 +377,11 @@ Dos detalles que costaron y evitarás repetir:
 
 ## Lo que hay que decidir aparte (no es de Brando, es de los tres)
 
-El sitio es `victoriaedu.com.mx` y la plataforma es `edu.victoriadev.com`. El
-alumno da clic en "examen gratis" y salta a un dominio que no se parece a la
-marca — y con el flujo nuevo eso pasa **antes** de que le pidamos nada, así que
-pega menos que antes. Pero cuando llega el momento de registrarse, sigue estando
-en un dominio ajeno.
-
-La solución es barata: `examen.victoriaedu.com.mx` apuntando al mismo nginx, o
-servir la plataforma bajo `victoriaedu.com.mx/app`. Config de nginx más un
-certificado. Vale la pena antes de gastar el primer peso en tráfico.
+~~El sitio es `victoriaedu.com.mx` y la plataforma es `edu.victoriadev.com`.~~
+**Resuelto.** La plataforma de producción vive ahora en
+`campus.victoriaedu.com.mx`: el alumno ya no salta a un dominio ajeno cuando le
+toca registrarse. Solo el ambiente de dev sigue en `dev-edu.victoriadev.com`, que
+es donde debe estar.
 
 **Dos correos que hay que confirmar.** `CONFIG.marca` publica
 `hola@victoriaedu.mx` e `instituciones@victoriaedu.mx`, en el dominio que no

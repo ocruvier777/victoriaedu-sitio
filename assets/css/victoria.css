@@ -198,6 +198,16 @@ img { max-width: 100%; }
 .vic-navbar .vic-btn--secondary:hover {
   background: rgba(255,255,255,.12); color: #fff; border-color: rgba(255,255,255,.7);
 }
+/* …salvo dentro de un panel claro. La regla de arriba mira la SECCIÓN, no el
+   fondo real que tiene el botón debajo: un secundario dentro de .vic-panel-claro
+   quedaba blanco sobre blanco, invisible. Mismo criterio que ya aplica el bloque
+   de .vic-panel-claro a los títulos y párrafos. */
+.vic-section--impacto .vic-panel-claro .vic-btn--secondary {
+  color: var(--vic-azul); border-color: var(--vic-azul);
+}
+.vic-section--impacto .vic-panel-claro .vic-btn--secondary:hover {
+  background: var(--vic-primary-softer); color: var(--vic-azul-profundo); border-color: var(--vic-azul);
+}
 /* El ghost hereda el azul de marca, que sobre el fondo noche baja de 3:1.
    Los "Conoce más" viven en secciones claras y oscuras, así que necesita par. */
 .vic-section--impacto .vic-btn--ghost { color: #fff; }
@@ -207,7 +217,21 @@ img { max-width: 100%; }
 .vic-btn--md { height: 44px; padding: 0 20px; font-size: 15px; }
 .vic-btn--lg { height: 52px; padding: 0 26px; font-size: 16px; }
 .vic-btn--xl { height: 60px; padding: 0 32px; font-size: 17px; }
-.vic-btn--block { display: flex; width: 100%; }
+/* Botón a ancho completo. Un botón que YA ocupa todo el renglón no necesita que
+   su etiqueta quepa en una sola línea, y el `white-space:nowrap` que traen todos
+   los botones tiene un efecto que no se ve hasta que muerde: fija el ancho
+   MÍNIMO de la columna que lo contiene. En la rejilla de la oferta, "Probar 10
+   reactivos gratis" exigía 275px + 68 de relleno del panel = 343, y a 320px de
+   pantalla eso empujaba la PÁGINA ENTERA a lo ancho, con scroll horizontal.
+
+   La altura pasa de fija a mínima para que quepa la segunda línea. Con una sola
+   línea —que es el caso en cuanto hay sitio— el botón mide exactamente lo mismo
+   que antes: el min-height es el height que tenía. */
+.vic-btn--block { display: flex; width: 100%; min-width: 0; white-space: normal; line-height: 1.25; }
+.vic-btn--sm.vic-btn--block { height: auto; min-height: 36px; }
+.vic-btn--md.vic-btn--block { height: auto; min-height: 44px; }
+.vic-btn--lg.vic-btn--block { height: auto; min-height: 52px; }
+.vic-btn--xl.vic-btn--block { height: auto; min-height: 60px; }
 
 .vic-btn[disabled], .vic-btn--disabled {
   opacity: .5; cursor: not-allowed; pointer-events: none; transform: none;
@@ -323,6 +347,20 @@ img { max-width: 100%; }
 .vic-grid--4 { grid-template-columns: repeat(4, 1fr); }
 .vic-stack { display: grid; gap: 16px; }
 .vic-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+/* Fila de CTAs. En móvil los botones se apilan y toman el ancho disponible —
+   sin pegarse al borde: el padding del .vic-container es quien pone el margen.
+   Clase propia y no una regla sobre .vic-row a secas, porque .vic-row también
+   monta filas de etiquetas y precios donde estirar sería un desastre. */
+@media (max-width: 640px) {
+  .vic-row--cta { flex-direction: column; align-items: stretch; gap: 12px; }
+  /* Mismo motivo que en .vic-btn--block: estirado a todo lo ancho, el `nowrap`
+     dejaría de ser cosmético y pasaría a fijar el ancho mínimo de la columna. */
+  .vic-row--cta > .vic-btn {
+    width: 100%; min-width: 0; white-space: normal; line-height: 1.25;
+    height: auto; min-height: 52px;
+  }
+  .vic-row--cta > .vic-btn--xl { min-height: 60px; }
+}
 .vic-spread { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .vic-mono { font-family: var(--vic-font-mono); }
 .vic-muted { color: var(--vic-text-muted); }
@@ -357,9 +395,11 @@ img { max-width: 100%; }
 /* El CTA se pinta dos veces: fuera del menú (escritorio) y dentro (móvil).
    Cada breakpoint muestra exactamente uno. */
 .vic-navbar__links .vic-navbar__cta { display: none; }
+/* 44px y no 42: es el único control de la navegación en móvil y se quedaba dos
+   píxeles por debajo del mínimo táctil. La diferencia no se ve; fallarlo, sí. */
 .vic-navbar__toggle {
   display: none; background: none; border: 1px solid rgba(255,255,255,.3);
-  border-radius: var(--vic-radius-sm); color: #fff; width: 42px; height: 42px;
+  border-radius: var(--vic-radius-sm); color: #fff; width: 44px; height: 44px;
   cursor: pointer; font-size: 18px; line-height: 1;
 }
 
@@ -631,8 +671,9 @@ img { max-width: 100%; }
 .vic-rail:focus-visible { outline: none; box-shadow: var(--vic-shadow-focus); border-radius: var(--vic-radius-lg); }
 
 .vic-rail__nav { order: 0; align-self: flex-end; display: flex; align-items: center; gap: 8px; margin-bottom: 18px; }
+/* 44px: son los controles del carrusel y el mínimo de objetivo. Estaban en 40. */
 .vic-rail__btn {
-  width: 40px; height: 40px; border-radius: var(--vic-radius-pill);
+  width: 44px; height: 44px; border-radius: var(--vic-radius-pill);
   border: 1px solid var(--vic-border); background: var(--vic-blanco);
   color: var(--vic-azul); display: grid; place-items: center; cursor: pointer;
   transition: background var(--vic-transition-base), border-color var(--vic-transition-base), opacity var(--vic-transition-base);
@@ -650,6 +691,7 @@ img { max-width: 100%; }
 /* Los puntos son la referencia de posición en móvil, donde no hay flechas. */
 .vic-rail__dots { order: 2; display: none; justify-content: center; gap: 8px; margin-top: 18px; }
 .vic-rail__dot {
+  position: relative;
   width: 8px; height: 8px; padding: 0; border-radius: 50%; cursor: pointer;
   border: 0; background: var(--vic-gris-medio); opacity: .5;
   transition: opacity var(--vic-transition-base), transform var(--vic-transition-base);
@@ -826,6 +868,164 @@ img { max-width: 100%; }
 }
 .vic-reel-embed iframe { width: 100%; height: 100%; border: 0; display: block; }
 
+/* Portada del video del simulacro (VideoSimulacroPlaceholder) ---------------
+   Hermano de .vic-reel y con la misma mecánica: NO carga ningún reproductor
+   hasta que alguien da clic. La diferencia es el formato —16:9 en vez de 9:16,
+   porque es un recorrido de producto y no un reel.
+
+   EL VIDEO SE REPRODUCE AQUÍ MISMO, no en un modal. Al pulsar, el reproductor
+   sustituye a la portada dentro de esta misma caja y conserva su 16:9, así que
+   la página no da un salto ni tapa el hero con una ventana encima. El modal
+   sigue existiendo solo para el caso "todavía no hay video", donde no hay nada
+   que reproducir en sitio.
+
+   Dos estados de portada:
+     · con imagen  → la miniatura real del video (.vic-video-ph--conportada)
+     · sin imagen  → la caja de marca, en cristal, cuando el proveedor no da
+                     miniatura o todavía no hay URL
+
+   Vive en el hero, que es .vic-section--impacto: por eso el estado sin imagen
+   está construido en cristal, igual que .vic-glass, y no en papel blanco.
+-------------------------------------------------------------------------- */
+.vic-video-ph {
+  position: relative;
+  width: 100%;
+  /* La proporción la fija el contenedor, no el contenido: pase lo que pase con
+     el texto de dentro o con el reproductor, nunca deja de ser 16:9. */
+  aspect-ratio: 16 / 9;
+  border-radius: var(--vic-radius-xl);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.16);
+  background:
+    radial-gradient(120% 120% at 78% 0%, rgba(44,77,157,.42), transparent 62%),
+    rgba(255,255,255,.06);
+  -webkit-backdrop-filter: blur(14px);
+          backdrop-filter: blur(14px);
+  box-shadow: 0 24px 60px rgba(0,0,0,.35);
+  transition: border-color var(--vic-transition-base), transform var(--vic-transition-base),
+              box-shadow var(--vic-transition-base);
+}
+.vic-video-ph:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255,255,255,.34);
+  box-shadow: 0 30px 68px rgba(0,0,0,.42);
+}
+/* Ya reproduciendo, la caja deja de comportarse como un botón: nada de
+   levantarse al pasar el ratón mientras alguien está viendo el video. */
+.vic-video-ph--reproduciendo:hover { transform: none; }
+
+/* Retícula de cuaderno, la misma del resto de superficies oscuras. Le da algo
+   que mirar a la caja de marca; con miniatura real sobra y se retira. */
+.vic-video-ph::before {
+  content: "";
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,.9), transparent 82%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.9), transparent 82%);
+}
+.vic-video-ph--conportada::before { display: none; }
+
+/* El <button> ocupa la caja entera. Va aparte del contenedor porque al
+   reproducir se sustituye por el <iframe>, y un control interactivo no puede
+   vivir dentro de un <button>. */
+.vic-video-ph__disparador {
+  position: absolute; inset: 0; z-index: 2;
+  display: block; width: 100%; height: 100%;
+  padding: 0; margin: 0; border: 0; background: none;
+  cursor: pointer; text-align: left; color: inherit; font: inherit;
+}
+
+/* La miniatura del video. object-fit:cover porque las miniaturas de YouTube no
+   siempre son 16:9 —hqdefault es 4:3 con franjas negras— y el recorte se come
+   justo esas franjas. */
+.vic-video-ph__portada {
+  position: absolute; inset: 0; z-index: 0;
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+
+/* Velo sobre la miniatura. NO es decoración: encima va texto blanco y la
+   portada de un video es una foto cualquiera, que puede ser casi blanca. Sin
+   velo el título simplemente desaparece.
+
+   Las paradas están calibradas contra la rejilla de .vic-video-ph__cuerpo, no
+   elegidas a ojo: el bloque de texto ocupa el tercio inferior, así que ahí el
+   velo va casi opaco; afloja en la franja central —donde está el botón de play,
+   que es blanco y se defiende solo— y vuelve a subir arriba para el logo.
+   Solo se pinta cuando hay miniatura; sobre el cristal no hace falta.
+
+   OJO CON EL z-index: un ::before cuenta como PRIMER HIJO, así que con el mismo
+   z-index que la miniatura —que es un hijo real y va después— el velo se pinta
+   DEBAJO de ella y no se ve en absoluto. De ahí el escalón explícito:
+   miniatura 0 · velo 1 · texto 2. */
+.vic-video-ph--conportada .vic-video-ph__disparador::before {
+  content: "";
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(to top,
+    rgba(10,3,6,.96) 0%,
+    rgba(10,3,6,.93) 26%,
+    rgba(10,3,6,.72) 40%,
+    rgba(10,3,6,.44) 58%,
+    rgba(10,3,6,.40) 78%,
+    rgba(10,3,6,.58) 100%);
+}
+
+/* Rejilla de tres filas: identidad arriba, play en medio, textos abajo. El
+   `1fr` de en medio es lo que mantiene el play centrado a cualquier alto. */
+.vic-video-ph__cuerpo {
+  position: relative; z-index: 2;   /* encima del velo, que va en 1 */
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  /* clamp: a 320px el padding de 26px se comía la portada entera. */
+  padding: clamp(16px, 3.4vw, 26px);
+  gap: clamp(8px, 1.6vw, 14px);
+}
+.vic-video-ph__logo {
+  height: clamp(26px, 4.6vw, 38px); width: auto; display: block;
+  /* Sobre una miniatura ajena el logo necesita despegarse del fondo. */
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,.5));
+}
+.vic-video-ph__medio { display: grid; place-items: center; }
+.vic-video-ph__play {
+  width: clamp(48px, 9vw, 66px); height: clamp(48px, 9vw, 66px);
+  border-radius: 50%; display: grid; place-items: center;
+  /* padding-left compensa el centro óptico del triángulo, que no coincide con
+     el geométrico. Mismo truco que .vic-reel__play. */
+  padding-left: 4px;
+  background: rgba(255,255,255,.94); color: var(--vic-azul-profundo);
+  box-shadow: 0 10px 30px rgba(0,0,0,.34);
+  transition: transform var(--vic-transition-base);
+}
+.vic-video-ph__disparador:hover .vic-video-ph__play { transform: scale(1.07); }
+/* display:block obligatorio en los tres: son <span> dentro de un <span> —el
+   contenido de un <button> no puede llevar <div>— y sin esto los tres renglones
+   se pegan en una sola línea. Mismo caso que .vic-persona__nom. */
+.vic-video-ph__etq {
+  display: block;
+  font-family: var(--vic-font-mono);
+  font-size: clamp(9px, 1.5vw, 11px); letter-spacing: .12em; text-transform: uppercase;
+  color: rgba(255,255,255,.72); margin-bottom: 6px;
+}
+.vic-video-ph__tit {
+  display: block;
+  font-family: var(--vic-font-display); font-weight: 700;
+  font-size: clamp(15px, 2.4vw, 22px); line-height: 1.22; color: #fff;
+  text-wrap: balance;
+}
+.vic-video-ph__sub {
+  display: block;
+  font-size: clamp(12px, 1.5vw, 14px); color: rgba(255,255,255,.72); margin-top: 6px;
+}
+
+/* El reproductor, ya en sitio. Rellena la caja: hereda su 16:9 y su recorte de
+   esquinas, que es lo único que un <iframe> no respeta solo. */
+.vic-video-ph__marco { position: absolute; inset: 0; z-index: 3; background: #000; }
+.vic-video-ph__marco iframe,
+.vic-video-ph__marco video { width: 100%; height: 100%; border: 0; display: block; }
+
 /* Tira compacta del equipo -------------------------------------------------
    Antes eran tres bios de 40 palabras. Aquí se ve la cara y el cargo; la bio
    completa entra por el botón, que es lo que se lee en un móvil.              */
@@ -929,18 +1129,24 @@ img { max-width: 100%; }
 .vic-incluye__d { font-size: 15px; line-height: 1.55; color: var(--vic-text-body); }
 
 /* FAQ */
+/* El relleno vive en el <summary>, no en el <details>. Con el padding en el
+   contenedor, la parte que se puede pulsar era solo el renglón del texto —22px
+   de alto en una pregunta corta— y los 20px de alrededor no abrían nada: se ve
+   como una tarjeta pulsable de 62px y en realidad respondía un tercio. Ahora la
+   tarjeta entera ES el objetivo. Cerrada se ve exactamente igual que antes. */
 .vic-faq {
   border: 1px solid var(--vic-border); border-radius: 14px;
-  padding: 20px 24px; background: var(--vic-bg-subtle);
+  padding: 0; background: var(--vic-bg-subtle);
 }
 .vic-faq summary {
+  padding: 20px 24px; min-height: 44px;
   font-size: 17px; font-weight: 700; color: var(--vic-azul-profundo);
   cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 16px;
 }
 .vic-faq summary::-webkit-details-marker { display: none; }
 .vic-faq summary::after { content: "+"; font-weight: 400; font-size: 22px; line-height: 1; color: var(--vic-azul); flex: none; }
 .vic-faq[open] summary::after { content: "−"; }
-.vic-faq p { font-size: 16px; line-height: 1.6; color: var(--vic-text-body); margin: 12px 0 0; }
+.vic-faq p { font-size: 16px; line-height: 1.6; color: var(--vic-text-body); margin: 0; padding: 0 24px 20px; }
 
 /* --- Iconos --------------------------------------------------------------- */
 .vic-icono {
@@ -1010,6 +1216,14 @@ img { max-width: 100%; }
 .vic-lista-check li::before {
   content: "✓"; color: var(--vic-success); font-weight: 700; flex: none; line-height: 1.45;
 }
+/* Sobre el fondo noche el verde institucional cae por debajo de 3:1. El cian
+   del sistema es su equivalente legible — el mismo cambio que ya hace la
+   tarjeta en cristal de la tienda. El panel claro conserva el verde, porque ahí
+   el fondo vuelve a ser blanco. */
+.vic-section--impacto .vic-lista-check li { color: rgba(255,255,255,.82); }
+.vic-section--impacto .vic-lista-check li::before { color: var(--vic-cian, #58A9C0); }
+.vic-section--impacto .vic-panel-claro .vic-lista-check li { color: var(--vic-text-body); }
+.vic-section--impacto .vic-panel-claro .vic-lista-check li::before { color: var(--vic-success); }
 
 /* --- Modal --------------------------------------------------------------- */
 .vic-modal {
@@ -1294,6 +1508,11 @@ img { max-width: 100%; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   [data-reveal] { opacity: 1; transform: none; }
+  /* Anular la duración no basta cuando lo que molesta es el desplazamiento en
+     sí: el salto seguiría ocurriendo, solo que instantáneo. Estos dos se quedan
+     quietos del todo y el hover se marca con el borde, que no se mueve. */
+  .vic-video-ph:hover { transform: none; }
+  .vic-video-ph__disparador:hover .vic-video-ph__play { transform: none; }
 }
 
 /* --- Toast -------------------------------------------------------------- */
@@ -1392,6 +1611,20 @@ img { max-width: 100%; }
      puntos, que son la única pista de que hay más tarjetas a la derecha. */
   .vic-rail__nav { display: none; }
   .vic-rail__dots { display: flex; }
+  /* El punto se ve de 8px y se toca en 16×44: alto completo de fila y ancho
+     hasta la mitad del hueco, o sea todo el espacio disponible sin pisar al
+     vecino. No llega a los 44 de ancho A PROPÓSITO — la portada llega a llevar
+     diez puntos, y diez objetivos de 44px son 440px, que no caben en ninguna
+     pantalla de móvil; forzarlos partiría la fila en dos renglones. El objetivo
+     de 44px completo lo cumplen los dos controles equivalentes que sí existen:
+     el arrastre con el dedo y las flechas de ≥44px en escritorio.
+     Pseudo-elemento y no padding, para no mover el círculo ni un píxel. */
+  .vic-rail__dot::after {
+    content: "";
+    position: absolute; top: 50%; left: 50%;
+    width: 16px; height: 44px;
+    transform: translate(-50%, -50%);
+  }
   .vic-tira-equipo { grid-template-columns: 1fr; }
 }
 

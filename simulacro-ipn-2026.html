@@ -3,52 +3,82 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Simulacro IPN 2026 — VictoriaEDU</title>
-<meta name="description" content="Dos simulacros del examen de admisión IPN de 70 reactivos cada uno, con todas las materias del examen real incluido inglés. 2x1: cada examen cuesta $199 y te llevas los dos, más el taller de ejercicios en vivo de cada fin de semana de regalo. Reporte por área y plan de estudio generado por IA. Pruébalo antes con 10 reactivos gratis.">
+<title>Simulacro IPN 2026 | Diagnóstico gratis y 2 exámenes por $199</title>
+<meta name="description" content="Mide tu nivel para la segunda vuelta del IPN con 10 reactivos gratis. Continúa con 2 simulacros completos de 70 preguntas por $199 MXN total.">
 <link rel="icon" href="uploads/victoriaedu_logo_transparent.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/victoria.css?v=21">
-<link rel="stylesheet" href="assets/css/victoria-marca.css?v=21">
+<link rel="stylesheet" href="assets/css/victoria.css?v=22">
+<link rel="stylesheet" href="assets/css/victoria-marca.css?v=22">
 </head>
 <body>
 
-<header data-vic-header data-cta="comprar"></header>
+<!-- data-cta="examen10": esta página recibe tráfico pagado y su objetivo es el
+     diagnóstico gratuito, no la compra. El CTA del navbar tiene que decir lo
+     mismo que el del hero o el visitante lee dos ofertas distintas. -->
+<header data-vic-header data-cta="examen10"></header>
 
-<!-- ================= HERO ================= -->
+<!-- ================= HERO =================
+     El orden del DOM es el orden en móvil: primero el copy, después el video.
+     No hace falta ningún `order` en CSS — .vic-hero-grid ya colapsa a una
+     columna en ≤1024px y respeta este orden. -->
 <section class="vic-section--impacto vic-blueprint">
   <div class="vic-container" style="padding-top:88px;padding-bottom:96px">
-    <div class="vic-hero-grid" style="grid-template-columns:1.1fr .9fr;gap:56px">
+    <div class="vic-hero-grid" style="grid-template-columns:1.05fr .95fr;gap:56px">
       <div>
-        <!-- data-vence: el texto que sustituye a este cuando la fecha de
-             lanzamiento ya pasó. Sin él, la página seguiría anunciando una
-             apertura futura que ya ocurrió. -->
-        <div class="vic-pill" style="margin-bottom:26px" data-vence="2x1 · tus exámenes ya están disponibles"><span class="vic-dot"></span>2x1 · tus exámenes se habilitan el 14 de agosto</div>
-        <h1 style="font-size:clamp(38px,4.4vw,62px);line-height:1.03;letter-spacing:-.02em;margin:0 0 24px">Dos exámenes por el precio de uno.</h1>
-        <p style="font-size:20px;line-height:1.55;margin:0 0 32px;max-width:52ch">Cada simulacro cuesta $199 y te llevas los dos: 70 reactivos cada uno, la mitad del examen real con todas sus materias, inglés incluido. Y el taller de ejercicios en vivo de cada fin de semana va de regalo.</p>
-        <div class="vic-row" style="margin-bottom:20px">
-          <a class="vic-btn vic-btn--primary vic-btn--xl" data-plataforma="examen" data-metrica="examen_gratis_clic" data-metrica-lugar="producto-hero">Pruébalo gratis: 10 reactivos</a>
-          <a class="vic-btn vic-btn--secondary vic-btn--xl" href="#comprar">Los dos por $199</a>
+        <div class="vic-pill" style="margin-bottom:26px"><span class="vic-dot"></span>Simulacro IPN 2026 · Segunda vuelta</div>
+        <h1 style="font-size:clamp(32px,4.4vw,62px);line-height:1.04;letter-spacing:-.02em;margin:0 0 24px">No estudies a ciegas para tu segunda vuelta.</h1>
+        <p style="font-size:clamp(17px,1.6vw,20px);line-height:1.55;margin:0 0 28px;max-width:52ch">Mide hoy qué tan cerca estás del IPN y descubre qué materias necesitas reforzar antes del examen.</p>
+
+        <ul class="vic-lista-check" style="margin-bottom:32px;max-width:52ch">
+          <li>Diagnóstico gratuito de 10 reactivos</li>
+          <li>Resultado y recomendaciones de estudio</li>
+          <li>Después, 2 simulacros completos por $199 MXN total</li>
+        </ul>
+
+        <div class="vic-row vic-row--cta" style="margin-bottom:18px">
+          <a class="vic-btn vic-btn--primary vic-btn--xl" data-plataforma="examen" data-metrica="examen_gratis_clic" data-metrica-lugar="simulacro-hero">Hacer mi diagnóstico gratis</a>
         </div>
-        <p style="font-size:14px;line-height:1.6;color:rgba(255,255,255,.6);margin:0">Diseñado por egresados IPN. +9 años preparando aspirantes.</p>
+        <p style="font-size:14px;line-height:1.6;color:rgba(255,255,255,.6);margin:0">Empieza gratis · No necesitas pagar para contestar los 10 reactivos</p>
       </div>
 
-      <div class="vic-glass" data-cuenta-regresiva>
-        <div class="vic-mono" style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:16px" data-vence="Ya disponible en tu cuenta">Tus exámenes se habilitan en</div>
-        <div class="vic-cd">
-          <div class="vic-cd__caja"><div class="vic-cd__num" data-cr="d">--</div><div class="vic-cd__lbl">días</div></div>
-          <div class="vic-cd__caja"><div class="vic-cd__num" data-cr="h">--</div><div class="vic-cd__lbl">hrs</div></div>
-          <div class="vic-cd__caja"><div class="vic-cd__num" data-cr="m">--</div><div class="vic-cd__lbl">min</div></div>
-          <div class="vic-cd__caja"><div class="vic-cd__num" data-cr="s">--</div><div class="vic-cd__lbl">seg</div></div>
-        </div>
-        <div class="vic-stack" style="gap:12px;padding-top:20px;border-top:1px solid rgba(255,255,255,.14);font-size:15px;color:rgba(255,255,255,.78)">
-          <div class="vic-spread" style="gap:12px"><span>Los dos exámenes</span><span style="display:flex;align-items:baseline;gap:8px"><s style="color:rgba(255,255,255,.45);font-size:15px">$398</s><strong style="color:#fff;font-family:var(--vic-font-display);font-size:20px">$199 MXN</strong></span></div>
-          <div class="vic-spread" style="gap:12px"><span>Formato</span><span style="color:#fff">2 exámenes de 70 reactivos</span></div>
-          <div class="vic-spread" style="gap:12px"><span>Duración</span><span style="color:#fff">90 minutos cada uno</span></div>
-          <div class="vic-spread" style="gap:12px"><span>Materias</span><span style="color:#fff">Todas, inglés incluido</span></div>
-          <div class="vic-spread" style="gap:12px"><span>Taller en vivo</span><span style="color:#fff">Cada fin de semana, incluido</span></div>
-        </div>
+      <!-- ========== VideoSimulacroPlaceholder ==========
+           Portada del recorrido en video. EL VIDEO SE REPRODUCE AQUÍ MISMO:
+           al pulsar, el reproductor sustituye a esta portada dentro de la misma
+           caja, conservando el 16:9. No hay ventana emergente.
+
+           Lo que se ve aquí es el respaldo: la caja de marca que se pinta si no
+           hay JavaScript o si el proveedor no da miniatura. Cuando sí la hay,
+           pagina-simulacro.js inserta la miniatura REAL del video por detrás y
+           este texto se queda encima, sobre un velo.
+
+           LA URL DEL VIDEO NO VA AQUÍ. Va en assets/js/config.js, en
+           `CONFIG.videoSimulacro` (acepta YouTube, Vimeo o un MP4 propio).
+           Mientras siga en `null`, el clic abre un aviso de "Próximamente" —el
+           único caso en que queda un modal, porque no hay nada que reproducir.
+
+           El <button> es hermano del marco del reproductor, no su padre: un
+           <iframe> no puede vivir dentro de un <button>, así que al reproducir
+           se sustituye uno por otro.
+      ================================================== -->
+      <div class="vic-video-ph" data-video-simulacro>
+        <button class="vic-video-ph__disparador" type="button"
+                aria-label="Reproducir video: conoce cómo funciona el simulacro">
+          <span class="vic-video-ph__cuerpo">
+            <span>
+              <img class="vic-video-ph__logo" src="uploads/victoriaedu_logo_light.png" alt="" aria-hidden="true">
+            </span>
+            <span class="vic-video-ph__medio">
+              <span class="vic-video-ph__play" data-icono="play" data-icono-tam="26"></span>
+            </span>
+            <span>
+              <span class="vic-video-ph__etq">Mira cómo funciona</span>
+              <span class="vic-video-ph__tit">Conoce el simulacro antes de empezar</span>
+              <span class="vic-video-ph__sub">Video de 60 segundos</span>
+            </span>
+          </span>
+        </button>
       </div>
     </div>
   </div>
@@ -56,74 +86,69 @@
 
 <div class="section-divider section-divider--guinda-papel" aria-hidden="true"></div>
 
-<!-- ================= DIAGNÓSTICO HONESTO ================= -->
-<section class="vic-section vic-section--blanco">
+<!-- ================= FRANJA DE BENEFICIOS ================= -->
+<section class="vic-section vic-section--tight vic-section--blanco">
   <div class="vic-container">
-    <div class="vic-eyebrow">01 · Dónde estás hoy</div>
-    <h2 class="vic-h2" style="margin:0 0 44px;max-width:26ch">Si te suena conocido, no es falta de esfuerzo. Es falta de datos.</h2>
-    <div class="vic-grid vic-grid--3">
-      <div class="vic-dolor"><p>Estudias horas y no sabes si estás avanzando.</p></div>
-      <div class="vic-dolor"><p>Compras guías que no te dicen dónde fallas.</p></div>
-      <div class="vic-dolor"><p>Llegas al examen sin haber presentado uno real.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- ================= QUÉ RECIBES ================= -->
-<section class="vic-section vic-section--gris">
-  <div class="vic-container">
-    <div class="vic-eyebrow">02 · Qué recibes exactamente</div>
-    <h2 class="vic-h2" style="margin:0 0 44px;max-width:26ch">Dos exámenes, un reporte, un plan y un profesor cada fin de semana.</h2>
-    <div class="vic-grid vic-grid--2" style="gap:16px">
-      <div class="vic-incluye"><span class="vic-icono vic-icono--sm" data-icono="reactivos" data-icono-tam="20"></span><div><div class="vic-incluye__t">Dos exámenes de 70 reactivos</div><div class="vic-incluye__d">Cada uno es la mitad del examen real de 140 preguntas, con el mismo reparto por materia y el mismo estilo de redacción.</div></div></div>
-      <div class="vic-incluye"><span class="vic-icono vic-icono--sm" data-icono="reloj" data-icono-tam="20"></span><div><div class="vic-incluye__t">90 minutos por examen, cronometrados</div><div class="vic-incluye__d">La mitad de las tres horas del examen real, igual que la mitad de las preguntas. Practicas la presión del tiempo, no solo los temas.</div></div></div>
-      <div class="vic-incluye"><span class="vic-icono vic-icono--sm" data-icono="areas" data-icono-tam="20"></span><div><div class="vic-incluye__t">Todas las materias del examen, inglés incluido</div><div class="vic-incluye__d">El IPN evalúa inglés en una sección aparte y casi ningún simulacro gratuito la incluye. El nuestro sí, con el mismo peso que en el examen real.</div></div></div>
-      <div class="vic-incluye"><span class="vic-icono vic-icono--sm" data-icono="nube" data-icono-tam="20"></span><div><div class="vic-incluye__t">100% en línea, como el examen real</div><div class="vic-incluye__d">El examen del IPN ya es en línea. Practicas en el mismo formato: computadora o celular, eliges el día y la hora dentro de tu ventana de acceso.</div></div></div>
-      <div class="vic-incluye"><span class="vic-icono vic-icono--sm" data-icono="reporte" data-icono-tam="20"></span><div><div class="vic-incluye__t">Un reporte después de cada examen</div><div class="vic-incluye__d">Aciertos por materia, temas donde perdiste puntos y comparación contra el corte histórico de tu carrera. El segundo reporte te dice además cuánto mejoraste.</div></div></div>
-      <div class="vic-incluye"><span class="vic-icono vic-icono--sm vic-icono--acento" data-icono="ia" data-icono-tam="20"></span><div><div class="vic-incluye__t">Plan de estudio post-simulacro</div><div class="vic-incluye__d">Semana por semana, ordenado por impacto en tu puntaje. Lo genera la IA con tus resultados y lo revisa un profesor.</div></div></div>
-      <div class="vic-incluye"><span class="vic-icono vic-icono--sm vic-icono--acento" data-icono="tutor" data-icono-tam="20"></span><div><div class="vic-incluye__t">Taller de ejercicios en vivo cada fin de semana</div><div class="vic-incluye__d">Hasta el día del examen, dentro de la plataforma y sin costo extra. Un profesor resuelve reactivos en vivo y puedes preguntar: el plan te dice qué estudiar y el taller te enseña cómo resolverlo.</div></div></div>
+    <div class="vic-grid vic-grid--4">
+      <div class="vic-stat" data-reveal><div class="vic-stat__num">10</div><div class="vic-stat__label">reactivos gratis</div></div>
+      <div class="vic-stat" data-reveal><div class="vic-stat__num">2</div><div class="vic-stat__label">simulacros completos</div></div>
+      <div class="vic-stat" data-reveal><div class="vic-stat__num">140</div><div class="vic-stat__label">reactivos en total</div></div>
+      <div class="vic-stat" data-reveal><div class="vic-stat__num">Inglés</div><div class="vic-stat__label">incluido</div></div>
     </div>
   </div>
 </section>
 
 <!-- ================= CÓMO FUNCIONA ================= -->
-<section class="vic-section vic-section--blanco">
+<section id="como-funciona" class="vic-section vic-section--blanco">
   <div class="vic-container">
-    <div class="vic-eyebrow">03 · Cómo funciona</div>
-    <h2 class="vic-h2" style="margin:0 0 44px;max-width:24ch">Cuatro pasos, de la compra al plan.</h2>
-    <div class="vic-grid vic-grid--4">
-      <div class="vic-card"><div class="vic-paso__num" style="margin-bottom:12px">1</div><h3 style="font-size:19px;margin:0 0 10px">Compras</h3><p style="font-size:15px;line-height:1.55;margin:0">Creas tu cuenta y pagas $199 desde la plataforma. Se te acreditan los dos exámenes y el taller.</p></div>
-      <div class="vic-card"><div class="vic-paso__num" style="margin-bottom:12px">2</div><h3 style="font-size:19px;margin:0 0 10px">Recibes acceso</h3><p style="font-size:15px;line-height:1.55;margin:0">En cuanto se confirma tu pago, el simulacro y el taller aparecen desbloqueados en tu cuenta.</p></div>
-      <div class="vic-card"><div class="vic-paso__num" style="margin-bottom:12px">3</div><h3 style="font-size:19px;margin:0 0 10px">Presentas los dos</h3><p style="font-size:15px;line-height:1.55;margin:0">90 minutos cada uno, cuando estés listo. Recomendamos dejar unas semanas entre ellos.</p></div>
-      <div class="vic-card"><div class="vic-paso__num" style="margin-bottom:12px;background:var(--vic-burdeos)">4</div><h3 style="font-size:19px;margin:0 0 10px">Recibes reporte + plan IA</h3><p style="font-size:15px;line-height:1.55;margin:0">En menos de 24 horas, en tu correo.</p></div>
+    <div class="vic-eyebrow">01 · Cómo funciona</div>
+    <h2 class="vic-h2" style="margin:0 0 16px;max-width:24ch">Primero mide. Luego enfoca tu preparación.</h2>
+    <p class="vic-lead" style="margin:0 0 44px;max-width:56ch">Antes de estudiar más, descubre exactamente en qué necesitas mejorar.</p>
+    <div class="vic-grid vic-grid--3">
+      <div class="vic-card"><div class="vic-paso__num" style="margin-bottom:12px">1</div><h3 style="font-size:19px;margin:0 0 10px">Responde 10 reactivos</h3><p style="font-size:15px;line-height:1.55;margin:0">Haz un diagnóstico gratuito y conoce la experiencia del simulacro.</p></div>
+      <div class="vic-card"><div class="vic-paso__num" style="margin-bottom:12px">2</div><h3 style="font-size:19px;margin:0 0 10px">Recibe tu resultado</h3><p style="font-size:15px;line-height:1.55;margin:0">Identifica tus aciertos, errores y las materias que requieren más atención.</p></div>
+      <div class="vic-card"><div class="vic-paso__num" style="margin-bottom:12px;background:var(--vic-burdeos)">3</div><h3 style="font-size:19px;margin:0 0 10px">Prepárate con un plan</h3><p style="font-size:15px;line-height:1.55;margin:0">Practica con los simulacros completos y enfoca tu estudio donde puedes ganar más puntos.</p></div>
+    </div>
+    <div class="vic-row vic-row--cta" style="margin-top:36px">
+      <a class="vic-btn vic-btn--primary vic-btn--lg" data-plataforma="examen" data-metrica="examen_gratis_clic" data-metrica-lugar="simulacro-como-funciona">Empezar diagnóstico gratis</a>
     </div>
   </div>
 </section>
 
 <div class="section-divider section-divider--papel-noche" aria-hidden="true"></div>
 
-<!-- ================= DIFERENCIADOR IA ================= -->
+<!-- ================= EL REPORTE ================= -->
 <section class="vic-section vic-section--impacto vic-blueprint">
   <div class="vic-container">
     <div class="vic-grid vic-grid--2" style="gap:56px;align-items:center">
       <div>
-        <div class="vic-eyebrow">04 · El diferenciador</div>
-        <h2 class="vic-h2" style="margin:0 0 20px;max-width:20ch">Un simulacro te dice tu puntaje. Este te dice qué hacer el lunes.</h2>
-        <p style="font-size:18px;line-height:1.6;margin:0 0 20px;max-width:52ch">Los simulacros gratuitos de internet terminan en un número. El tuyo termina en una prescripción: qué temas atacar, en qué orden y cuánto tiempo darle a cada uno según los reactivos que valen más en tu carrera.</p>
-        <p style="font-size:15px;line-height:1.6;color:rgba(255,255,255,.6);margin:0 0 28px;max-width:52ch">La IA genera el plan a partir de tus respuestas; un profesor lo revisa antes de enviártelo. No prometemos admisión garantizada: prometemos que vas a saber exactamente dónde estás parado.</p>
-        <a class="vic-btn vic-btn--primary vic-btn--lg" data-plataforma="examen" data-metrica="examen_gratis_clic" data-metrica-lugar="producto-diferenciador">Compruébalo gratis con 10 reactivos</a>
+        <div class="vic-eyebrow">02 · Tu reporte</div>
+        <h2 class="vic-h2" style="margin:0 0 20px;max-width:22ch">Tu resultado no termina en una calificación.</h2>
+        <p style="font-size:18px;line-height:1.6;margin:0 0 26px;max-width:52ch">El diagnóstico te ayuda a entender qué dominas y qué debes reforzar antes de presentar tu examen.</p>
+        <ul class="vic-lista-check" style="margin-bottom:30px;max-width:52ch">
+          <li>Resultado general</li>
+          <li>Desempeño por área</li>
+          <li>Revisión de respuestas</li>
+          <li>Recomendaciones para continuar estudiando</li>
+        </ul>
+        <div class="vic-row vic-row--cta">
+          <a class="vic-btn vic-btn--primary vic-btn--lg" data-plataforma="examen" data-metrica="examen_gratis_clic" data-metrica-lugar="simulacro-reporte">Descubrir mi nivel</a>
+        </div>
       </div>
 
-      <!-- Reporte de ejemplo -->
+      <!-- Reporte de ejemplo. Las cifras son ILUSTRATIVAS y así se rotula, dos
+           veces y en el sitio donde se mira: no son el resultado de nadie ni un
+           promedio de nada. Es el mockup que ya traía la página; solo cambiaron
+           los rótulos para hablar de diagnóstico en vez de venta. -->
       <div class="vic-glass" style="border-radius:20px;padding:26px">
         <div class="vic-spread" style="padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.14)">
           <div>
-            <div style="font-family:var(--vic-font-display);font-size:17px;font-weight:700;color:#fff">Reporte del simulacro</div>
-            <div class="vic-mono" style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px">Ejemplo · IPN 2026</div>
+            <div style="font-family:var(--vic-font-display);font-size:17px;font-weight:700;color:#fff">Así se ve tu reporte</div>
+            <div class="vic-mono" style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px">Ejemplo ilustrativo · no son resultados reales</div>
           </div>
           <div style="text-align:right">
             <div style="font-family:var(--vic-font-display);font-size:30px;font-weight:700;line-height:1;color:#fff">78<span style="font-size:15px;color:rgba(255,255,255,.55)">/140</span></div>
-            <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px">corte estimado ESIME: 96</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px">corte histórico ESIME: 96</div>
           </div>
         </div>
         <div class="vic-stack" style="gap:11px;padding:20px 0">
@@ -135,13 +160,13 @@
         <div style="border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:18px;background:rgba(44,77,157,.18)">
           <div class="vic-row" style="gap:8px;margin-bottom:12px">
             <span class="vic-incluye__chip vic-incluye__chip--ia" style="width:26px;height:26px;font-size:11px">AI</span>
-            <span style="font-size:13px;font-weight:700;color:#fff">Tu plan de las próximas 4 semanas</span>
+            <span style="font-size:13px;font-weight:700;color:#fff">Recomendaciones para seguir estudiando</span>
           </div>
           <div class="vic-stack" style="gap:9px;font-size:13px;line-height:1.5;color:rgba(255,255,255,.78)">
-            <div style="display:flex;gap:10px"><span class="vic-mono" style="color:rgba(255,255,255,.45);flex:none">S1</span><span>Trigonometría y funciones — 14 reactivos perdidos aquí. 5 h.</span></div>
-            <div style="display:flex;gap:10px"><span class="vic-mono" style="color:rgba(255,255,255,.45);flex:none">S2</span><span>Cálculo: límites y derivadas básicas. 6 h + práctica diaria.</span></div>
-            <div style="display:flex;gap:10px"><span class="vic-mono" style="color:rgba(255,255,255,.45);flex:none">S3</span><span>Geometría analítica y repaso de MB para sostener el 81%.</span></div>
-            <div style="display:flex;gap:10px"><span class="vic-mono" style="color:rgba(255,255,255,.45);flex:none">S4</span><span>Sociales: reforma y siglo XX — 9 reactivos recuperables. 3 h.</span></div>
+            <div style="display:flex;gap:10px"><span class="vic-mono" style="color:rgba(255,255,255,.45);flex:none">S1</span><span>Trigonometría y funciones — es donde más puntos se están yendo.</span></div>
+            <div style="display:flex;gap:10px"><span class="vic-mono" style="color:rgba(255,255,255,.45);flex:none">S2</span><span>Cálculo: límites y derivadas básicas, con práctica diaria.</span></div>
+            <div style="display:flex;gap:10px"><span class="vic-mono" style="color:rgba(255,255,255,.45);flex:none">S3</span><span>Geometría analítica y repaso para sostener lo que ya dominas.</span></div>
+            <div style="display:flex;gap:10px"><span class="vic-mono" style="color:rgba(255,255,255,.45);flex:none">S4</span><span>Sociales: reforma y siglo XX — reactivos recuperables.</span></div>
           </div>
           <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.14);font-size:12px;color:rgba(255,255,255,.55)">Revisado por profesor antes de enviarse.</div>
         </div>
@@ -150,13 +175,31 @@
   </div>
 </section>
 
-<div class="section-divider section-divider--guinda-papel" aria-hidden="true"></div>
+<div class="section-divider section-divider--guinda-gris" aria-hidden="true"></div>
+
+<!-- ================= CONTRA QUÉ TE MIDES ================= -->
+<section class="vic-section vic-section--gris">
+  <div class="vic-container">
+    <div class="vic-eyebrow">03 · Contra qué te vas a medir</div>
+    <h2 class="vic-h2" style="margin:0 0 16px;max-width:26ch">Tu puntaje solo significa algo al lado del corte.</h2>
+    <p class="vic-lead" style="margin:0 0 40px;max-width:60ch">Sacar 78 no es bueno ni malo por sí solo: depende de si vas por Aeronáutica en Ticomán o por Ingeniería Civil en Zacatenco. Tu reporte compara el resultado contra el corte histórico de tu carrera.</p>
+
+    <!-- Los testimonios ya viven en CONFIG.testimonios (config.js) y se pintan
+         en la portada. Si algún día se quieren aquí, se leen de ahí — no se
+         copian a mano ni se inventa ninguno. -->
+    <div class="vic-card" data-reveal>
+      <div id="miniCortes"></div>
+      <!-- vic-row--cta: la etiqueta del botón es larga y con el `nowrap` que
+           traen todos los botones se salía de la tarjeta en pantallas de 320px. -->
+      <div class="vic-row vic-row--cta" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--vic-border)">
+        <a class="vic-btn vic-btn--secondary vic-btn--md" href="aciertos-ipn.html">Ver el corte de las 105 carreras</a>
+        <span class="vic-hint" style="margin:0">Referencias históricas: el IPN no fija un mínimo.</span>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- ================= QUIÉNES ESTÁN DETRÁS =================
-     Antes esta sección era solo Óscar, con su retrato a media página. No es
-     falso —él escribió los reactivos— pero dejaba fuera a los otros dos
-     fundadores, y quien compra tiene derecho a ver al equipo completo.
-
      Cada línea dice lo que esa persona hace DE VERDAD hoy; ninguna reparte
      mérito ajeno. TODO(Óscar): si Emiliano o Brando tuvieron un papel concreto
      en el simulacro (revisar los reactivos de mate, calcular el reporte),
@@ -171,7 +214,7 @@
   <div class="vic-container">
     <div class="vic-spread" style="align-items:flex-end;gap:24px;margin-bottom:32px">
       <div>
-        <div class="vic-eyebrow">05 · Quiénes están detrás</div>
+        <div class="vic-eyebrow">04 · Quiénes están detrás</div>
         <h2 class="vic-h2" style="margin:0 0 16px;max-width:24ch">Tres ingenieros del Poli, con nombre y apellido.</h2>
         <p class="vic-lead" style="margin:0;max-width:62ch">El simulacro no salió de una plantilla comprada. Los reactivos, la clase y la plataforma tienen a alguien detrás que responde por ellos.</p>
       </div>
@@ -236,106 +279,97 @@
   </div>
 </section>
 
-<!-- ================= TESTIMONIOS ================= -->
-<section class="vic-section vic-section--gris">
-  <div class="vic-container">
-    <div class="vic-eyebrow">06 · Contra qué te vas a medir</div>
-    <h2 class="vic-h2" style="margin:0 0 16px;max-width:26ch">Tu puntaje solo significa algo al lado del corte.</h2>
-    <p class="vic-lead" style="margin:0 0 40px;max-width:60ch">Sacar 78 no es bueno ni malo por sí solo: depende de si vas por Aeronáutica en Ticomán o por Ingeniería Civil en Zacatenco. El reporte del simulacro compara tu resultado contra el corte histórico de tu carrera.</p>
+<div class="section-divider section-divider--papel-noche" aria-hidden="true"></div>
 
-    <!-- Los testimonios ya viven en CONFIG.testimonios (config.js) y se pintan
-         en la portada. Si algún día se quieren aquí, se leen de ahí — no se
-         copian a mano ni se inventa ninguno. -->
-    <div class="vic-card" data-reveal>
-      <div id="miniCortes"></div>
-      <div class="vic-row" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--vic-border)">
-        <a class="vic-btn vic-btn--secondary vic-btn--md" href="aciertos-ipn.html">Ver el corte de las 105 carreras</a>
-        <span class="vic-hint" style="margin:0">Referencias históricas: el IPN no fija un mínimo.</span>
+<!-- ================= OFERTA =================
+     `id="comprar"` se conserva además de `id="precio"`: hay enlaces viejos
+     apuntando a #comprar y romperlos no le sirve a nadie. -->
+<section id="precio" class="vic-section vic-section--impacto vic-blueprint">
+  <span id="comprar" aria-hidden="true"></span>
+  <div class="vic-container">
+    <div class="vic-grid vic-grid--2" style="gap:56px;align-items:center">
+      <div>
+        <div class="vic-pill" style="margin-bottom:24px"><span class="vic-dot"></span>Preparación completa</div>
+        <h2 class="vic-h2" style="margin:0 0 18px;max-width:22ch">Dos oportunidades para medir tu avance antes del examen.</h2>
+        <div class="vic-row" style="align-items:baseline;gap:12px;margin-bottom:18px">
+          <span style="font-family:var(--vic-font-display);font-size:clamp(40px,5vw,52px);font-weight:700;color:#fff;line-height:1">$199 MXN</span>
+          <span style="font-size:16px;color:rgba(255,255,255,.6)">total</span>
+        </div>
+        <p style="font-size:18px;line-height:1.6;margin:0 0 26px;max-width:50ch">No es una mensualidad. El pago incluye los dos simulacros.</p>
+        <p style="font-size:15px;line-height:1.6;color:rgba(255,255,255,.6);margin:0;max-width:50ch">Prueba primero la experiencia y después decide si quieres los simulacros completos.</p>
+      </div>
+
+      <div class="vic-panel-claro" style="background:#fff;border-radius:24px;padding:34px;box-shadow:var(--vic-shadow-lg)">
+        <h3 style="font-size:22px;margin:0 0 6px">Qué incluye</h3>
+        <p class="vic-hint" style="margin:0 0 22px">2 simulacros · 70 reactivos c/u · 90 min c/u</p>
+        <ul class="vic-lista-check" style="margin-bottom:24px">
+          <li>2 simulacros completos</li>
+          <li>70 reactivos por simulacro</li>
+          <li>90 minutos por simulacro</li>
+          <li>140 reactivos en total</li>
+          <li>Inglés incluido</li>
+          <li>Calificación y revisión de resultados</li>
+          <li>Taller en vivo de resolución</li>
+        </ul>
+        <div class="vic-summary__total" style="margin-bottom:22px">
+          <span class="vic-muted">Total</span>
+          <strong>$199 MXN</strong>
+        </div>
+        <a class="vic-btn vic-btn--primary vic-btn--xl vic-btn--block" data-plataforma="examen" data-metrica="examen_gratis_clic" data-metrica-lugar="simulacro-oferta">Probar 10 reactivos gratis</a>
+        <p class="vic-hint" style="margin:14px 0 18px">Prueba primero la experiencia y después decide si quieres los simulacros completos.</p>
+        <a class="vic-btn vic-btn--secondary vic-btn--lg vic-btn--block" data-plataforma="comprar" data-metrica="comprar_clic" data-metrica-lugar="simulacro-oferta">Quiero los 2 simulacros</a>
       </div>
     </div>
   </div>
 </section>
 
+<div class="section-divider section-divider--guinda-papel" aria-hidden="true"></div>
+
 <!-- ================= FAQ ================= -->
-<section class="vic-section vic-section--blanco">
+<section id="faq" class="vic-section vic-section--blanco">
   <div class="vic-container vic-container--narrow">
-    <div class="vic-eyebrow">07 · Preguntas frecuentes</div>
-    <h2 class="vic-h2" style="margin:0 0 40px">Lo que preguntan antes de comprar.</h2>
+    <div class="vic-eyebrow">05 · Preguntas frecuentes</div>
+    <h2 class="vic-h2" style="margin:0 0 40px">Lo que preguntan antes de empezar.</h2>
     <div class="vic-stack" style="gap:12px">
+      <details class="vic-faq"><summary>¿El diagnóstico realmente es gratis?</summary><p>Sí. Puedes contestar los 10 reactivos sin pagar. Al terminar crearás tu cuenta para consultar el resultado y la revisión.</p></details>
+      <details class="vic-faq"><summary>¿Qué incluyen los simulacros completos?</summary><p>Recibes dos simulacros de 70 reactivos cada uno, con 90 minutos por examen, inglés incluido y revisión de resultados.</p></details>
+      <details class="vic-faq"><summary>¿Los dos simulacros cuestan $199 cada uno?</summary><p>No. Los $199 MXN son el precio total por los dos simulacros.</p></details>
+      <details class="vic-faq"><summary>¿Puedo realizarlo desde mi celular?</summary><p>Sí. La plataforma puede utilizarse desde celular, tablet o computadora. Para una experiencia más cómoda, recomendamos contar con una conexión estable.</p></details>
+      <details class="vic-faq"><summary>¿Es un examen oficial del IPN?</summary><p>No. Es un recurso independiente de preparación desarrollado por Victoria EDU. No pertenece ni está afiliado al Instituto Politécnico Nacional.</p></details>
+      <details class="vic-faq"><summary>¿Qué sucede después del diagnóstico?</summary><p>Podrás consultar tu resultado, revisar tus respuestas e identificar las áreas que necesitas reforzar. Después podrás decidir si quieres continuar con los dos simulacros completos.</p></details>
+      <!-- Las tres de abajo venían de la versión anterior. Se conservan porque
+           su dato no aparece en ninguna otra parte de la página y quien va a
+           pagar lo pregunta: cómo se paga, si hay devolución y cuántos intentos
+           tiene. Quitarlas sería esconder información, no simplificar. -->
       <details class="vic-faq"><summary>¿Cómo puedo pagar?</summary><p>Desde tu cuenta en la plataforma. Al momento de pagar ves los métodos disponibles y eliges el que te acomode. Es un pago único: no guardamos datos de tarjeta ni domiciliamos nada.</p></details>
-      <details class="vic-faq"><summary>¿Cuándo puedo presentarlo?</summary><p>Los exámenes se habilitan el 14 de agosto de 2026 y aparecen en tu cuenta en cuanto abra la ventana. Puedes presentarlos cuando quieras dentro de tu ventana de acceso: no tienen que ser el mismo día.</p></details>
-      <details class="vic-faq"><summary>¿Cómo funciona el 2x1?</summary><p>Cada simulacro cuesta $199 por separado. Al comprar te llevas los dos —$398 de valor— por $199, y el taller de los fines de semana entra de regalo. No hay que hacer nada para activarlo: los dos exámenes aparecen en tu cuenta.</p></details>
-      <details class="vic-faq"><summary>¿Qué es el taller de los fines de semana?</summary><p>Una sesión en vivo cada fin de semana, dentro de la plataforma, donde un profesor resuelve reactivos y puedes preguntar. Corre hasta el día de tu examen y ya viene incluido en los $199: no es un curso aparte ni tiene costo adicional. Si no puedes conectarte a alguna sesión, no pasa nada — el simulacro y tu plan siguen siendo tuyos.</p></details>
-      <details class="vic-faq"><summary>¿Por qué dos exámenes y no uno completo?</summary><p>Porque un diagnóstico sirve dos veces: uno al principio para saber de dónde partes, y otro después para medir si lo que estudiaste sirvió. Cada uno cubre la mitad de los 140 reactivos del examen real con todas sus materias, así que ninguno de los dos te deja huecos por medir.</p></details><details class="vic-faq"><summary>¿Puedo repetirlos?</summary><p>Un intento por examen. El valor del diagnóstico está en presentarlo en condiciones reales, sin repetir hasta memorizar los reactivos.</p></details>
-      <details class="vic-faq"><summary>¿Sirve para IPN 2027 o solo 2026?</summary><p>Está armado con el temario y el formato vigentes para la convocatoria 2026. Si vas para 2027 te sirve como diagnóstico temprano, pero conviene repetirlo con la versión actualizada más cerca de tu examen.</p></details>
       <details class="vic-faq"><summary>¿Hay reembolso?</summary><p>Sí, mientras no hayas iniciado el simulacro: te devolvemos el 100% dentro de los primeros 7 días. Una vez que abres el examen ya no aplica, porque el contenido queda entregado.</p></details>
-      <details class="vic-faq"><summary>¿Qué necesito para presentarlos?</summary><p>Computadora, tableta o celular con navegador e internet estable, y 90 minutos sin interrupciones para cada examen. No hay que instalar nada.</p></details>
-      <details class="vic-faq"><summary>¿Es para prepa o para secundaria?</summary><p>Para aspirantes a nivel superior: quienes terminan o terminaron bachillerato y van por una carrera del IPN. No es el examen de ingreso a nivel medio superior.</p></details>
-      <details class="vic-faq"><summary>¿Cuánto tarda en llegarme el acceso?</summary><p>En cuanto se confirma tu pago te llega un correo y el simulacro queda desbloqueado en tu cuenta. Si algo no cuadra te escribimos por WhatsApp al número que registraste.</p></details>
+      <details class="vic-faq"><summary>¿Puedo repetir los simulacros?</summary><p>Un intento por examen. El valor del diagnóstico está en presentarlo en condiciones reales, sin repetir hasta memorizar los reactivos.</p></details>
     </div>
   </div>
 </section>
 
 <div class="section-divider section-divider--papel-noche" aria-hidden="true"></div>
 
-<!-- ================= CTA FINAL ================= -->
-<section id="comprar" class="vic-section vic-section--impacto vic-blueprint">
+<!-- ================= CIERRE ================= -->
+<section class="vic-section vic-section--tight vic-section--impacto vic-blueprint">
   <div class="vic-container">
-    <div class="vic-grid vic-grid--2" style="gap:56px;align-items:center">
-      <div>
-        <div class="vic-pill" style="margin-bottom:24px" data-vence="Ya disponible · preséntalos cuando quieras"><span class="vic-dot"></span>Faltan <span data-dias-restantes>—</span> días para que se habilite</div>
-        <h2 class="vic-h2" style="margin:0 0 18px;max-width:20ch">Llévate los dos por $199.</h2>
-        <p style="font-size:18px;line-height:1.6;margin:0 0 26px;max-width:50ch">Cada examen cuesta $199 por separado. Hoy pagas uno y te llevas los dos, más el taller de los fines de semana de regalo. Creas tu cuenta y pagas desde la plataforma.</p>
-        <div class="vic-row" style="align-items:baseline;gap:14px">
-          <s style="font-family:var(--vic-font-display);font-size:30px;font-weight:700;color:rgba(255,255,255,.42);line-height:1">$398</s>
-          <span style="font-family:var(--vic-font-display);font-size:52px;font-weight:700;color:#fff;line-height:1">$199</span>
-          <span style="font-size:16px;color:rgba(255,255,255,.6)">MXN · los dos exámenes · taller de regalo</span>
-        </div>
-        <p style="font-size:15px;line-height:1.6;color:rgba(255,255,255,.6);margin:22px 0 0;max-width:50ch">¿Todavía no te decides? <a data-plataforma="examen" data-metrica="examen_gratis_clic" data-metrica-lugar="producto-final" style="color:#fff;text-decoration:underline">Haz primero el examen gratis de 10 reactivos</a> y decide con tu puntaje en la mano.</p>
-      </div>
-      <div class="vic-panel-claro" style="background:#fff;border-radius:24px;padding:34px;box-shadow:var(--vic-shadow-lg)">
-        <h3 style="font-size:22px;margin:0 0 6px">Simulacro IPN 2026</h3>
-        <p class="vic-hint" style="margin:0 0 22px">2 exámenes · 70 reactivos c/u · 90 min c/u</p>
-        <ul class="vic-lista-check" style="margin-bottom:24px">
-          <li>Dos exámenes por el precio de uno</li>
-          <li>Formato y reparto de reactivos oficiales</li>
-          <li>Taller en vivo cada fin de semana, de regalo</li>
-          <li>Reporte por área y por tema</li>
-          <li>Plan de 4 semanas generado por IA</li>
-        </ul>
-        <div class="vic-stack" style="gap:6px;margin-bottom:20px">
-          <div class="vic-spread"><span class="vic-muted">2 exámenes ($199 c/u)</span><s class="vic-muted">$398</s></div>
-          <div class="vic-spread"><span class="vic-muted">Taller en vivo</span><strong style="color:var(--vic-success-text)">Gratis</strong></div>
-          <div class="vic-summary__total">
-            <span class="vic-muted">Total</span>
-            <strong>$199 MXN</strong>
-          </div>
-        </div>
-        <a class="vic-btn vic-btn--primary vic-btn--xl vic-btn--block" data-plataforma="comprar" data-metrica="comprar_clic" data-metrica-lugar="producto-final">Comprar ahora</a>
-        <p class="vic-hint" style="margin:14px 0 0;text-align:center">Creas tu cuenta y pagas dentro de la plataforma. Reembolso del 100% dentro de 7 días si no has iniciado el examen.</p>
-      </div>
+    <h2 class="vic-h2" style="margin:0 0 18px;max-width:22ch">Tu segunda vuelta empieza midiendo.</h2>
+    <p style="font-size:18px;line-height:1.6;margin:0 0 30px;max-width:52ch">Haz hoy el diagnóstico gratuito y convierte tu resultado en una estrategia de estudio.</p>
+    <div class="vic-row vic-row--cta">
+      <a class="vic-btn vic-btn--primary vic-btn--xl" data-plataforma="examen" data-metrica="examen_gratis_clic" data-metrica-lugar="simulacro-cierre">Hacer diagnóstico gratis</a>
     </div>
   </div>
 </section>
 
 <footer data-vic-footer></footer>
 
-<script src="assets/js/config.js?v=21"></script>
-<script src="assets/js/api.js?v=21"></script>
-<script src="assets/js/ui.js?v=21"></script>
-<script src="assets/js/iconos.js?v=21"></script>
-<script src="assets/js/metricas.js?v=21"></script>
-<script src="assets/js/datos-cortes.js?v=21"></script>
-<script src="assets/js/mini-cortes.js?v=21"></script>
-<script>
-/* Carrusel de los tres fundadores. Las tarjetas ya están en el HTML —son texto
-   indexable y una bio de una persona real no se genera desde JS—; esto solo
-   les añade flechas, puntos y teclado. Sin JS el riel sigue arrastrándose con
-   el dedo, que es como lo va a usar la mayoría. */
-window.VicUI.rail(document.getElementById('autoresRail'), {
-  etiqueta: 'Fundadores de VictoriaEDU',
-  navEn: '#autoresNav',
-});
-</script>
+<script src="assets/js/config.js?v=22"></script>
+<script src="assets/js/api.js?v=22"></script>
+<script src="assets/js/ui.js?v=22"></script>
+<script src="assets/js/iconos.js?v=22"></script>
+<script src="assets/js/metricas.js?v=22"></script>
+<script src="assets/js/datos-cortes.js?v=22"></script>
+<script src="assets/js/mini-cortes.js?v=22"></script>
+<script src="assets/js/pagina-simulacro.js?v=22"></script>
 </body>
 </html>

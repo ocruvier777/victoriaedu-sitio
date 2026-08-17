@@ -8,7 +8,7 @@ Se publica solo: cada push a `main` sale a producción.
 
 **El sitio ya no cobra.** Es el escaparate. Todo lo que implica una cuenta
 —guardar tu resultado, la revisión de respuestas, pagar— vive en la plataforma
-(`edu.victoriadev.com`), que sí tiene base de datos y sesión. El botón principal
+(`campus.victoriaedu.com.mx`), que sí tiene base de datos y sesión. El botón principal
 es **"Haz el examen gratis"** y manda directo al examen, sin registro de por
 medio: la cuenta se pide al final, para enseñar la calificación.
 
@@ -54,7 +54,7 @@ python3 -m http.server 8000
 ```
 
 > **Si ves la página sin estilos**, es caché del navegador. Los archivos llevan
-> `?v=20` justo para evitarlo: al cambiar CSS o JS, **sube ese número en todos los
+> `?v=22` justo para evitarlo: al cambiar CSS o JS, **sube ese número en todos los
 > `.html`** (o recarga con Ctrl+Shift+R).
 
 **El `?v=` y `VERSION_SITIO` se suben juntos, y no es opcional.** El visitante que
@@ -64,7 +64,7 @@ publicar: el bloque nuevo sale sin sus reglas. Pasó con el carrusel de
 fundadores, que se subió con el `?v=` de la versión anterior.
 
 ```bash
-sed -i 's/?v=20/?v=21/g' *.html    # y sube VERSION_SITIO en config.js
+sed -i 's/?v=21/?v=22/g' *.html    # y sube VERSION_SITIO en config.js
 ```
 
 `VERSION_SITIO` (`assets/js/config.js`) se imprime en el pie: es lo que se le
@@ -307,7 +307,7 @@ cuesta menos registrarse.
 ```
 victoriaedu.com.mx   "Haz el examen gratis"
       ↓
-edu.victoriadev.com/gratis/PUB-IPN-2026-GRATIS      ← 10 reactivos, SIN cuenta
+campus.victoriaedu.com.mx/gratis/PUB-IPN-2026-GRATIS ← 10 reactivos, SIN cuenta
       ↓  al entregar, la plataforma le guarda un claim de 48 h
 /registro · /login · Google  →  /gratis/resultado   ← aciertos y porcentaje
       ↓  upsell
@@ -329,7 +329,7 @@ se puede volver a prometer, pero después de que exista.
 
 | Host del sitio | Plataforma |
 |---|---|
-| `victoriaedu.com.mx` · `www.` | `edu.victoriadev.com` (producción) |
+| `victoriaedu.com.mx` · `www.` | `campus.victoriaedu.com.mx` (producción) |
 | localhost, previews, la rama `dev` | `dev-edu.victoriadev.com` |
 
 Se resuelve **por hostname**, no por rama. Así `main` y `dev` son el mismo
@@ -342,13 +342,17 @@ Como red de seguridad, **el pie imprime `· plataforma dev`** cuando el ambiente
 no es producción. Si esa etiqueta aparece en victoriaedu.com.mx, hay un host
 fuera de la lista.
 
-### Los botones están cerrados en producción
+### El examen gratis está abierto; la compra, no
 
-`examenAbierto` y `compraAbierta` están en `false` para producción: la app de
-producción todavía no termina el flujo del examen, y Mercado Pago sigue en
-sandbox. Los botones **no se esconden** —la página está escrita alrededor de
-ellos y quitarlos dejaría huecos—: se marcan "Pronto" y abren un aviso con el
-WhatsApp, que es el canal que sí contesta hoy.
+`examenAbierto` está en `true` para producción: es el CTA del que vive la landing
+del simulacro, que recibe tráfico pagado, y su flujo ya está publicado. Los CTAs
+salen a `campus.victoriaedu.com.mx/gratis/PUB-IPN-2026-GRATIS`.
+
+`compraAbierta` sigue en `false` porque Mercado Pago continúa en sandbox y sin
+credenciales de producción: cobraría con dinero de mentiras. Ese botón **no se
+esconde** —la página está escrita alrededor de él y quitarlo dejaría huecos—: se
+marca "Pronto" y abre un aviso con el WhatsApp, que es el canal que sí contesta
+hoy. En la landing del simulacro es el CTA secundario, "Quiero los 2 simulacros".
 
 Se abren cambiando `false` por `true` en `CONFIG.plataforma.ambientes.produccion`.
 Son dos flags independientes a propósito: el examen y la compra dependen de
@@ -384,6 +388,17 @@ Todo lo que hay que tocar está en **`assets/js/config.js`**:
       conversación, quita el `1`: `525632118930`.
 - [ ] **`redes`** — pega el `@` de Instagram y los reels. La sección "En video"
       de la portada **no se pinta** mientras `redes.reels` esté vacío.
+- [ ] **`videoSimulacro`** — el recorrido en video del hero de
+      `simulacro-ipn-2026.html`. En `null` mientras no exista: el hero enseña la
+      portada de marca y al pulsarla sale un "Próximamente", sin huecos ni cajas
+      vacías. Con URL, la portada pasa a ser la miniatura real del video y este
+      **se reproduce en la misma caja**, sin ventana emergente. Se pega tal cual
+      sale de la barra de direcciones —`watch?v=`, `youtu.be/`, `/shorts/`,
+      Vimeo o un MP4 en `uploads/`— y `pagina-simulacro.js` la convierte.
+      `videoSimulacroPortada` solo hace falta si el video NO es de YouTube o si
+      se quiere un fotograma propio en vez del que eligió YouTube.
+      **Nunca se pega la URL de otra pestaña**: un video ajeno carga y se
+      reproduce sin dar ningún error, y nadie lo nota hasta que lo ve un alumno.
 - [x] **`banco`** — se eliminó. Los datos bancarios vivían aquí para el checkout
       propio, con una CLABE de ejemplo que nadie podía pagar. El cobro ahora es de
       la plataforma, así que el sitio ya no publica ninguna cuenta.
@@ -393,11 +408,14 @@ Todo lo que hay que tocar está en **`assets/js/config.js`**:
 - [x] **`plataforma.examenGratis`** — es `PUB-IPN-2026-GRATIS` y **ya existe**:
       10 reactivos, sin timer, sacados de los dos simulacros de venta. Verificado
       en dev y en producción.
-- [ ] **Abrir los botones.** `examenAbierto` y `compraAbierta` están en `false`
-      para producción a propósito. Qué tiene que estar listo del lado de la
-      plataforma antes de ponerlos en `true` —incluido sacar a Mercado Pago de
-      sandbox— está en **[INTEGRACION-PLATAFORMA.md](INTEGRACION-PLATAFORMA.md)**,
-      sección "Para poner esto en producción".
+- [x] **`examenAbierto`** — en `true` para producción. La base es
+      `campus.victoriaedu.com.mx` y los CTAs gratuitos salen a
+      `/gratis/PUB-IPN-2026-GRATIS?origen=landing-examen-gratis`.
+- [ ] **Abrir la compra.** `compraAbierta` sigue en `false` a propósito: Mercado
+      Pago está en sandbox y sin credenciales de producción. Qué tiene que estar
+      listo antes de ponerlo en `true` está en
+      **[INTEGRACION-PLATAFORMA.md](INTEGRACION-PLATAFORMA.md)**, sección "Para
+      poner esto en producción".
 - [ ] **Precio $199** — el `precio` del catálogo tiene que coincidir **exacto** con
       `examenes.precio` **en la base de producción** o el backend rechaza todos los
       pagos con `monto_invalido`. Existe la migración que lo baja de $249 a $199;

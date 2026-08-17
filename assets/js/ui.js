@@ -122,6 +122,11 @@
        puerta que los del HTML y respeta el cierre del ambiente. */
     var botones = {
       examen:   '<a class="vic-btn vic-btn--primary vic-btn--md vic-navbar__cta" data-plataforma="examen" data-metrica="examen_gratis_clic" data-metrica-lugar="navbar">Haz el examen gratis</a>',
+      /* Misma puerta que `examen`, otra etiqueta. La landing del simulacro
+         recibe tráfico pagado y su promesa es concreta —diez reactivos, sin
+         pagar—; el genérico "Haz el examen gratis" del resto del sitio no
+         dice cuánto cuesta en tiempo y ahí sí importa. */
+      examen10: '<a class="vic-btn vic-btn--primary vic-btn--md vic-navbar__cta" data-plataforma="examen" data-metrica="examen_gratis_clic" data-metrica-lugar="navbar">Probar 10 reactivos gratis</a>',
       comprar:  '<a class="vic-btn vic-btn--primary vic-btn--md vic-navbar__cta" data-plataforma="comprar" data-metrica="comprar_clic" data-metrica-lugar="navbar">2 exámenes por ' + precioCorto('simulacro-ipn-2026') + '</a>',
       programas:'<a class="vic-btn vic-btn--secondary vic-btn--md vic-navbar__cta" href="tienda.html">Ver programas</a>',
       ninguno:  '',
@@ -297,6 +302,14 @@
               (ambientePlataforma() === 'produccion' ? '' : ' · plataforma dev') +
             '</span></span>' +
           '<span>La preparación no garantiza admisión. Nuestros resultados se reportan por generación.</span>' +
+          /* Deslinde del IPN. Va en el pie de TODAS las páginas y no solo en la
+             del simulacro: el sitio entero habla del examen del Poli, cita su
+             convocatoria y publica sus cortes, así que la confusión —creer que
+             esto es una página oficial— se puede dar en cualquiera de ellas.
+             `flex:1 0 100%` lo baja a su propio renglón dentro del pie: es un
+             aviso, no una columna que compita con el copyright. */
+          '<span style="flex:1 0 100%">Victoria EDU es una plataforma educativa independiente y no forma ' +
+            'parte del Instituto Politécnico Nacional. Los simulacros son materiales de preparación académica.</span>' +
         '</div>' +
       '</div>';
   }

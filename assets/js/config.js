@@ -8,7 +8,7 @@
 /* Versión del sitio. Se imprime en el pie, y ahí sirve para una cosa muy
    concreta: cuando alguien reporte "se ve raro", poder preguntarle qué versión
    trae y saber si está viendo caché vieja. Súbela cuando publiques. */
-window.VERSION_SITIO = '1.7.0';
+window.VERSION_SITIO = '1.8.0';
 
 window.CONFIG = {
   /* --- Mascota (Vico) ------------------------------------------------------
@@ -30,6 +30,59 @@ window.CONFIG = {
     ancho: 1600,
     alto: 2000,
   },
+
+  /* --- Video del simulacro -------------------------------------------------
+     El recorrido de 60 segundos que se enseña en el hero de la landing del
+     simulacro. Misma regla que la mascota: `null` = todavía no existe, y el
+     placeholder abre un modal que lo dice ("Próximamente"). NUNCA se pinta un
+     reproductor vacío ni un iframe apuntando a nada.
+
+     CUANDO EXISTA EL VIDEO, LA URL VA AQUÍ Y NO HAY QUE TOCAR NADA MÁS.
+     Se pega TAL CUAL sale de la barra de direcciones: pagina-simulacro.js la
+     convierte sola a la forma incrustable. Todas estas valen:
+
+       YouTube → 'https://www.youtube.com/watch?v=CODIGO'   ← la de la barra
+                 'https://youtu.be/CODIGO'
+                 'https://www.youtube.com/embed/CODIGO'
+       Vimeo   → 'https://vimeo.com/CODIGO'
+       MP4     → 'uploads/simulacro-recorrido.mp4'
+
+     Sin `autoplay` a propósito: el video se reproduce cuando el visitante lo
+     pide, no cuando abre la página.
+
+     OJO AL PEGARLA: comprueba que el código sea el del video de VictoriaEDU y
+     no el de otra pestaña. Un iframe apuntando al video de otra empresa se ve
+     perfectamente bien —carga, se reproduce— y nadie lo nota hasta que un
+     alumno lo ve en el hero.
+
+     El mecanismo está probado de punta a punta: se pegó una URL de prueba, se
+     vio la miniatura en el hero y el video reproduciéndose en sitio, y se
+     devolvió a `null`. Poner el definitivo es cambiar ESTA LÍNEA y nada más.
+
+     TODO(Óscar): graba el recorrido y pon la URL aquí, en lugar del null.
+  ------------------------------------------------------------------------ */
+  videoSimulacro: null,
+
+  /* Portada del video: la imagen que se ve ANTES de darle play, en el hero.
+     --------------------------------------------------------------------------
+     `null` no significa "sin portada". Con YouTube se usa sola la miniatura del
+     propio video, que es lo normal y no hay nada que hacer.
+
+     Esta clave es para dos casos:
+
+       1. El video NO es de YouTube. Vimeo no publica su miniatura en una URL
+          predecible —haría falta llamar a su API— y un MP4 propio no tiene
+          ninguna. Sin portada, el hero se queda con la caja de marca.
+       2. Se quiere una portada propia: un fotograma elegido, con rótulo, en vez
+          de la que YouTube escogió.
+
+     Va una ruta local, no una URL externa: es la imagen más grande del hero de
+     una página que recibe tráfico pagado, y no conviene que dependa de un
+     tercero. 16:9, y que se entienda a 320px de ancho.
+
+       videoSimulacroPortada: 'uploads/portada-simulacro.jpg',
+  ------------------------------------------------------------------------ */
+  videoSimulacroPortada: null,
 
   /* Vico en pose pensativa, para la página 404. Misma regla que arriba:
      null = no se pinta nada, ni caja ni placeholder. */
@@ -101,16 +154,18 @@ window.CONFIG = {
      plataforma cuando ve el claim pendiente.
 
      AMBIENTES. La landing de producción habla SOLO con la plataforma de
-     producción; cualquier otro host —localhost, una preview, la rama dev—
-     habla con dev. Se resuelve por hostname a propósito, para que las ramas
-     `main` y `dev` del sitio NO diverjan: son el mismo código servido en dos
-     lugares, así que un merge nunca pelea por esta línea. El ambiente
-     resuelto se imprime en el pie cuando NO es producción, para que una
-     landing pública apuntando a dev se note a simple vista.
+     producción —el campus, campus.victoriaedu.com.mx—; cualquier otro host
+     —localhost, una preview, la rama dev— habla con dev. Se resuelve por
+     hostname a propósito, para que las ramas `main` y `dev` del sitio NO
+     diverjan: son el mismo código servido en dos lugares, así que un merge
+     nunca pelea por esta línea. El ambiente resuelto se imprime en el pie
+     cuando NO es producción, para que una landing pública apuntando a dev se
+     note a simple vista.
 
      `abierto` es lo que decide si el botón manda a la plataforma o abre el
-     aviso de "todavía no". Hoy producción está cerrado porque la app de
-     producción aún no termina el flujo; se abre cambiando el false a true.
+     aviso de "todavía no". El EXAMEN GRATIS ya está abierto en producción: es
+     el CTA del que vive la landing del simulacro, que recibe tráfico pagado.
+     La COMPRA sigue cerrada porque Mercado Pago continúa en sandbox.
 
      Contrato completo, estado de cada pendiente y qué falta para producción:
      ver INTEGRACION-PLATAFORMA.md.
@@ -123,12 +178,12 @@ window.CONFIG = {
 
     ambientes: {
       produccion: {
-        base: 'https://edu.victoriadev.com',
-        /* Cerrados hasta que la app de producción termine. El examen porque
-           su flujo vive en la rama main de la plataforma y todavía no se
-           publica; la compra porque Mercado Pago sigue en sandbox y sin
-           credenciales en prod, así que cobraría con dinero de mentiras. */
-        examenAbierto: false,
+        base: 'https://campus.victoriaedu.com.mx',
+        /* El examen gratis ya abrió: su flujo está publicado y es el CTA al
+           que apunta la pauta de la landing del simulacro. La compra sigue
+           cerrada porque Mercado Pago está en sandbox y sin credenciales en
+           prod, así que cobraría con dinero de mentiras. */
+        examenAbierto: true,
         compraAbierta: false,
       },
       dev: {
