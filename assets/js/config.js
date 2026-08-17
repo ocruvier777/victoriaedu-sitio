@@ -8,7 +8,7 @@
 /* Versión del sitio. Se imprime en el pie, y ahí sirve para una cosa muy
    concreta: cuando alguien reporte "se ve raro", poder preguntarle qué versión
    trae y saber si está viendo caché vieja. Súbela cuando publiques. */
-window.VERSION_SITIO = '1.8.0';
+window.VERSION_SITIO = '1.8.1';
 
 window.CONFIG = {
   /* --- Mascota (Vico) ------------------------------------------------------
@@ -206,12 +206,6 @@ window.CONFIG = {
       login: '/login',
       simulacros: '/simulacros',
     },
-  },
-
-  /* --- Ventana de lanzamiento --------------------------------------------- */
-  lanzamiento: {
-    fecha: '2026-08-14T09:00:00-06:00',
-    etiqueta: '14 de agosto de 2026',
   },
 
   /* --- Estructura del examen real del IPN ----------------------------------

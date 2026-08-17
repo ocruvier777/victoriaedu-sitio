@@ -12,19 +12,20 @@ Se publica solo: cada push a `main` sale a producción.
 es **"Haz el examen gratis"** y manda directo al examen, sin registro de por
 medio: la cuenta se pide al final, para enseñar la calificación.
 
-El flujo completo, qué falta del lado de la plataforma y las instrucciones para
-Brando están en **[INTEGRACION-PLATAFORMA.md](INTEGRACION-PLATAFORMA.md)**.
+**Para Brando: empieza por [HANDOFF-BRANDO.md](HANDOFF-BRANDO.md)** — la lista
+corta de lo que falta de su lado, por orden de prioridad. El contrato completo
+—URLs, ambientes, payloads y verificación— está en
+**[INTEGRACION-PLATAFORMA.md](INTEGRACION-PLATAFORMA.md)**.
 
-> **Hoy los botones de la plataforma están cerrados en producción**, porque la
-> app de producción todavía no termina el flujo y Mercado Pago sigue en sandbox.
-> Se ven marcados "Pronto" y abren un aviso con el WhatsApp. Se abren con dos
-> flags en `config.js`; ver "El embudo".
+> **El examen gratis ya está abierto en producción; la compra no.** Mercado Pago
+> sigue en sandbox, así que ese botón se ve marcado "Pronto" y abre un aviso con
+> el WhatsApp. Son dos flags independientes en `config.js`; ver "El embudo".
 
 ### Las dos ramas
 
 | Rama | Dónde | Plataforma |
 |---|---|---|
-| `main` | victoriaedu.com.mx (público) | producción, con los botones cerrados |
+| `main` | victoriaedu.com.mx (público) | producción: examen abierto, compra cerrada |
 | `dev` | local o donde se despliegue | dev, con todo abierto para probar |
 
 **Las dos ramas tienen el mismo código.** Lo que cambia es el host: el sitio
@@ -54,7 +55,7 @@ python3 -m http.server 8000
 ```
 
 > **Si ves la página sin estilos**, es caché del navegador. Los archivos llevan
-> `?v=22` justo para evitarlo: al cambiar CSS o JS, **sube ese número en todos los
+> `?v=23` justo para evitarlo: al cambiar CSS o JS, **sube ese número en todos los
 > `.html`** (o recarga con Ctrl+Shift+R).
 
 **El `?v=` y `VERSION_SITIO` se suben juntos, y no es opcional.** El visitante que
@@ -64,7 +65,7 @@ publicar: el bloque nuevo sale sin sus reglas. Pasó con el carrusel de
 fundadores, que se subió con el `?v=` de la versión anterior.
 
 ```bash
-sed -i 's/?v=21/?v=22/g' *.html    # y sube VERSION_SITIO en config.js
+sed -i 's/?v=22/?v=23/g' *.html    # y sube VERSION_SITIO en config.js
 ```
 
 `VERSION_SITIO` (`assets/js/config.js`) se imprime en el pie: es lo que se le
@@ -85,11 +86,11 @@ Lista de espera: `http://localhost:8000/admin.html` — clave `victoria2026`.
 |---|---|
 | `index.html` | Landing madre: manifiesto, motor tecnológico, programas, método, equipo, resultados, captura de leads |
 | `tienda.html` | Catálogo de los tres programas |
-| `simulacro-ipn-2026.html` | Página de producto del simulacro, con cuenta regresiva |
+| `simulacro-ipn-2026.html` | Landing del simulacro: diagnóstico gratuito primero, oferta después. Recibe el tráfico pagado |
 | `ipn.html` | Guía del examen: estructura, áreas, cómo se califica, equipo y calendario |
 | `aciertos-ipn.html` | Cortes históricos del IPN en gráfica: 105 carreras, filtros y comparador contra tu puntaje |
 | `convocatoria-ipn-segunda-vuelta.html` | Página SEO de la convocatoria de segunda vuelta: fechas, requisitos y equipo necesario |
-| `404.html` | Página de error. Netlify la sirve sola, con código 404 real |
+| `404.html` | Página de error. El hosting tiene que servirla con código 404 real; ver "Publicación" |
 | `admin.html` | Lista de espera capturada en este navegador |
 | `checkout.html` · `pago.html` | Redirecciones a la plataforma (el checkout viejo) |
 | `confirmacion.html` | Explica a dónde se fue la compra; no redirige, por si alguien llega con un folio `VE-` viejo |
@@ -99,8 +100,7 @@ para que haya un solo lugar donde tocarlos.
 
 ### El menú
 
-Un solo árbol en `ui.js` (`NAV`), idéntico en las diez páginas — está verificado
-en la batería de pruebas, que compara la firma del menú de cada una:
+Un solo árbol en `ui.js` (`NAV`), idéntico en las once páginas:
 
 ```
 Inicio · Programas ▾ · IPN ▾ · Método · Equipo · [CTA]
@@ -115,8 +115,9 @@ Inicio · Programas ▾ · IPN ▾ · Método · Equipo · [CTA]
   del rótulo. En táctil no hay hover, así que el primer toque abre el acordeón y
   el segundo navega. También responde a teclado y se cierra con Escape.
 - El CTA es lo único que varía: `data-cta="examen"` ("Haz el examen gratis") en las
-  páginas públicas, `"comprar"` en la página del producto —donde el alumno ya viene
-  decidido— y `"ninguno"` en las páginas internas.
+  páginas públicas, `"examen10"` ("Probar 10 reactivos gratis") en la landing del
+  simulacro —que recibe pauta y necesita una promesa concreta—, `"comprar"` en el
+  catálogo y `"ninguno"` en las páginas internas.
 
 ### La portada
 
@@ -223,17 +224,19 @@ Si algún día la tarjeta cambia de tono, la solución **no** es pintarles un
 recuadro blanco detrás: hay que pedir las ilustraciones ya compuestas contra el
 color nuevo.
 
-**La 404 hay que conectarla en el hosting definitivo.** El Netlify actual es
-solo la vista previa para revisión; ahí `404.html` se sirve por convención y no
-hay que hacer nada. **nginx —el destino real— no lo hace solo**: necesita una
-línea en su server block, o devolverá su página blanca de "404 Not Found":
+**La 404 ya está conectada.** El sitio salió de Netlify y hoy lo sirve el mismo
+nginx que la plataforma; comprobado: una ruta inexistente devuelve **código 404
+real** y nuestra página, no la pantalla blanca de nginx. Lo que lo sostiene es
+una línea en el server block, y si algún día se migra el hosting hay que
+volver a ponerla:
 
 ```nginx
 error_page 404 /404.html;
 ```
 
-No hay `_redirects` ni `netlify.toml` en el repo y **no conviene crearlos**: una
-regla de redirección mal puesta convierte los 404 en 200 o rompe rutas válidas.
+En el repo no hay ficheros de configuración de hosting, y **no conviene
+crearlos**: una regla de redirección mal puesta convierte los 404 en 200 o rompe
+rutas válidas. La configuración vive en el servidor, no aquí.
 
 Lo que sí es fácil de romper: **`<base href="/">` en su `<head>`**. Una página de
 error se sirve *en la URL pedida*, sin redirigir, así que en

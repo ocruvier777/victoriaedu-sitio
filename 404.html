@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>404 · Esta ruta no lleva a ninguna clase — VictoriaEDU</title>
-<!-- CLAVE para que esta página funcione de verdad, en Netlify y en nginx por
-     igual: una página de error se sirve EN LA URL PEDIDA, sin redirigir. En
+<!-- CLAVE para que esta página funcione de verdad: una página de error se
+     sirve EN LA URL PEDIDA, sin redirigir. En
      /guias/algo-que-no-existe, una ruta relativa como "assets/css/…" se
      resolvería contra /guias/ y no cargaría nada — ni los estilos, ni el logo,
      ni los enlaces del menú que inyecta ui.js.
@@ -17,21 +17,20 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/victoria.css?v=22">
-<link rel="stylesheet" href="assets/css/victoria-marca.css?v=22">
+<link rel="stylesheet" href="assets/css/victoria.css?v=23">
+<link rel="stylesheet" href="assets/css/victoria-marca.css?v=23">
 </head>
 <body class="v404-body">
 
 <!-- CÓMO SE SIRVE ESTA PÁGINA
-     El Netlify actual es solo la vista previa para revisión. En el hosting
-     definitivo hay que conectarla a mano:
+     Ya está conectada: el sitio lo sirve nginx —el mismo de la plataforma— y una
+     ruta inexistente devuelve código 404 real con esta página. Lo sostiene una
+     línea en el server block, que hay que volver a poner si se migra el
+     hosting, porque nginx NO lo hace solo:
 
-       · Netlify, Vercel, GitHub Pages, S3 → sirven /404.html por convención,
-         no hay que hacer nada.
-       · nginx (el destino real, el mismo de la plataforma) → NO lo hace solo.
-         Necesita una línea en el server block:
-             error_page 404 /404.html;
-         Sin ella, nginx devuelve su página blanca de "404 Not Found".
+         error_page 404 /404.html;
+
+     Sin ella devuelve su pantalla blanca de "404 Not Found".
 
      Ver INTEGRACION-PLATAFORMA.md para el detalle. -->
 
@@ -179,8 +178,8 @@
   </div>
 </main>
 
-<script src="assets/js/config.js?v=22"></script>
-<script src="assets/js/ui.js?v=22"></script>
-<script src="assets/js/iconos.js?v=22"></script>
+<script src="assets/js/config.js?v=23"></script>
+<script src="assets/js/ui.js?v=23"></script>
+<script src="assets/js/iconos.js?v=23"></script>
 </body>
 </html>

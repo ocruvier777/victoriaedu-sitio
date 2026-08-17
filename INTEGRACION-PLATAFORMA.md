@@ -13,7 +13,11 @@ la plataforma de producción esté lista.
 
 ---
 
-## Estado a hoy (14 de agosto de 2026)
+> **¿Buscas qué tienes que hacer?** Está en
+> **[HANDOFF-BRANDO.md](HANDOFF-BRANDO.md)**, ordenado por prioridad. Este
+> documento es el contrato: URLs, ambientes, payloads y cómo verificar.
+
+## Estado a hoy (17 de agosto de 2026)
 
 El embudo que describía la versión anterior de este documento —registro primero,
 examen después, con `?next=`— **ya no es el que existe**. Brando lo resolvió de
@@ -29,6 +33,18 @@ ver la calificación. Este documento describe el que sí hay.
 | B5 | Atribución (`origen`) | ❌ **Pendiente.** Nadie lee ni guarda el parámetro |
 | B6 | Rate limit del registro | ❌ **Pendiente**, y ahora pesa más: sigue en 5 altas por IP por hora |
 | B7 | `/registro` en `publicPaths` | ⚪ Cosmético, sin cambio |
+
+**Lo que cambió el 17 de agosto de 2026, del lado del sitio:**
+
+- La landing del simulacro se reescribió alrededor del diagnóstico gratuito. Es
+  la página que recibe el tráfico pagado.
+- La base de producción pasó a **`campus.victoriaedu.com.mx`**;
+  `edu.victoriadev.com` **ya no resuelve**.
+- **`examenAbierto` pasó a `true`**: los CTA gratuitos ya salen de verdad, no
+  abren el aviso de "Pronto". `compraAbierta` sigue en `false`.
+- El sitio salió de Netlify: hoy lo sirve el mismo nginx que la plataforma.
+- Se borró el código muerto que quedaba del checkout propio (detalle en el
+  handoff, §4).
 
 ---
 

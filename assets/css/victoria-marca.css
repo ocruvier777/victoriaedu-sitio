@@ -501,13 +501,6 @@
    borde superior a todo color pesaba de más. */
 .vic-producto--proximo .vic-producto__pie { border-top-color: var(--vic-border-subtle); }
 
-/* --- Cuenta regresiva vencida ---------------------------------------------
-   Cuando la ventana de lanzamiento ya se abrió, los cuatro cuadros en ceros
-   se leen como un contador roto. Se ocultan y queda solo el texto de
-   data-vence, que ya dice lo que hay que decir.
-------------------------------------------------------------------------- */
-[data-cuenta-regresiva].is-vencida .vic-cd { display: none; }
-
 /* --- Precio ---------------------------------------------------------------
    Sale por clases, no por estilos en línea, porque la misma tarjeta se pinta
    sobre papel blanco y sobre cristal oscuro.
@@ -835,7 +828,6 @@
 /* Cifras tabulares: sin esto los números bailan de ancho al animarse y las
    cuatro tarjetas dejan de alinearse entre sí. */
 .vic-stat__num,
-.vic-cd__num,
 .vic-mono { font-variant-numeric: tabular-nums; }
 
 /* Jerarquía: el número manda, la etiqueta acompaña. */

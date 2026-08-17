@@ -878,49 +878,6 @@
     document.body.removeChild(ta);
   }
 
-  /* --- Cuenta regresiva --------------------------------------------------- */
-  function activarCuentaRegresiva() {
-    var host = document.querySelector('[data-cuenta-regresiva]');
-    if (!host) return;
-    var objetivo = new Date(C.lanzamiento.fecha).getTime();
-    var campos = {
-      d: host.querySelector('[data-cr="d"]'), h: host.querySelector('[data-cr="h"]'),
-      m: host.querySelector('[data-cr="m"]'), s: host.querySelector('[data-cr="s"]'),
-    };
-    var pad = function (n) { return String(n).padStart(2, '0'); };
-
-    /* Al pasar la fecha, el contador NO puede quedarse en 00:00:00:00 ni la
-       página seguir diciendo "faltan 0 días": eso se lee como algo roto justo
-       el día que el producto por fin abre.
-
-       Cualquier elemento con data-vence="texto" cambia su contenido por ese
-       texto cuando la ventana ya se abrió. Es el mismo patrón declarativo de
-       data-wa y data-plataforma: la frase vive en el HTML, no en el JS. */
-    var yaAbrio = false;
-    var marcarVencida = function () {
-      if (yaAbrio) return;
-      yaAbrio = true;
-      host.classList.add('is-vencida');
-      document.querySelectorAll('[data-vence]').forEach(function (el) {
-        el.textContent = el.getAttribute('data-vence');
-      });
-    };
-
-    var tick = function () {
-      var d = objetivo - Date.now();
-      if (d <= 0) { marcarVencida(); d = 0; }
-      if (campos.d) campos.d.textContent = pad(Math.floor(d / 86400000));
-      if (campos.h) campos.h.textContent = pad(Math.floor(d / 3600000) % 24);
-      if (campos.m) campos.m.textContent = pad(Math.floor(d / 60000) % 60);
-      if (campos.s) campos.s.textContent = pad(Math.floor(d / 1000) % 60);
-      document.querySelectorAll('[data-dias-restantes]').forEach(function (el) {
-        el.textContent = Math.floor(d / 86400000);
-      });
-    };
-    tick();
-    setInterval(tick, 1000);
-  }
-
   /* --- Utilidades varias --------------------------------------------------- */
   function parametro(nombre) {
     return new URLSearchParams(location.search).get(nombre);
@@ -954,7 +911,6 @@
     pintarMascota();
     activarReveal();
     activarCopiar();
-    activarCuentaRegresiva();
     activarContadores();
   }
 
