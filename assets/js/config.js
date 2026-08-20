@@ -61,7 +61,7 @@ window.CONFIG = {
 
      TODO(Óscar): graba el recorrido y pon la URL aquí, en lugar del null.
   ------------------------------------------------------------------------ */
-  videoSimulacro: null,
+  videoSimulacro: 'https://youtu.be/fY0caXDm2i4',
 
   /* Portada del video: la imagen que se ve ANTES de darle play, en el hero.
      --------------------------------------------------------------------------
