@@ -1085,9 +1085,10 @@ img { max-width: 100%; }
 .vic-producto--proximo .vic-producto__img img { filter: saturate(.45) opacity(.7); }
 
 .vic-lista-check { margin: 0 0 22px; padding: 0; list-style: none; display: grid; gap: 9px; font-size: 15px; line-height: 1.5; }
-.vic-lista-check li { display: flex; gap: 10px; align-items: flex-start; }
+.vic-lista-check li { position: relative; padding-left: 22px; }
 .vic-lista-check li::before {
-  content: "✓"; color: var(--vic-success); font-weight: 700; flex: none; line-height: 1.45;
+  content: "✓"; color: var(--vic-success); font-weight: 700; line-height: 1.45;
+  position: absolute; left: 0; top: 0;
 }
 /* Sobre el fondo noche el verde institucional cae por debajo de 3:1. El cian
    del sistema es su equivalente legible — el mismo cambio que ya hace la

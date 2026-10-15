@@ -1262,3 +1262,156 @@
   .v404__interrogacion { animation: none; opacity: 1; }
   .v404__avion { animation: none; }
 }
+
+/* ==========================================================================
+   BLOG
+   --------------------------------------------------------------------------
+   Dos piezas: la rejilla de tarjetas del índice (`blog.html`) y la tipografía
+   de artículo (`.vic-prose`).
+
+   El blog existe para búsqueda: alguien busca "qué es el MRU" y cae aquí. Por
+   eso el cuerpo prioriza legibilidad larga —medida de 68ch, interlínea 1.75—
+   sobre densidad. Los CTAs a la plática van intercalados, no solo al final:
+   quien resolvió su duda a la mitad del artículo se va, y ese es el momento de
+   ofrecerle algo.
+   ========================================================================== */
+
+/* --- Índice de artículos -------------------------------------------------- */
+.vic-blog-grid {
+  display: grid; gap: 22px;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+}
+.vic-blog-card {
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 24px 22px;
+  background: var(--vic-blanco);
+  border: 1px solid var(--vic-border);
+  border-radius: var(--vic-radius-lg);
+  text-decoration: none; color: inherit;
+  transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.vic-blog-card:hover,
+.vic-blog-card:focus-visible {
+  border-color: var(--vic-azul);
+  transform: translateY(-2px);
+  box-shadow: var(--vic-shadow-md, 0 6px 20px rgba(0,0,0,.07));
+  outline: none;
+}
+.vic-blog-card__meta {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  font-family: var(--vic-font-mono, monospace);
+  font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--vic-text-muted);
+}
+.vic-blog-card__materia { color: var(--vic-azul); font-weight: 700; }
+.vic-blog-card h3 {
+  font-size: 19px; line-height: 1.3; margin: 0; color: var(--vic-azul-profundo);
+}
+.vic-blog-card p { font-size: 14px; line-height: 1.6; margin: 0; color: var(--vic-text-muted); flex: 1; }
+.vic-blog-card__mas { font-size: 14px; font-weight: 600; color: var(--vic-azul); }
+
+/* --- Cuerpo del artículo -------------------------------------------------- */
+.vic-prose { max-width: 68ch; font-size: 17px; line-height: 1.75; color: var(--vic-text-body); }
+.vic-prose > * + * { margin-top: 1.1em; }
+.vic-prose h2 {
+  font-family: var(--vic-font-display); font-size: clamp(24px, 2.4vw, 30px);
+  line-height: 1.25; color: var(--vic-azul-profundo);
+  margin-top: 2em; margin-bottom: .2em; scroll-margin-top: 90px;
+}
+.vic-prose h3 {
+  font-size: 20px; line-height: 1.35; color: var(--vic-azul-profundo);
+  margin-top: 1.6em; margin-bottom: .1em; scroll-margin-top: 90px;
+}
+.vic-prose a { color: var(--vic-azul); text-decoration: underline; text-underline-offset: 2px; }
+.vic-prose a:hover { color: var(--vic-azul-profundo); }
+.vic-prose strong { color: var(--vic-azul-profundo); font-weight: 650; }
+.vic-prose ul, .vic-prose ol { padding-left: 1.3em; }
+.vic-prose li + li { margin-top: .45em; }
+.vic-prose img { max-width: 100%; height: auto; border-radius: var(--vic-radius-lg); display: block; }
+.vic-prose figcaption { font-size: 13px; color: var(--vic-text-muted); margin-top: 8px; line-height: 1.5; }
+
+/* Fórmula destacada. Centrada y en mono: en un texto de física la fórmula es
+   el ancla visual a la que el ojo vuelve, y tiene que distinguirse del párrafo
+   sin necesidad de cargar MathJax por tres ecuaciones. */
+.vic-formula {
+  margin: 1.6em 0; padding: 22px 24px; text-align: center;
+  background: var(--vic-bg-canvas);
+  border: 1px solid var(--vic-border);
+  border-left: 3px solid var(--vic-azul);
+  border-radius: var(--vic-radius-sm);
+  font-family: var(--vic-font-mono, monospace);
+  font-size: clamp(17px, 2vw, 21px); line-height: 1.5; color: var(--vic-azul-profundo);
+}
+.vic-formula small {
+  display: block; margin-top: 10px;
+  font-family: var(--vic-font-body); font-size: 13px;
+  color: var(--vic-text-muted); letter-spacing: 0;
+}
+.vic-prose var { font-style: italic; font-family: var(--vic-font-mono, monospace); color: var(--vic-azul-profundo); }
+
+/* Cajas de apoyo: ejemplo resuelto, ojo (trampa del examen) y dato. */
+.vic-caja {
+  margin: 1.6em 0; padding: 20px 22px;
+  border-radius: var(--vic-radius-lg);
+  border: 1px solid var(--vic-border);
+  background: var(--vic-blanco);
+  font-size: 16px; line-height: 1.65;
+}
+.vic-caja > * + * { margin-top: .8em; }
+.vic-caja__tit {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--vic-font-mono, monospace);
+  font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  margin: 0 0 4px;
+}
+.vic-caja--ejemplo { background: var(--vic-info-soft); border-color: rgba(44,77,157,.22); }
+.vic-caja--ejemplo .vic-caja__tit { color: var(--vic-info-text); }
+.vic-caja--ojo { background: var(--vic-warning-soft); border-color: rgba(181,107,0,.25); }
+.vic-caja--ojo .vic-caja__tit { color: var(--vic-warning-text); }
+.vic-caja--clave { background: var(--vic-success-soft); border-color: rgba(25,122,82,.22); }
+.vic-caja--clave .vic-caja__tit { color: var(--vic-success-text); }
+
+/* Tabla compacta: la .vic-table del sitio trae min-width 860px porque vive en
+   la tabla de cortes, que sí es ancha. Dentro de un artículo eso obliga a
+   scroll horizontal sin motivo. */
+.vic-table--compacta { min-width: 0; }
+.vic-table--compacta th, .vic-table--compacta td { padding: 11px 14px; }
+
+/* CTA intercalado a la plática. Va dentro del cuerpo, entre secciones. */
+.vic-cta-articulo {
+  margin: 2.2em 0; padding: 26px 26px 24px;
+  border-radius: var(--vic-radius-lg);
+  background: var(--vic-bg-impacto, var(--vic-azul-profundo));
+  color: #fff;
+}
+.vic-cta-articulo h3 { margin: 0 0 8px; font-size: 21px; line-height: 1.3; color: #fff; }
+.vic-cta-articulo p { margin: 0 0 18px; font-size: 15px; line-height: 1.6; color: rgba(255,255,255,.8); }
+.vic-cta-articulo .vic-btn { margin: 0; }
+.vic-cta-articulo__pie { font-size: 13px; color: rgba(255,255,255,.6); margin: 12px 0 0; }
+
+/* Índice lateral del artículo. En escritorio se queda fijo al lado; por debajo
+   de 1024px se convierte en una lista normal arriba del cuerpo. */
+.vic-articulo-grid { display: grid; grid-template-columns: 1fr; gap: 36px; }
+@media (min-width: 1024px) {
+  .vic-articulo-grid { grid-template-columns: 1fr 232px; gap: 56px; align-items: start; }
+  .vic-articulo-indice { position: sticky; top: 92px; order: 2; }
+}
+.vic-articulo-indice__tit {
+  font-family: var(--vic-font-mono, monospace);
+  font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--vic-text-muted); margin: 0 0 12px;
+}
+.vic-articulo-indice ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.vic-articulo-indice a {
+  display: block; padding: 7px 12px; border-left: 2px solid var(--vic-border);
+  font-size: 14px; line-height: 1.4; color: var(--vic-text-muted); text-decoration: none;
+  transition: color .15s ease, border-color .15s ease;
+}
+.vic-articulo-indice a:hover,
+.vic-articulo-indice a.is-activo { color: var(--vic-azul); border-left-color: var(--vic-azul); }
+
+@media (max-width: 720px) {
+  .vic-prose { font-size: 16px; }
+  .vic-cta-articulo { padding: 22px 20px; }
+  .vic-cta-articulo .vic-btn { width: 100%; }
+}

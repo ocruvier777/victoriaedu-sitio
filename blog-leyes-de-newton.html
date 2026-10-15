@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Las 3 leyes de Newton: fórmulas, ejemplos y diagramas — VictoriaEDU</title>
+<meta name="description" content="Las tres leyes de Newton explicadas una por una: inercia, F = ma y acción-reacción. Diferencia entre masa y peso, diagramas de cuerpo libre, ejercicios resueltos y los errores que más aciertos cuestan en el examen del IPN.">
+<link rel="canonical" href="https://victoriaedu.com.mx/blog-leyes-de-newton.html">
+<meta property="og:title" content="Las tres leyes de Newton: qué dice cada una y cuándo se usa">
+<meta property="og:description" content="Inercia, F = ma y acción-reacción, con diagramas de cuerpo libre y ejercicios resueltos paso a paso.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-10-14">
+<meta property="article:section" content="Física">
+<link rel="icon" href="uploads/victoriaedu_logo_transparent.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/victoria.css?v=26">
+<link rel="stylesheet" href="assets/css/victoria-marca.css?v=26">
+
+<!-- Datos estructurados: ficha del artículo, ruta de migas y el bloque de
+     preguntas, que puede salir como resultado enriquecido. Las preguntas del
+     schema son LAS MISMAS que se ven en la página; si no coinciden, Google lo
+     marca como spam. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "Las tres leyes de Newton: qué dice cada una, cuándo se usa y los errores clásicos",
+      "description": "Las tres leyes de Newton explicadas una por una, con diagramas de cuerpo libre, la diferencia entre masa y peso y ejercicios resueltos del estilo del examen de admisión del IPN.",
+      "datePublished": "2026-10-14",
+      "inLanguage": "es-MX",
+      "author": { "@type": "Person", "name": "Ing. Óscar Cruz" },
+      "publisher": {
+        "@type": "Organization",
+        "name": "VictoriaEDU",
+        "url": "https://victoriaedu.com.mx/"
+      },
+      "mainEntityOfPage": "https://victoriaedu.com.mx/blog-leyes-de-newton.html"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://victoriaedu.com.mx/" },
+        { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://victoriaedu.com.mx/blog.html" },
+        { "@type": "ListItem", "position": 3, "name": "Leyes de Newton" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿Cuáles son las tres leyes de Newton?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "La primera es la ley de la inercia: un cuerpo sin fuerza neta mantiene su estado de reposo o de movimiento rectilíneo uniforme. La segunda relaciona fuerza, masa y aceleración con ΣF = ma. La tercera es la de acción y reacción: si un cuerpo ejerce una fuerza sobre otro, el segundo ejerce una igual en magnitud y opuesta en sentido."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Cuál es la diferencia entre masa y peso?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "La masa es la cantidad de materia de un cuerpo, se mide en kilogramos y no cambia de lugar a lugar. El peso es la fuerza con la que la gravedad jala a ese cuerpo, se mide en newtons y se calcula como P = mg, así que cambia si cambia la gravedad. Una persona de 70 kg tiene 70 kg en la Luna, pero pesa seis veces menos."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Por qué las fuerzas de acción y reacción no se cancelan?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Porque actúan sobre cuerpos distintos. Para que dos fuerzas se cancelen tienen que aplicarse sobre el mismo objeto. En un par acción-reacción, una fuerza actúa sobre el cuerpo A y la otra sobre el cuerpo B, así que cada uno responde a la suya."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Qué es un newton?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Es la unidad de fuerza del Sistema Internacional. Un newton es la fuerza necesaria para que una masa de un kilogramo adquiera una aceleración de un metro por segundo al cuadrado: 1 N = 1 kg·m/s²."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Se necesita fuerza para que un cuerpo siga en movimiento?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Según la primera ley, un cuerpo en movimiento sigue moviéndose solo si no hay fuerza neta sobre él. La fuerza se necesita para cambiar el movimiento, no para mantenerlo. En la Tierra parece lo contrario porque la fricción y el aire frenan todo."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header data-vic-header data-cta="platica"></header>
+
+<!-- ================= ENCABEZADO ================= -->
+<section class="vic-section vic-section--tight vic-section--impacto vic-blueprint">
+  <div class="vic-container">
+    <nav aria-label="Ruta" class="vic-hint" style="margin-bottom:18px;color:rgba(255,255,255,.55)">
+      <a href="index.html" style="color:rgba(255,255,255,.7)">Inicio</a> ·
+      <a href="blog.html" style="color:rgba(255,255,255,.7)">Blog</a> · Leyes de Newton
+    </nav>
+    <div class="vic-eyebrow">Física · Dinámica</div>
+    <h1 style="font-size:clamp(30px,3.6vw,46px);line-height:1.08;margin:0 0 20px;max-width:24ch">Las tres leyes de Newton</h1>
+    <p style="font-size:19px;line-height:1.6;margin:0 0 24px;max-width:64ch">Son tres enunciados cortos de los que sale casi toda la dinámica del examen. El problema nunca es recordarlos: es saber cuál aplicar y no confundir masa con peso. Aquí están los tres, con diagramas y ejercicios resueltos.</p>
+    <div class="vic-row" style="gap:16px;font-size:14px;color:rgba(255,255,255,.6)">
+      <span>Por Ing. Óscar Cruz</span>
+      <span aria-hidden="true">·</span>
+      <span>14 oct 2026</span>
+      <span aria-hidden="true">·</span>
+      <span>11 min de lectura</span>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider section-divider--guinda-papel" aria-hidden="true"></div>
+
+<!-- ================= CUERPO ================= -->
+<section class="vic-section vic-section--blanco">
+  <div class="vic-container">
+    <div class="vic-articulo-grid">
+
+      <aside class="vic-articulo-indice" aria-label="Contenido del artículo">
+        <p class="vic-articulo-indice__tit">En este artículo</p>
+        <ol>
+          <li><a href="#resumen">Las tres, en resumen</a></li>
+          <li><a href="#primera">Primera ley: inercia</a></li>
+          <li><a href="#segunda">Segunda ley: F = ma</a></li>
+          <li><a href="#tercera">Tercera ley: acción-reacción</a></li>
+          <li><a href="#masa-peso">Masa y peso no son lo mismo</a></li>
+          <li><a href="#diagrama">El diagrama de cuerpo libre</a></li>
+          <li><a href="#ejemplos">Ejercicios resueltos</a></li>
+          <li><a href="#errores">Los errores que cuestan aciertos</a></li>
+          <li><a href="#examen">Cómo cae en el examen del IPN</a></li>
+          <li><a href="#preguntas">Preguntas frecuentes</a></li>
+        </ol>
+      </aside>
+
+      <article class="vic-prose">
+
+        <h2 id="resumen">Las tres, en resumen</h2>
+        <p>Antes de entrar en cada una, el mapa completo. Si en el examen dudas de cuál usar, esta tabla decide por ti:</p>
+
+        <div class="vic-table-wrap" style="margin:1.4em 0">
+          <table class="vic-table vic-table--compacta">
+            <thead>
+              <tr><th>Ley</th><th>Qué dice</th><th>Cuándo la usas</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1ª · Inercia</strong></td>
+                <td>Sin fuerza neta, el movimiento no cambia</td>
+                <td>Cuando el cuerpo está en reposo o a velocidad constante</td>
+              </tr>
+              <tr>
+                <td><strong>2ª · ΣF = ma</strong></td>
+                <td>La fuerza neta produce aceleración</td>
+                <td>Cuando la velocidad está cambiando</td>
+              </tr>
+              <tr>
+                <td><strong>3ª · Acción-reacción</strong></td>
+                <td>Las fuerzas vienen en pares opuestos</td>
+                <td>Cuando dos cuerpos interactúan entre sí</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="vic-caja vic-caja--clave">
+          <p class="vic-caja__tit">La bisagra entre la 1ª y la 2ª</p>
+          <p>Las dos primeras leyes son la misma ecuación mirada desde dos lados. Si ΣF = 0, entonces a = 0, y si la aceleración es cero la velocidad no cambia: eso es exactamente la primera ley. La primera es el caso particular de la segunda cuando no hay fuerza neta.</p>
+        </div>
+
+        <h2 id="primera">Primera ley: la inercia</h2>
+        <p>Un cuerpo <strong>permanece en reposo o en movimiento rectilíneo uniforme</strong> mientras no actúe sobre él una fuerza neta que lo obligue a cambiar.</p>
+        <p>La palabra clave es <strong>neta</strong>. No dice «ninguna fuerza»: dice que la suma de todas las fuerzas da cero. Sobre un libro quieto en una mesa actúan su peso y la normal, pero se anulan, así que el libro no se mueve.</p>
+
+        <div class="vic-formula">
+          ΣF = 0&nbsp;&nbsp;→&nbsp;&nbsp;v = constante
+          <small>Incluye el caso v = 0, que es el reposo</small>
+        </div>
+
+        <p>La <strong>inercia</strong> es la resistencia de un cuerpo a cambiar su estado de movimiento, y depende solo de su <strong>masa</strong>: cuesta más frenar un camión que una bicicleta a la misma velocidad porque el camión tiene más inercia.</p>
+        <p>Nota que «movimiento rectilíneo uniforme» es literalmente el tema del <a href="blog-movimiento-rectilineo-uniforme.html">MRU</a>. La primera ley es la razón física de por qué el MRU existe: sin fuerza neta, la velocidad se queda como estaba.</p>
+
+        <div class="vic-caja vic-caja--ojo">
+          <p class="vic-caja__tit">La intuición que falla</p>
+          <p>«Si algo se mueve es porque algo lo está empujando» es falso, y es la idea equivocada más común en este tema. En el espacio, una sonda apaga motores y sigue viajando para siempre. En la Tierra parece que todo necesita empuje porque la fricción y el aire frenan constantemente: la fuerza que aplicas no sirve para <em>mantener</em> el movimiento, sino para <em>cancelar</em> lo que lo frena.</p>
+        </div>
+
+        <h2 id="segunda">Segunda ley: F = ma</h2>
+        <p>La aceleración de un cuerpo es <strong>directamente proporcional a la fuerza neta</strong> e <strong>inversamente proporcional a su masa</strong>, y va en la misma dirección que la fuerza.</p>
+
+        <div class="vic-formula">
+          ΣF = m · a
+          <small><var>ΣF</var> fuerza neta (N) · <var>m</var> masa (kg) · <var>a</var> aceleración (m/s²)</small>
+        </div>
+
+        <p>Léela de las tres formas, porque el examen pregunta las tres:</p>
+        <ul>
+          <li><strong>a = ΣF / m</strong> — misma fuerza sobre más masa, menos aceleración.</li>
+          <li><strong>m = ΣF / a</strong> — así se despeja la masa cuando te dan las otras dos.</li>
+          <li><strong>ΣF = ma</strong> — la forma directa.</li>
+        </ul>
+
+        <h3>El newton, de dónde sale</h3>
+        <p>La unidad de fuerza no es arbitraria: sale de la propia fórmula.</p>
+
+        <div class="vic-formula">
+          1 N = 1 kg · m/s²
+          <small>La fuerza que acelera 1 kg a razón de 1 m/s²</small>
+        </div>
+
+        <div class="vic-table-wrap" style="margin:1.4em 0">
+          <table class="vic-table vic-table--compacta">
+            <thead>
+              <tr><th>Magnitud</th><th>Símbolo</th><th>Unidad SI</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Fuerza</td><td><var>F</var></td><td>newton (N)</td></tr>
+              <tr><td>Masa</td><td><var>m</var></td><td>kilogramo (kg)</td></tr>
+              <tr><td>Aceleración</td><td><var>a</var></td><td>m/s²</td></tr>
+              <tr><td>Peso</td><td><var>P</var> o <var>w</var></td><td>newton (N)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Cuidado con el dato: la fórmula usa la fuerza <strong>neta</strong>, no una fuerza suelta del enunciado. Si sobre la caja actúan tres fuerzas, primero las sumas (con signo) y después divides entre la masa.</p>
+
+        <!-- CTA intercalado: quien venía solo por F = ma ya tiene su respuesta
+             aquí y se va. Es el punto para ofrecerle la plática. -->
+        <div class="vic-cta-articulo">
+          <h3>¿Esto es para el examen del IPN?</h3>
+          <p>Dinámica es uno de los temas con más reactivos de física. En la plática gratuita te decimos qué pesa más en el examen y cómo repartir las semanas que te quedan.</p>
+          <a class="vic-btn vic-btn--primary vic-btn--lg" href="platica.html" data-metrica="platica_clic" data-metrica-lugar="blog-newton-medio">Aparta tu lugar gratis</a>
+          <p class="vic-cta-articulo__pie">Una hora por Zoom · sin tarjeta · sin compromiso</p>
+        </div>
+
+        <h2 id="tercera">Tercera ley: acción y reacción</h2>
+        <p>Si un cuerpo A ejerce una fuerza sobre un cuerpo B, entonces <strong>B ejerce sobre A una fuerza de igual magnitud y sentido contrario</strong>.</p>
+
+        <div class="vic-formula">
+          F<sub>A sobre B</sub> = − F<sub>B sobre A</sub>
+          <small>Mismo valor, dirección opuesta, sobre cuerpos distintos</small>
+        </div>
+
+        <p>Aquí está la parte que casi todos entienden mal, y que vale varios reactivos:</p>
+
+        <div class="vic-caja vic-caja--ojo">
+          <p class="vic-caja__tit">Por qué no se cancelan</p>
+          <p>Las fuerzas de un par acción-reacción <strong>actúan sobre cuerpos diferentes</strong>. Para que dos fuerzas se anulen tienen que aplicarse sobre el <em>mismo</em> objeto. Cuando caminas, tú empujas el piso hacia atrás y el piso te empuja hacia adelante: la fuerza sobre el piso y la fuerza sobre ti son distintas fuerzas sobre distintos cuerpos, y por eso tú avanzas.</p>
+        </div>
+
+        <p>Tres pares clásicos que el examen usa:</p>
+        <ul>
+          <li><strong>Caminar:</strong> tu pie empuja el suelo hacia atrás; el suelo te empuja hacia adelante.</li>
+          <li><strong>Un cohete:</strong> expulsa gases hacia abajo; los gases lo empujan hacia arriba. No necesita aire para «apoyarse».</li>
+          <li><strong>Un libro en la mesa:</strong> el libro empuja la mesa hacia abajo; la mesa empuja el libro hacia arriba.</li>
+        </ul>
+
+        <div class="vic-caja vic-caja--clave">
+          <p class="vic-caja__tit">Cómo distinguir un par acción-reacción de un equilibrio</p>
+          <p>En el libro sobre la mesa hay dos cosas distintas que se confunden. El <strong>peso del libro</strong> y la <strong>normal de la mesa</strong> son dos fuerzas sobre el <em>mismo</em> cuerpo que se equilibran (primera ley). El par acción-reacción de la tercera ley es otro: la normal de la mesa sobre el libro y la fuerza del libro sobre la mesa. Si cambian de cuerpo, es tercera ley; si actúan sobre el mismo, es equilibrio.</p>
+        </div>
+
+        <h2 id="masa-peso">Masa y peso no son lo mismo</h2>
+        <p>Es la confusión que más aciertos cuesta en todo el tema, porque en el lenguaje diario usamos «peso» para hablar de masa («peso 70 kilos»). En física son cosas distintas.</p>
+
+        <div class="vic-table-wrap" style="margin:1.4em 0">
+          <table class="vic-table vic-table--compacta">
+            <thead>
+              <tr><th></th><th>Masa</th><th>Peso</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Qué es</strong></td><td>Cantidad de materia</td><td>Fuerza con que la gravedad jala</td></tr>
+              <tr><td><strong>Unidad</strong></td><td>kilogramo (kg)</td><td>newton (N)</td></tr>
+              <tr><td><strong>Tipo</strong></td><td>Escalar</td><td>Vector (apunta al centro del planeta)</td></tr>
+              <tr><td><strong>¿Cambia de lugar?</strong></td><td>No</td><td>Sí, depende de <var>g</var></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="vic-formula">
+          P = m · g
+          <small>En la Tierra, g ≈ 9.8 m/s² (el examen a veces la redondea a 10)</small>
+        </div>
+
+        <p>Fíjate que P = mg <em>es</em> la segunda ley aplicada a la gravedad: la fuerza es el peso y la aceleración es <var>g</var>. No es una fórmula nueva que memorizar.</p>
+        <p>Una persona de 70 kg tiene 70 kg en la Tierra, en la Luna y flotando en el espacio. Su <strong>peso</strong>, en cambio, es de unos 686 N en la Tierra, cerca de 114 N en la Luna y prácticamente cero en caída libre.</p>
+
+        <h2 id="diagrama">El diagrama de cuerpo libre</h2>
+        <p>Es la herramienta que convierte un enunciado confuso en una ecuación. Se dibuja el cuerpo como un punto o un bloque y se marcan <strong>solo las fuerzas que actúan sobre él</strong> — ninguna de las que él ejerce sobre otros.</p>
+
+        <figure style="margin:1.4em 0">
+          <svg viewBox="0 0 420 270" role="img" aria-label="Diagrama de cuerpo libre de un bloque: el peso apunta hacia abajo, la normal hacia arriba, la fuerza aplicada hacia la derecha y la fricción hacia la izquierda" style="width:100%;height:auto;background:var(--vic-bg-canvas);border:1px solid var(--vic-border);border-radius:12px">
+            <defs>
+              <marker id="flechaAzul" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M0 0 L10 5 L0 10 z" fill="#2C4D9D"/>
+              </marker>
+              <marker id="flechaAmbar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M0 0 L10 5 L0 10 z" fill="#B56B00"/>
+              </marker>
+            </defs>
+
+            <!-- suelo -->
+            <line x1="40" y1="178" x2="380" y2="178" stroke="#5F5F5D" stroke-width="2"/>
+            <!-- bloque -->
+            <rect x="178" y="138" width="64" height="40" rx="3" fill="#223A74" opacity=".16" stroke="#223A74" stroke-width="1.5"/>
+            <circle cx="210" cy="158" r="3" fill="#223A74"/>
+
+            <!-- Normal (arriba) -->
+            <line x1="210" y1="138" x2="210" y2="56" stroke="#2C4D9D" stroke-width="2.5" marker-end="url(#flechaAzul)"/>
+            <text x="220" y="62" font-size="14" fill="#223A74" font-family="monospace">N</text>
+            <!-- Peso (abajo) -->
+            <line x1="210" y1="178" x2="210" y2="246" stroke="#2C4D9D" stroke-width="2.5" marker-end="url(#flechaAzul)"/>
+            <text x="220" y="240" font-size="14" fill="#223A74" font-family="monospace">P = mg</text>
+            <!-- Fuerza aplicada (derecha) -->
+            <line x1="242" y1="158" x2="350" y2="158" stroke="#2C4D9D" stroke-width="2.5" marker-end="url(#flechaAzul)"/>
+            <text x="300" y="148" font-size="14" fill="#223A74" text-anchor="middle" font-family="monospace">F</text>
+            <!-- Fricción (izquierda, más corta) -->
+            <line x1="178" y1="158" x2="112" y2="158" stroke="#B56B00" stroke-width="2.5" marker-end="url(#flechaAmbar)"/>
+            <text x="145" y="148" font-size="14" fill="#7A4700" text-anchor="middle" font-family="monospace">f</text>
+
+            <text x="210" y="24" font-size="12" fill="#5F5F5D" text-anchor="middle" font-family="monospace">solo fuerzas SOBRE el bloque</text>
+          </svg>
+          <figcaption>Diagrama de cuerpo libre de un bloque empujado sobre una superficie con fricción. En vertical, N y P se equilibran; en horizontal, la fuerza neta es F − f.</figcaption>
+        </figure>
+
+        <p>Con el diagrama hecho, la segunda ley se aplica por separado en cada eje:</p>
+        <ul>
+          <li><strong>Vertical:</strong> N − P = 0, porque el bloque no sube ni se hunde. De ahí N = mg.</li>
+          <li><strong>Horizontal:</strong> F − f = ma. Esa es la ecuación que resuelves.</li>
+        </ul>
+
+        <h2 id="ejemplos">Ejercicios resueltos</h2>
+
+        <div class="vic-caja vic-caja--ejemplo">
+          <p class="vic-caja__tit">Ejercicio 1 · segunda ley directa</p>
+          <p>Sobre un cuerpo de 8 kg actúa una fuerza neta de 24 N. ¿Cuál es su aceleración?</p>
+          <p><strong>Solución.</strong> Se despeja <var>a</var> de ΣF = ma.</p>
+          <p>a = ΣF / m = 24 N / 8 kg = <strong>3 m/s²</strong></p>
+        </div>
+
+        <div class="vic-caja vic-caja--ejemplo">
+          <p class="vic-caja__tit">Ejercicio 2 · peso</p>
+          <p>¿Cuál es el peso de un cuerpo de 15 kg en la superficie terrestre? Usa g = 9.8 m/s².</p>
+          <p><strong>Solución.</strong> P = mg</p>
+          <p>P = (15 kg)(9.8 m/s²) = <strong>147 N</strong></p>
+          <p>Contestar «15 kg» es el error clásico: eso es la masa, no el peso, y además la unidad está mal.</p>
+        </div>
+
+        <div class="vic-caja vic-caja--ejemplo">
+          <p class="vic-caja__tit">Ejercicio 3 · fuerza neta</p>
+          <p>Sobre una caja de 5 kg actúan dos fuerzas horizontales: 30 N hacia la derecha y 12 N hacia la izquierda. ¿Cuál es su aceleración?</p>
+          <p><strong>Solución.</strong> Primero la fuerza neta. Tomando la derecha como positiva:</p>
+          <p>ΣF = 30 N − 12 N = 18 N</p>
+          <p>a = ΣF / m = 18 N / 5 kg = <strong>3.6 m/s² hacia la derecha</strong></p>
+          <p>Quien mete los 30 N directo en la fórmula obtiene 6 m/s² y pierde el reactivo.</p>
+        </div>
+
+        <div class="vic-caja vic-caja--ejemplo">
+          <p class="vic-caja__tit">Ejercicio 4 · el elevador</p>
+          <p>Una persona de 60 kg va en un elevador que sube con una aceleración de 2 m/s². ¿Qué fuerza normal ejerce el piso sobre ella? Usa g = 10 m/s².</p>
+          <p><strong>Solución.</strong> Diagrama de cuerpo libre: la normal apunta hacia arriba y el peso hacia abajo. Como acelera hacia arriba, tomamos ese sentido como positivo.</p>
+          <p>ΣF = N − P = ma</p>
+          <p>N = P + ma = mg + ma = m(g + a)</p>
+          <p>N = 60 kg × (10 + 2) m/s² = <strong>720 N</strong></p>
+          <p><em>Interpretación:</em> en reposo la normal sería 600 N. Al subir acelerando la persona «se siente más pesada», y eso es exactamente lo que mide la normal.</p>
+        </div>
+
+        <div class="vic-caja vic-caja--ejemplo">
+          <p class="vic-caja__tit">Ejercicio 5 · identificar el par</p>
+          <p>Un caballo tira de una carreta. Alguien argumenta: «si la carreta jala al caballo con la misma fuerza con que el caballo jala a la carreta, entonces nunca se moverán». ¿Dónde está el error?</p>
+          <p><strong>Solución.</strong> El par acción-reacción está formado por la fuerza del caballo <em>sobre la carreta</em> y la de la carreta <em>sobre el caballo</em>: actúan sobre cuerpos distintos, así que no se cancelan entre sí.</p>
+          <p>Para saber si la carreta se mueve hay que mirar <strong>solo las fuerzas sobre la carreta</strong>: el tirón del caballo hacia adelante y la fricción hacia atrás. Si el tirón supera a la fricción, hay fuerza neta y la carreta acelera.</p>
+        </div>
+
+        <h2 id="errores">Los errores que cuestan aciertos</h2>
+
+        <h3>1. Usar masa donde va peso (y al revés)</h3>
+        <p>Si el enunciado da kilogramos y la fórmula pide una fuerza, falta multiplicar por <var>g</var>. Si da newtons y necesitas la masa, falta dividir. Revisa siempre que las unidades del resultado sean las que pide la pregunta.</p>
+
+        <h3>2. Creer que acción y reacción se anulan</h3>
+        <p>Nunca se anulan, porque actúan sobre cuerpos distintos. Cuando analices un cuerpo, dibuja <strong>solo las fuerzas que recibe</strong> y deja fuera las que él ejerce sobre otros.</p>
+
+        <h3>3. Meter una fuerza suelta en F = ma</h3>
+        <p>La fórmula usa la fuerza <strong>neta</strong>. Si hay varias fuerzas, súmalas con su signo antes de dividir entre la masa.</p>
+
+        <h3>4. Pensar que moverse requiere fuerza</h3>
+        <p>Un cuerpo a velocidad constante tiene fuerza neta <strong>cero</strong>, aunque vaya a 100 km/h. Si un problema dice «se mueve con velocidad constante», lo que te está diciendo es que ΣF = 0, y esa suele ser la clave para resolverlo.</p>
+
+        <div class="vic-caja vic-caja--ojo">
+          <p class="vic-caja__tit">Antes de contestar, revisa</p>
+          <ul style="margin:0">
+            <li>¿Sumé <em>todas</em> las fuerzas, con su signo, antes de usar F = ma?</li>
+            <li>¿El dato que tengo es masa (kg) o peso (N)?</li>
+            <li>¿Las fuerzas que dibujé actúan todas sobre el <em>mismo</em> cuerpo?</li>
+            <li>Si la velocidad es constante, ¿aproveché que ΣF = 0?</li>
+          </ul>
+        </div>
+
+        <h2 id="examen">Cómo cae en el examen del IPN</h2>
+        <p>Dinámica es de los bloques con más reactivos dentro de física, sobre todo para las carreras de ingeniería. Las formas más frecuentes son:</p>
+        <ul>
+          <li><strong>Sustitución directa en ΣF = ma:</strong> te dan dos variables y piden la tercera. Son los rápidos.</li>
+          <li><strong>Cálculo de peso o de normal:</strong> casi siempre con el elevador o con un bloque sobre una superficie.</li>
+          <li><strong>Conceptuales de la tercera ley:</strong> identificar cuál es el par correcto de fuerzas. No requieren cuentas, solo tener clara la definición.</li>
+          <li><strong>Fuerza neta con varias fuerzas:</strong> sumar vectores en una o dos dimensiones y después aplicar la segunda ley.</li>
+        </ul>
+        <p>Si quieres el panorama completo del examen —cuántos reactivos trae y cómo se asignan los lugares— está en la <a href="ipn.html">guía del examen de admisión del IPN</a>, y los puntajes que pide cada carrera, en los <a href="aciertos-ipn.html">cortes históricos de las 105 carreras</a>.</p>
+
+        <h2 id="preguntas">Preguntas frecuentes</h2>
+
+        <div class="vic-stack" style="gap:12px;margin-top:1.2em">
+          <details class="vic-faq"><summary>¿Cuáles son las tres leyes de Newton?</summary><p>La primera es la ley de la inercia: un cuerpo sin fuerza neta mantiene su estado de reposo o de movimiento rectilíneo uniforme. La segunda relaciona fuerza, masa y aceleración con ΣF = ma. La tercera es la de acción y reacción: si un cuerpo ejerce una fuerza sobre otro, el segundo ejerce una igual en magnitud y opuesta en sentido.</p></details>
+          <details class="vic-faq"><summary>¿Cuál es la diferencia entre masa y peso?</summary><p>La masa es la cantidad de materia de un cuerpo, se mide en kilogramos y no cambia de lugar a lugar. El peso es la fuerza con la que la gravedad jala a ese cuerpo, se mide en newtons y se calcula como P = mg, así que cambia si cambia la gravedad. Una persona de 70 kg tiene 70 kg en la Luna, pero pesa seis veces menos.</p></details>
+          <details class="vic-faq"><summary>¿Por qué las fuerzas de acción y reacción no se cancelan?</summary><p>Porque actúan sobre cuerpos distintos. Para que dos fuerzas se cancelen tienen que aplicarse sobre el mismo objeto. En un par acción-reacción, una fuerza actúa sobre el cuerpo A y la otra sobre el cuerpo B, así que cada uno responde a la suya.</p></details>
+          <details class="vic-faq"><summary>¿Qué es un newton?</summary><p>Es la unidad de fuerza del Sistema Internacional. Un newton es la fuerza necesaria para que una masa de un kilogramo adquiera una aceleración de un metro por segundo al cuadrado: 1 N = 1 kg·m/s².</p></details>
+          <details class="vic-faq"><summary>¿Se necesita fuerza para que un cuerpo siga en movimiento?</summary><p>No. Según la primera ley, un cuerpo en movimiento sigue moviéndose solo si no hay fuerza neta sobre él. La fuerza se necesita para cambiar el movimiento, no para mantenerlo. En la Tierra parece lo contrario porque la fricción y el aire frenan todo.</p></details>
+        </div>
+
+        <div class="vic-cta-articulo">
+          <h3>Ya tienes dinámica. Faltan cinemática, energía, electricidad…</h3>
+          <p>En la plática gratuita, tres ingenieros del Poli te explican qué viene en el examen, qué temas pesan más y cómo organizar las semanas que te quedan. Una hora por Zoom, con tiempo para preguntas.</p>
+          <a class="vic-btn vic-btn--primary vic-btn--lg" href="platica.html" data-metrica="platica_clic" data-metrica-lugar="blog-newton-cierre">Aparta tu lugar gratis</a>
+          <p class="vic-cta-articulo__pie">Gratis · sin tarjeta · sin compromiso de compra</p>
+        </div>
+
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SIGUE LEYENDO ================= -->
+<section class="vic-section vic-section--gris" data-blog-relacionados-seccion>
+  <div class="vic-container">
+    <h2 class="vic-h2" style="margin:0 0 28px">Sigue leyendo</h2>
+    <div class="vic-blog-grid" id="blogRelacionados" data-slug="leyes-de-newton"></div>
+  </div>
+</section>
+
+<footer data-vic-footer></footer>
+
+<script src="assets/js/config.js?v=26"></script>
+<script src="assets/js/api.js?v=26"></script>
+<script src="assets/js/ui.js?v=26"></script>
+<script src="assets/js/iconos.js?v=26"></script>
+<script src="assets/js/metricas.js?v=26"></script>
+<script src="assets/js/pagina-blog.js?v=26"></script>
+<script src="assets/js/popup-simulacro.js?v=26"></script>
+<script src="assets/js/articulo-indice.js?v=26"></script>
+</body>
+</html>

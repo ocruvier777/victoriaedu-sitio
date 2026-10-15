@@ -1,8 +1,13 @@
 /* ==========================================================================
    VictoriaEDU — Popup de conversión
-   Va solo en las páginas de contenido (cortes y convocatoria): son las que
-   traen tráfico de búsqueda y las que necesitan una salida hacia el producto.
-   NO va en las páginas de compra — ahí estorbaría.
+   Va solo en las páginas de contenido (guía del IPN, cortes y convocatoria):
+   son las que traen tráfico de búsqueda y las que necesitan una salida hacia
+   el embudo. NO va en la plática ni en las páginas de compra — ahí estorbaría.
+
+   Ofrece la PLÁTICA, que es el único punto de venta del sitio. Antes ofrecía
+   el simulacro de $199, que ya no existe; el gate que leía ese producto del
+   catálogo se quitó porque el slug había desaparecido y el popup nunca se
+   llegaba a mostrar.
 
    Reglas:
    · Una vez cada 7 días, no una vez por pestaña. sessionStorage no sirve aquí:
@@ -52,29 +57,26 @@
     clearTimeout(temporizador);
     window.removeEventListener('scroll', onScroll);
 
-    var p = window.getProducto ? window.getProducto('simulacro-ipn-2026') : null;
-    if (!p || p.estado !== 'disponible') { marcarVisto(); return; }
-
     var overlay = document.createElement('div');
     overlay.className = 'vic-popup';
     overlay.innerHTML =
       '<div class="vic-popup__caja" role="dialog" aria-modal="true" aria-labelledby="popupTitulo">' +
         '<button class="vic-modal__cerrar" type="button" aria-label="Cerrar">✕</button>' +
-        '<div class="vic-popup__cinta">Gratis · 10 reactivos</div>' +
-        '<h2 id="popupTitulo" style="font-size:26px;line-height:1.2;margin:0 0 12px">Ya sabes cuánto pide tu carrera. ¿Sabes cuánto sacas tú?</h2>' +
-        '<p style="font-size:16px;line-height:1.6;margin:0 0 20px">Contesta 10 reactivos reales del examen del IPN y mira cuántos aciertos llevas hoy. No cuesta nada y no te pedimos cuenta para empezar.</p>' +
+        '<div class="vic-popup__cinta">Gratis · 1 hora · por Zoom</div>' +
+        '<h2 id="popupTitulo" style="font-size:26px;line-height:1.2;margin:0 0 12px">Ya leíste cómo es el examen. ¿Quieres saber cómo prepararte?</h2>' +
+        '<p style="font-size:16px;line-height:1.6;margin:0 0 20px">Los tres fundadores dan una plática gratuita por Zoom: qué esperar el día del examen, qué estudiar y cómo organizarte. No cuesta nada y no pedimos tarjeta.</p>' +
         '<ul class="vic-lista-check" style="margin:0 0 24px;font-size:15px">' +
-          '<li>10 reactivos como los del examen real</li>' +
-          '<li>Se contesta sin crear cuenta</li>' +
-          '<li>Tu puntaje y tu porcentaje de aciertos</li>' +
+          '<li>Qué viene y qué no en el examen</li>' +
+          '<li>Cómo armar un plan realista de estudio</li>' +
+          '<li>Preguntas en vivo con los profes</li>' +
         '</ul>' +
         '<div class="vic-popup__acciones">' +
-          /* data-plataforma en vez del href a mano: así este botón también
-             respeta el cierre del ambiente, como el resto del sitio. */
-          '<a class="vic-btn vic-btn--primary vic-btn--lg" data-plataforma="examen" data-metrica="examen_gratis_clic" data-metrica-lugar="popup">Haz el examen gratis</a>' +
+          '<a class="vic-btn vic-btn--primary vic-btn--lg" href="platica.html" data-metrica="platica_clic" data-metrica-lugar="popup">Aparta tu lugar gratis</a>' +
           '<button class="vic-btn vic-btn--ghost vic-btn--lg" type="button" data-seguir>Seguir leyendo</button>' +
         '</div>' +
-        '<p style="font-size:13px;line-height:1.5;margin:14px 0 0;opacity:.7">Lo presentas de una vez; la cuenta se crea al final para guardar tu resultado.</p>' +
+        /* data-plataforma en vez del href a mano: así este enlace respeta el
+           cierre del ambiente, como el resto del sitio. */
+        '<p style="font-size:13px;line-height:1.5;margin:14px 0 0;opacity:.7">¿Prefieres medirte primero? <a data-plataforma="examen" data-metrica="examen_gratis_clic" data-metrica-lugar="popup">Haz el examen gratis de 10 reactivos</a>.</p>' +
       '</div>';
 
     document.body.appendChild(overlay);

@@ -81,6 +81,22 @@
       ? ' loading="eager" fetchpriority="high"'
       : ' loading="lazy" decoding="async"';
 
+    /* Un producto sin portada todavía (p. ej., ALV mientras el ilustrador la
+       entrega) NO debe salir con <img src=""> — eso pinta un roto. Devuelve un
+       marco de marca con el nombre del paquete y el mismo aspect-ratio 16:9
+       para que la rejilla no salte cuando el archivo llegue. */
+    if (!p.imagen) {
+      return '<div class="vic-producto__placeholder" role="img" aria-label="' +
+        esc(p.imagenAlt || p.nombre) + '"' +
+        ' style="aspect-ratio:' + PORTADA_W + '/' + PORTADA_H + ';display:flex;' +
+          'align-items:center;justify-content:center;text-align:center;padding:24px;' +
+          'background:linear-gradient(135deg,var(--vic-azul-profundo,#223A74),var(--vic-burdeos,#310E17));' +
+          'color:#fff;font-family:var(--vic-font-display,inherit);font-weight:700;' +
+          'font-size:clamp(20px,2.4vw,28px);line-height:1.15;letter-spacing:-.01em">' +
+        esc(p.nombre) +
+      '</div>';
+    }
+
     var img = '<img src="' + esc(p.imagen) + '" alt="' + esc(p.imagenAlt) + '"' +
       ' width="' + PORTADA_W + '" height="' + PORTADA_H + '"' + carga + '>';
 
@@ -121,18 +137,18 @@
       var lista = opts.horizontal ? puntosDe(p) : (p.incluye || []);
       cuerpo = '<p style="font-size:16px;line-height:1.6;margin:0 0 20px">' + esc(p.resumen) + '</p>' +
         listaCheck(lista);
-      // `data-plataforma` en vez del href a mano: estas tarjetas se pintan
-      // desde JS, así que hay que pasarlas por la misma puerta que el HTML
-      // (ui.js) para que respeten el cierre del ambiente. Quien las pinta
-      // llama a activarEnlacesPlataforma() al terminar.
+      /* Todo lo del catálogo manda a la plática: el embudo del ciclo IPN 2027
+         pasa por `platica.html`, donde se explican los paquetes y se
+         apartan los $100 de reserva. Si algún producto no define `pagina`
+         (hoy no es el caso, pero por si vuelve), se cae al botón de "lista
+         de espera" para no dejar un CTA roto. */
       accion = disponible
-        ? '<a class="vic-btn vic-btn--primary vic-btn--lg" data-plataforma="comprar"' +
-            ' data-metrica="comprar_clic" data-metrica-lugar="tienda">' +
-            (p.precioLista && p.precioLista > p.precio ? 'Llévate los dos por ' : 'Comprar — ') +
-            esc(window.VicUI.precioCorto(p.id)) + '</a>' +
-          '<a class="vic-btn vic-btn--secondary vic-btn--lg" data-plataforma="examen"' +
-            ' data-metrica="examen_gratis_clic" data-metrica-lugar="tienda">Pruébalo gratis primero</a>' +
-          (p.pagina ? '<a class="vic-producto__link" href="' + esc(p.pagina) + '">Ver el programa completo →</a>' : '')
+        ? (p.pagina
+            ? '<a class="vic-btn vic-btn--primary vic-btn--lg" href="' + esc(p.pagina) + '"' +
+                ' data-metrica="platica_clic" data-metrica-lugar="tienda">Apartar en la plática · ' +
+                esc(window.VicUI.precioCorto(p.id)) + '</a>'
+            : '<button class="vic-btn vic-btn--secondary vic-btn--lg" type="button" data-lista-espera="' +
+                esc(p.id) + '">Avísame cuando abra</button>')
         : '<button class="vic-btn vic-btn--secondary vic-btn--lg" type="button" data-lista-espera="' +
             esc(p.id) + '">Avísame cuando abra</button>';
     } else {

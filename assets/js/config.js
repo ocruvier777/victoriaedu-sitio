@@ -8,7 +8,7 @@
 /* Versión del sitio. Se imprime en el pie, y ahí sirve para una cosa muy
    concreta: cuando alguien reporte "se ve raro", poder preguntarle qué versión
    trae y saber si está viendo caché vieja. Súbela cuando publiques. */
-window.VERSION_SITIO = '1.8.1';
+window.VERSION_SITIO = '1.9.0';
 
 window.CONFIG = {
   /* --- Mascota (Vico) ------------------------------------------------------
@@ -368,6 +368,47 @@ window.CONFIG = {
     },
   ],
 
+  /* --- Blog ----------------------------------------------------------------
+     Índice de artículos. El blog existe para BÚSQUEDA: cada artículo ataca un
+     tema que alguien teclea en Google mientras estudia ("qué es el MRU",
+     "fórmulas de movimiento rectilíneo uniforme"), y de ahí lo invitamos a la
+     plática. No es un diario de la empresa: si un artículo no responde una
+     duda concreta del temario del IPN, no va.
+
+     Los archivos viven PLANOS en la raíz (`blog-<slug>.html`), no en una
+     carpeta `blog/`. Motivo: ui.js pinta el header con rutas relativas
+     (`index.html`, `tienda.html`), y desde `/blog/x.html` esas rutas
+     apuntarían a `/blog/index.html`. Mover todo a rutas absolutas rompería
+     abrir el sitio con file://, que es como se revisa en local.
+
+     Cada entrada:
+       slug     → identificador; el archivo es `blog-<slug>.html`
+       titulo   → el <h1> del artículo, tal cual
+       resumen  → 1–2 líneas; se usa en la tarjeta del índice
+       materia  → para agrupar y filtrar: Física, Matemáticas, Química…
+       fecha    → ISO (YYYY-MM-DD). Ordena el índice, de más nuevo a más viejo
+       minutos  → lectura estimada, redondeada
+     Para publicar: se añade aquí y se crea el HTML. El índice se pinta solo.
+  ------------------------------------------------------------------------ */
+  blog: [
+    {
+      slug: 'movimiento-rectilineo-uniforme',
+      titulo: 'Movimiento rectilíneo uniforme (MRU): fórmulas, gráficas y los errores que cuestan aciertos',
+      resumen: 'Qué es el MRU, de dónde sale x = x₀ + vt, cómo se leen sus dos gráficas y las tres trampas con las que el examen tira a quien solo memorizó la fórmula.',
+      materia: 'Física',
+      fecha: '2026-10-12',
+      minutos: 9,
+    },
+    {
+      slug: 'leyes-de-newton',
+      titulo: 'Las tres leyes de Newton: qué dice cada una, cuándo se usa y los errores clásicos',
+      resumen: 'Inercia, F = ma y acción-reacción explicadas una por una, con diagramas de cuerpo libre, la diferencia entre masa y peso y cinco ejercicios del estilo que cae en el examen.',
+      materia: 'Física',
+      fecha: '2026-10-14',
+      minutos: 11,
+    },
+  ],
+
   /* --- Acceso al panel admin (SOLO MOCKUP) ---------------------------------
      Esto NO es seguridad: es una compuerta visual para poder enseñar el flujo.
      La autenticación real la implementa el back.
@@ -380,132 +421,111 @@ window.CONFIG = {
    --------------------------------------------------------------------------
    estado: 'disponible' | 'proximamente' | 'agotado'
    Solo los 'disponible' se pueden comprar; el resto captura lista de espera.
+
+   TODO el catálogo manda a la plática: el embudo del ciclo IPN 2027 pasa por
+   `platica.html` (sesión gratuita por Zoom donde se explican los paquetes
+   y se apartan los $100 de reserva). Por eso los tres productos aquí tienen
+   `pagina: 'platica.html'` y, en vez de un CTA de "comprar", abren la
+   invitación. El simulacro se dejó fuera del array a propósito: la página
+   `simulacro-ipn-2026.html` sigue en línea para enlaces viejos, pero ya no
+   aparece en la tienda ni compite con el nuevo embudo.
+
+   Las ilustraciones son 1672x941 (16:9 exacto, el mismo que fija
+   .vic-producto__img). WebP es línea base en todos los navegadores vivos, así
+   que se sirve directo. `alv-victoria.webp` todavía no existe —no hay portada
+   del paquete ALV— y por eso `imagen: null`: la tarjeta pinta el fondo de
+   marca sin imagen hasta que llegue el archivo final.
    ========================================================================== */
 window.CATALOGO = [
   {
-    id: 'simulacro-ipn-2026',
-    slug: 'simulacro-ipn-2026',
-    nombre: 'Simulacro IPN 2026',
-    resumen: 'Dos exámenes por el precio de uno: cada uno vale $199 y te llevas los dos. Más el taller de ejercicios en vivo de cada fin de semana hasta el día del examen, de regalo.',
-    /* El paquete son DOS exámenes y cada uno vale $199 por separado: $398 de
-       lista, $199 a pagar. Ese es el 2x1 y por eso `precioLista` sí lleva
-       número aquí — es un precio real de venta unitaria, no un número inflado
-       para tachar. Si algún día se deja de vender el examen suelto a $199,
-       este 398 hay que quitarlo: un precio tachado que nunca existió es
-       publicidad engañosa, no un descuento.
-
-       TODO(Óscar): definir hasta cuándo corre el 2x1. Una promoción sin
-       vigencia declarada no se puede cerrar después sin quedar mal con quien
-       la vio. Si es permanente, mejor decirlo así de claro. */
-    precio: 199,
-    precioLista: 398,
+    id: 'ruta-al-poli-2027',
+    slug: 'ruta-al-poli-2027',
+    nombre: 'Ruta al Poli · IPN 2027',
+    resumen: 'Matemáticas desde cero (oct–dic) y preparación integral IPN (ene–examen 2027): clases en vivo los fines de semana, grabaciones y simulacros, con los tres fundadores al frente.',
+    precio: 3000,
+    precioLista: null,
     moneda: 'MXN',
     estado: 'disponible',
-    badge: { texto: '2x1 · Disponible', clase: 'vic-badge--solid' },
-    meta: '2 exámenes · 70 reactivos c/u · 90 min c/u',
-    pagina: 'simulacro-ipn-2026.html',
-    /* imagen        → la que se sirve. SIEMPRE tiene que existir.
-       imagenAvif    → variante AVIF, opcional. En cuanto exista el archivo se
-       pone aquí la ruta y la tarjeta empieza a servirlo por <picture>, con el
-       WebP de abajo como respaldo. Mientras esté en null no se emite ningún
-       <source> y no hay forma de que quede una imagen rota.
-
-       Las ilustraciones son 1672x941 (16:9 exacto, el mismo que fija
-       .vic-producto__img) y pesan entre 35 y 70 KB. WebP es línea base en
-       todos los navegadores vivos, así que se sirve directo y no hace falta
-       arrastrar las SVG como respaldo. */
-    imagen: 'assets/brand/programas/simulacro-ipn.webp',
-    imagenAvif: null,   // 'assets/brand/programas/simulacro-ipn.avif'
-    imagenWebp: null,   // ya es `imagen`; se usa solo si algún día hay AVIF
-    imagenAlt: 'Tableta con un examen de opción múltiple, un cronómetro y una tarjeta de resultados',
-    /* Los 4 puntos de la tarjeta. Cortos a propósito: en la portada se ojean,
-       no se leen. La lista larga sigue siendo `incluye`. */
-    puntos: [
-      '2 exámenes por el precio de uno',
-      '140 reactivos, inglés incluido',
-      'Taller en vivo de regalo',
-      'Reporte por materia y plan con IA',
-    ],
-    incluye: [
-      'Dos exámenes por el precio de uno: $199 cada uno por separado, los dos por $199',
-      'Dos exámenes de 70 reactivos: la mitad del examen real cada uno',
-      'Todas las materias que evalúa el IPN, inglés incluido',
-      '90 minutos cronometrados por examen, desde tu casa',
-      'Taller de ejercicios en vivo cada fin de semana hasta el día del examen, dentro de la plataforma y sin costo extra',
-      'Reporte por área y por materia después de cada examen',
-      'Plan de estudio semana por semana generado por IA',
-      'Revisión de un profesor antes de enviarte el plan',
-    ],
-  },
-  {
-    id: 'curso-matematicas-ipn-2027',
-    slug: 'curso-matematicas-ipn-2027',
-    nombre: 'Curso de Matemáticas IPN 2027',
-    resumen: 'De aritmética a cálculo diferencial, en el orden en que el examen lo pide. Clases en vivo dos veces por semana más práctica dirigida diaria.',
-    precio: 3850,
-    precioLista: null,
-    moneda: 'MXN',
-    estado: 'proximamente',
-    badge: { texto: 'Próximamente', clase: 'vic-badge--warning' },
-    meta: 'Arranca el 5 de octubre · 24 semanas',
-    pagina: null,
-    imagen: 'assets/brand/programas/matematicas-ipn.webp',
-    imagenAvif: null,   // 'assets/brand/programas/matematicas-ipn.avif'
-    imagenWebp: null,   // ya es `imagen`; se usa solo si algún día hay AVIF
-    imagenAlt: 'Tres láminas que avanzan de las figuras básicas a la geometría con compás y de ahí a una curva creciente en papel milimétrico',
-    puntos: [
-      'De aritmética a cálculo',
-      '48 clases en vivo',
-      'Práctica diaria adaptativa',
-      'Tutor IA 24/7',
-    ],
-    incluye: [
-      '48 clases en vivo con grabación',
-      'Práctica diaria adaptativa',
-      'Tutor IA 24/7 supervisado por profesor',
-      'Tres simulacros parciales incluidos',
-    ],
-  },
-  {
-    id: 'curso-admision-ipn',
-    slug: 'curso-admision-ipn',
-    nombre: 'Curso de Admisión IPN',
-    /* "Hasta que te quedes": se paga UNA vez y, si no alcanzas lugar, sigues
-       en el curso en la siguiente convocatoria sin volver a pagar.
-
-       Ojo con cómo está redactado: promete que NO se vuelve a cobrar, no
-       promete la admisión. Son cosas distintas y el sitio no puede prometer
-       la segunda — el pie de página dice justamente "la preparación no
-       garantiza admisión", y ese aviso se queda.
-
-       TODO(Óscar): antes de publicarlo hay que fijar las condiciones por
-       escrito: cuántas convocatorias cubre, qué se exige para conservar el
-       beneficio (asistencia, entregas) y qué pasa si el alumno se ausenta.
-       Sin eso, la promesa es imposible de sostener en una reclamación. */
-    resumen: 'El programa completo de admisión: las cuatro áreas del examen, diagnóstico inicial, ruta personalizada y acompañamiento hasta el día de la prueba. Pagas una sola vez: si no te quedas, sigues en el curso sin volver a pagar.',
-    precio: 5900,
-    precioLista: null,
-    moneda: 'MXN',
-    estado: 'proximamente',
-    badge: { texto: 'Próximamente', clase: 'vic-badge--warning' },
-    meta: 'Siguiente generación por confirmar',
-    pagina: null,
+    badge: { texto: 'Apartar en la plática', clase: 'vic-badge--solid' },
+    meta: 'Inicia 31 oct 2026 · Hasta el examen IPN 2027',
+    pagina: 'platica.html',
     imagen: 'assets/brand/programas/admision-ipn.webp',
-    imagenAvif: null,   // 'assets/brand/programas/admision-ipn.avif'
-    imagenWebp: null,   // ya es `imagen`; se usa solo si algún día hay AVIF
-    imagenAlt: 'Tres rutas con nodos que convergen y suben hacia el arco de entrada de una escuela',
+    imagenAvif: null,
+    imagenWebp: null,
+    imagenAlt: 'Vico frente al pórtico del IPN con el letrero #IPNdeCorazón y una curva ascendente',
     puntos: [
-      'Pago único hasta que te quedes',
-      'Las 4 áreas del examen',
-      'Diagnóstico y ruta personal',
-      'Profesores egresados del IPN',
+      'Matemáticas + preparación IPN 2027',
+      'Clases en vivo sábado y domingo',
+      'Vico y simulacros incluidos',
+      'Reserva tu lugar con $100',
     ],
     incluye: [
-      'Pago único: si no alcanzas lugar, sigues en el curso la siguiente convocatoria sin volver a pagar',
-      'Las cuatro áreas del examen de admisión',
-      'Diagnóstico de entrada y ruta personalizada',
-      'Clases en vivo con profesores egresados del IPN',
-      'Simulacros incluidos a lo largo del programa',
+      'Etapa 1 — Matemáticas From Zero to Hero (oct–dic 2026): aritmética, álgebra, trigonometría, geometría y precálculo',
+      'Etapa 2 — Preparación Integral IPN (ene 2027 al examen): todas las materias del área + simulacros',
+      'Clases en vivo sábados y domingos de 8:00 a 11:00 am (CDMX), con grabaciones',
+      'Asesorías gratuitas entre semana por la tarde',
+      'Acceso al campus Victoria EDU con actividades y apoyo con Vico',
+      'Profesores: Brando, Emiliano y Óscar — ingenieros del IPN',
+      'Reservación con $100; liquidación antes del domingo 15 de noviembre de 2026',
+    ],
+  },
+  {
+    id: 'alv-victoria-2027',
+    slug: 'alv-victoria-2027',
+    nombre: 'ALV · A La Victoria',
+    resumen: 'Todo lo de Ruta al Poli y, si no entras al IPN, repites ambos cursos cada ciclo hasta que te asignen tu aspirante — sin costo adicional.',
+    precio: 4499,
+    precioLista: null,
+    moneda: 'MXN',
+    estado: 'disponible',
+    badge: { texto: 'Hasta que te quedes', clase: 'vic-badge--warning' },
+    meta: 'Solo $1,499 más que Ruta al Poli',
+    pagina: 'platica.html',
+    imagen: null,
+    imagenAvif: null,
+    imagenWebp: null,
+    imagenAlt: 'Portada del paquete ALV · A La Victoria (en preparación)',
+    puntos: [
+      'Todo lo de Ruta al Poli',
+      'Repites ambos cursos cada ciclo',
+      'Hasta que te asignen tu aspirante',
+      'Sin costo adicional en siguientes convocatorias',
+    ],
+    incluye: [
+      'Todo el contenido de Ruta al Poli',
+      'Si no entras al IPN, repites ambos cursos cada ciclo hasta ingresar, sin costo adicional',
+      'Mismo horario y mismos profesores: Brando, Emiliano y Óscar',
+      'Reservación con $100; liquidación antes del 15 de noviembre de 2026',
+    ],
+  },
+  {
+    id: 'solo-matematicas-2026',
+    slug: 'solo-matematicas-2026',
+    nombre: 'Solo Matemáticas',
+    resumen: 'Para quienes buscan regularizarse en matemáticas sin tomar la preparación IPN completa. Mismo contenido From Zero to Hero: aritmética, álgebra, trigonometría, geometría y precálculo.',
+    precio: 700,
+    precioLista: null,
+    moneda: 'MXN',
+    estado: 'disponible',
+    badge: { texto: 'Regularización', clase: 'vic-badge--neutral' },
+    meta: 'Oct–dic 2026 · Sin preparación IPN',
+    pagina: 'platica.html',
+    imagen: 'assets/brand/programas/matematicas-ipn.webp',
+    imagenAvif: null,
+    imagenWebp: null,
+    imagenAlt: 'Vico en pose de triunfo con el letrero Matemáticas From Zero to Hero',
+    puntos: [
+      'Aritmética → precálculo',
+      'Clases en vivo fin de semana',
+      'Grabaciones incluidas',
+      'Sin preparación IPN',
+    ],
+    incluye: [
+      'Matemáticas From Zero to Hero completo (oct–dic 2026)',
+      'Aritmética, álgebra, trigonometría, geometría y precálculo',
+      'Clases en vivo sábados y domingos de 8:00 a 11:00 am (CDMX), con grabaciones',
+      'Asesorías gratuitas entre semana por la tarde',
+      'No incluye la etapa de preparación IPN de enero',
     ],
   },
 ];

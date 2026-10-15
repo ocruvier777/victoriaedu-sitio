@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Simulacro IPN 2026 | Diagnóstico gratis y 2 exámenes por $199</title>
-<meta name="description" content="Mide tu nivel para la segunda vuelta del IPN con 10 reactivos gratis. Continúa con 2 simulacros completos de 70 preguntas por $199 MXN total.">
+<title>Simulacro IPN | Diagnóstico gratis de 10 reactivos reales</title>
+<meta name="description" content="Mide tu nivel para el examen de admisión del IPN con 10 reactivos reales, gratis y sin crear cuenta. Después, la plática gratuita te explica la ruta completa al Poli.">
 <link rel="icon" href="uploads/victoriaedu_logo_transparent.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/victoria.css?v=23">
-<link rel="stylesheet" href="assets/css/victoria-marca.css?v=23">
+<link rel="stylesheet" href="assets/css/victoria.css?v=26">
+<link rel="stylesheet" href="assets/css/victoria-marca.css?v=26">
 </head>
 <body>
 
-<!-- data-cta="examen10": esta página recibe tráfico pagado y su objetivo es el
-     diagnóstico gratuito, no la compra. El CTA del navbar tiene que decir lo
-     mismo que el del hero o el visitante lee dos ofertas distintas. -->
-<header data-vic-header data-cta="examen10"></header>
+<!-- El CTA del navbar manda a la plática, igual que en todo el sitio. El hero
+     de esta página sigue ofreciendo el diagnóstico gratis: es su promesa y lo
+     que la trae tráfico, pero ya no vende simulacros sueltos. -->
+<header data-vic-header data-cta="platica"></header>
 
 <!-- ================= HERO =================
      El orden del DOM es el orden en móvil: primero el copy, después el video.
@@ -34,7 +34,7 @@
         <ul class="vic-lista-check" style="margin-bottom:32px;max-width:52ch">
           <li>Diagnóstico gratuito de 10 reactivos</li>
           <li>Resultado y recomendaciones de estudio</li>
-          <li>Después, 2 simulacros completos por $199 MXN total</li>
+          <li>Después, la plática gratuita con la ruta completa al Poli</li>
         </ul>
 
         <div class="vic-row vic-row--cta" style="margin-bottom:18px">
@@ -233,7 +233,7 @@
           <div>
             <h3 style="font-size:clamp(26px,2.6vw,34px);line-height:1.14;margin:0 0 6px">Ing. Óscar Cruz</h3>
             <p style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--vic-azul);margin:0 0 18px">Contenido y reporte</p>
-            <p style="font-size:18px;line-height:1.6;margin:0 0 22px;max-width:52ch">Ingeniero aeronáutico egresado del IPN. Nueve años preparando aspirantes al examen de admisión y Demand Forecaster en GAFSACOMM, donde trabaja con modelos predictivos todos los días. El simulacro y su reporte los diseñó él, reactivo por reactivo.</p>
+            <p style="font-size:18px;line-height:1.6;margin:0 0 22px;max-width:52ch">Ingeniero aeronáutico egresado del IPN. Nueve años preparando aspirantes al examen de admisión y Demand Forecaster en el Grupo Aeroportuario Mundo Maya, donde trabaja con modelos predictivos todos los días. El simulacro y su reporte los diseñó él, reactivo por reactivo.</p>
             <div class="vic-row" style="gap:10px">
               <span class="vic-tag" style="font-size:13px;padding:8px 12px">Egresado IPN</span>
               <span class="vic-tag" style="font-size:13px;padding:8px 12px">9 años en admisión</span>
@@ -249,7 +249,7 @@
           <div>
             <h3 style="font-size:clamp(26px,2.6vw,34px);line-height:1.14;margin:0 0 6px">Ing. Emiliano Ricardez</h3>
             <p style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--vic-azul);margin:0 0 18px">Matemáticas y clase en vivo</p>
-            <p style="font-size:18px;line-height:1.6;margin:0 0 22px;max-width:52ch">Ingeniero aeronáutico egresado del IPN y campeón en concursos de matemáticas. Es quien está frente al grupo: ahorita da el curso de matemáticas para la segunda vuelta, con clase de fin de semana y grabaciones para los que no alcanzan el horario.</p>
+            <p style="font-size:18px;line-height:1.6;margin:0 0 22px;max-width:52ch">Ingeniero aeronáutico egresado del IPN y campeón en concursos de matemáticas. Trabaja en operaciones en el Aeropuerto Internacional de Toluca; es quien está frente al grupo: da el curso de matemáticas con clase de fin de semana y grabaciones para los que no alcanzan el horario.</p>
             <div class="vic-row" style="gap:10px">
               <span class="vic-tag" style="font-size:13px;padding:8px 12px">Egresado IPN</span>
               <span class="vic-tag" style="font-size:13px;padding:8px 12px">Matemáticas</span>
@@ -281,43 +281,37 @@
 
 <div class="section-divider section-divider--papel-noche" aria-hidden="true"></div>
 
-<!-- ================= OFERTA =================
-     `id="comprar"` se conserva además de `id="precio"`: hay enlaces viejos
-     apuntando a #comprar y romperlos no le sirve a nadie. -->
+<!-- ================= SIGUIENTE PASO =================
+     Esta sección vendía 2 simulacros por $199. YA NO VENDE: el único punto de
+     venta del sitio es la plática del ciclo 2027. Aquí el diagnóstico sigue
+     siendo gratis y, cuando el visitante ya sabe dónde está parado, el
+     siguiente paso que se le ofrece es la plática.
+
+     `id="precio"` e `id="comprar"` se conservan: hay enlaces viejos apuntando
+     ahí y romperlos no le sirve a nadie. -->
 <section id="precio" class="vic-section vic-section--impacto vic-blueprint">
   <span id="comprar" aria-hidden="true"></span>
   <div class="vic-container">
     <div class="vic-grid vic-grid--2" style="gap:56px;align-items:center">
       <div>
-        <div class="vic-pill" style="margin-bottom:24px"><span class="vic-dot"></span>Preparación completa</div>
-        <h2 class="vic-h2" style="margin:0 0 18px;max-width:22ch">Dos oportunidades para medir tu avance antes del examen.</h2>
-        <div class="vic-row" style="align-items:baseline;gap:12px;margin-bottom:18px">
-          <span style="font-family:var(--vic-font-display);font-size:clamp(40px,5vw,52px);font-weight:700;color:#fff;line-height:1">$199 MXN</span>
-          <span style="font-size:16px;color:rgba(255,255,255,.6)">total</span>
-        </div>
-        <p style="font-size:18px;line-height:1.6;margin:0 0 26px;max-width:50ch">No es una mensualidad. El pago incluye los dos simulacros.</p>
-        <p style="font-size:15px;line-height:1.6;color:rgba(255,255,255,.6);margin:0;max-width:50ch">Prueba primero la experiencia y después decide si quieres los simulacros completos.</p>
+        <div class="vic-pill" style="margin-bottom:24px"><span class="vic-dot"></span>Después del diagnóstico</div>
+        <h2 class="vic-h2" style="margin:0 0 18px;max-width:24ch">Ya sabes dónde estás. Ahora te decimos cómo cerrar la brecha.</h2>
+        <p style="font-size:18px;line-height:1.6;margin:0 0 26px;max-width:50ch">El diagnóstico te dice qué materias te faltan. La plática te dice qué hacer con esa información: la ruta completa al examen del Poli, explicada por los tres fundadores.</p>
+        <p style="font-size:15px;line-height:1.6;color:rgba(255,255,255,.6);margin:0;max-width:50ch">Una hora por Zoom. Gratis, sin tarjeta y sin compromiso de compra.</p>
       </div>
 
       <div class="vic-panel-claro" style="background:#fff;border-radius:24px;padding:34px;box-shadow:var(--vic-shadow-lg)">
-        <h3 style="font-size:22px;margin:0 0 6px">Qué incluye</h3>
-        <p class="vic-hint" style="margin:0 0 22px">2 simulacros · 70 reactivos c/u · 90 min c/u</p>
+        <h3 style="font-size:22px;margin:0 0 6px">Plática del ciclo IPN 2027</h3>
+        <p class="vic-hint" style="margin:0 0 22px">1 hora · por Zoom · sin costo</p>
         <ul class="vic-lista-check" style="margin-bottom:24px">
-          <li>2 simulacros completos</li>
-          <li>70 reactivos por simulacro</li>
-          <li>90 minutos por simulacro</li>
-          <li>140 reactivos en total</li>
-          <li>Inglés incluido</li>
-          <li>Calificación y revisión de resultados</li>
-          <li>Taller en vivo de resolución</li>
+          <li>Qué viene y qué no en el examen</li>
+          <li>Cómo armar un plan realista de estudio</li>
+          <li>Preguntas en vivo con los profes</li>
+          <li>Los paquetes del ciclo 2027, al final y sin presión</li>
+          <li>Sin tarjeta, sin compromiso de compra</li>
         </ul>
-        <div class="vic-summary__total" style="margin-bottom:22px">
-          <span class="vic-muted">Total</span>
-          <strong>$199 MXN</strong>
-        </div>
-        <a class="vic-btn vic-btn--primary vic-btn--xl vic-btn--block" data-plataforma="examen" data-metrica="examen_gratis_clic" data-metrica-lugar="simulacro-oferta">Probar 10 reactivos gratis</a>
-        <p class="vic-hint" style="margin:14px 0 18px">Prueba primero la experiencia y después decide si quieres los simulacros completos.</p>
-        <a class="vic-btn vic-btn--secondary vic-btn--lg vic-btn--block" data-plataforma="comprar" data-metrica="comprar_clic" data-metrica-lugar="simulacro-oferta">Quiero los 2 simulacros</a>
+        <a class="vic-btn vic-btn--primary vic-btn--xl vic-btn--block" href="platica.html" data-metrica="platica_clic" data-metrica-lugar="simulacro-oferta">Aparta tu lugar gratis</a>
+        <p class="vic-hint" style="margin:14px 0 0">¿Todavía no haces el diagnóstico? <a data-plataforma="examen" data-metrica="examen_gratis_clic" data-metrica-lugar="simulacro-oferta-secundario">Empieza por los 10 reactivos gratis</a>.</p>
       </div>
     </div>
   </div>
@@ -331,19 +325,12 @@
     <div class="vic-eyebrow">05 · Preguntas frecuentes</div>
     <h2 class="vic-h2" style="margin:0 0 40px">Lo que preguntan antes de empezar.</h2>
     <div class="vic-stack" style="gap:12px">
-      <details class="vic-faq"><summary>¿El diagnóstico realmente es gratis?</summary><p>Sí. Puedes contestar los 10 reactivos sin pagar. Al terminar crearás tu cuenta para consultar el resultado y la revisión.</p></details>
-      <details class="vic-faq"><summary>¿Qué incluyen los simulacros completos?</summary><p>Recibes dos simulacros de 70 reactivos cada uno, con 90 minutos por examen, inglés incluido y revisión de resultados.</p></details>
-      <details class="vic-faq"><summary>¿Los dos simulacros cuestan $199 cada uno?</summary><p>No. Los $199 MXN son el precio total por los dos simulacros.</p></details>
+      <details class="vic-faq"><summary>¿El diagnóstico realmente es gratis?</summary><p>Sí. Puedes contestar los 10 reactivos sin pagar y sin crear cuenta. El correo te lo pedimos hasta el final, solo para guardarte el resultado.</p></details>
+      <details class="vic-faq"><summary>¿Qué sucede después del diagnóstico?</summary><p>Consultas tu resultado, revisas tus respuestas e identificas qué áreas necesitas reforzar. De ahí, el siguiente paso es la plática gratuita, donde te explicamos la ruta completa para llegar al examen preparado.</p></details>
+      <details class="vic-faq"><summary>¿Qué es la plática y cuánto cuesta?</summary><p>Es una sesión de una hora por Zoom con los tres fundadores: qué esperar el día del examen, qué estudiar y cómo organizarte. Es gratis, no pedimos tarjeta y al final te contamos de los cursos del ciclo 2027 por si te interesan.</p></details>
       <details class="vic-faq"><summary>¿Puedo realizarlo desde mi celular?</summary><p>Sí. La plataforma puede utilizarse desde celular, tablet o computadora. Para una experiencia más cómoda, recomendamos contar con una conexión estable.</p></details>
       <details class="vic-faq"><summary>¿Es un examen oficial del IPN?</summary><p>No. Es un recurso independiente de preparación desarrollado por Victoria EDU. No pertenece ni está afiliado al Instituto Politécnico Nacional.</p></details>
-      <details class="vic-faq"><summary>¿Qué sucede después del diagnóstico?</summary><p>Podrás consultar tu resultado, revisar tus respuestas e identificar las áreas que necesitas reforzar. Después podrás decidir si quieres continuar con los dos simulacros completos.</p></details>
-      <!-- Las tres de abajo venían de la versión anterior. Se conservan porque
-           su dato no aparece en ninguna otra parte de la página y quien va a
-           pagar lo pregunta: cómo se paga, si hay devolución y cuántos intentos
-           tiene. Quitarlas sería esconder información, no simplificar. -->
-      <details class="vic-faq"><summary>¿Cómo puedo pagar?</summary><p>Desde tu cuenta en la plataforma. Al momento de pagar ves los métodos disponibles y eliges el que te acomode. Es un pago único: no guardamos datos de tarjeta ni domiciliamos nada.</p></details>
-      <details class="vic-faq"><summary>¿Hay reembolso?</summary><p>Sí, mientras no hayas iniciado el simulacro: te devolvemos el 100% dentro de los primeros 7 días. Una vez que abres el examen ya no aplica, porque el contenido queda entregado.</p></details>
-      <details class="vic-faq"><summary>¿Puedo repetir los simulacros?</summary><p>Un intento por examen. El valor del diagnóstico está en presentarlo en condiciones reales, sin repetir hasta memorizar los reactivos.</p></details>
+      <details class="vic-faq"><summary>¿Puedo repetir el diagnóstico?</summary><p>Un intento. El valor está en presentarlo en condiciones reales, sin repetir hasta memorizar los reactivos.</p></details>
     </div>
   </div>
 </section>
@@ -353,22 +340,23 @@
 <!-- ================= CIERRE ================= -->
 <section class="vic-section vic-section--tight vic-section--impacto vic-blueprint">
   <div class="vic-container">
-    <h2 class="vic-h2" style="margin:0 0 18px;max-width:22ch">Tu segunda vuelta empieza midiendo.</h2>
-    <p style="font-size:18px;line-height:1.6;margin:0 0 30px;max-width:52ch">Haz hoy el diagnóstico gratuito y convierte tu resultado en una estrategia de estudio.</p>
+    <h2 class="vic-h2" style="margin:0 0 18px;max-width:22ch">Tu lugar en el Poli empieza midiendo.</h2>
+    <p style="font-size:18px;line-height:1.6;margin:0 0 30px;max-width:52ch">Haz el diagnóstico gratuito y después ven a la plática: ahí convertimos tu resultado en una estrategia de estudio.</p>
     <div class="vic-row vic-row--cta">
-      <a class="vic-btn vic-btn--primary vic-btn--xl" data-plataforma="examen" data-metrica="examen_gratis_clic" data-metrica-lugar="simulacro-cierre">Hacer diagnóstico gratis</a>
+      <a class="vic-btn vic-btn--primary vic-btn--xl" href="platica.html" data-metrica="platica_clic" data-metrica-lugar="simulacro-cierre">Aparta tu lugar gratis</a>
+      <a class="vic-btn vic-btn--secondary vic-btn--xl" data-plataforma="examen" data-metrica="examen_gratis_clic" data-metrica-lugar="simulacro-cierre">Hacer diagnóstico gratis</a>
     </div>
   </div>
 </section>
 
 <footer data-vic-footer></footer>
 
-<script src="assets/js/config.js?v=23"></script>
-<script src="assets/js/ui.js?v=23"></script>
-<script src="assets/js/iconos.js?v=23"></script>
-<script src="assets/js/metricas.js?v=23"></script>
-<script src="assets/js/datos-cortes.js?v=23"></script>
-<script src="assets/js/mini-cortes.js?v=23"></script>
-<script src="assets/js/pagina-simulacro.js?v=23"></script>
+<script src="assets/js/config.js?v=26"></script>
+<script src="assets/js/ui.js?v=26"></script>
+<script src="assets/js/iconos.js?v=26"></script>
+<script src="assets/js/metricas.js?v=26"></script>
+<script src="assets/js/datos-cortes.js?v=26"></script>
+<script src="assets/js/mini-cortes.js?v=26"></script>
+<script src="assets/js/pagina-simulacro.js?v=26"></script>
 </body>
 </html>

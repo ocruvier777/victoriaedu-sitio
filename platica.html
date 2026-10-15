@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plática gratis del IPN 2027 · Aparta tu lugar · VictoriaEDU</title>
+<meta name="description" content="Plática gratuita por Zoom con tres ingenieros del IPN: qué esperar el día del examen, qué estudiar y cómo organizarte para la admisión 2027. Sin tarjeta y sin compromiso.">
+<link rel="icon" href="uploads/victoriaedu_logo_transparent.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/victoria.css?v=26">
+<link rel="stylesheet" href="assets/css/victoria-marca.css?v=26">
+<!--
+  Embudo ÚNICO del ciclo IPN 2027. Todo el sitio manda aquí: el CTA del navbar,
+  las tarjetas del catálogo, las páginas de contenido del IPN y el simulacro.
+
+  Monta el header y el footer de marca (ui.js) para que viva dentro del sitio.
+  El navbar va con data-cta="ninguno": esta página YA es el destino del CTA, y
+  repetirlo arriba manda a la gente a donde ya está.
+
+  Sin precios ni paquetes con costo: el objetivo medible es la asistencia a la
+  plática. Los precios y la reserva se explican dentro de la plática, no antes.
+
+  OJO: `platica-standalone.html` se genera desde este archivo con el script de
+  scratchpad — cambia el chrome por uno mínimo e inlinea CSS, imágenes y JS.
+  Si cambias la estructura del header/footer, revisa ese script.
+-->
+<style>
+/* Chrome mínimo: logo arriba, lema abajo. En el SITIO no se usa —ahí manda el
+   header de ui.js—, pero el build de `platica-standalone.html` lo monta en su
+   lugar, porque la versión suelta no puede cargar ui.js ni tiene a dónde
+   enlazar. Estas reglas se quedan aquí para que ese build no necesite CSS
+   propio; traen su propio fondo oscuro para no depender del <body>. */
+.platica-chrome {
+  padding: 20px 0;
+  background: var(--vic-noche, #210A0F);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.platica-chrome__inner {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.platica-chrome__logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.platica-chrome__logo img { height: 36px; width: auto; display: block; }
+.platica-chrome__nota {
+  font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
+  color: rgba(255,255,255,.55);
+}
+.platica-foot {
+  padding: 32px 0 40px;
+  text-align: center;
+  font-size: 13px; color: rgba(255,255,255,.5);
+  background: var(--vic-noche, #210A0F);
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.platica-foot p { margin: 4px 0; }
+.platica-foot a { color: inherit; text-decoration: underline; }
+
+/* Form de dos pasos. Se replica el patrón del standalone para no cambiar el
+   flujo que ya se validó con usuarios: la lista de carreras primero, los
+   datos personales después, con una barra de progreso simple. */
+#careerList .career-option {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; padding: 14px 16px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 10px;
+  color: #fff; font-size: 15px; font-weight: 500;
+  text-align: left; cursor: pointer;
+  font-family: inherit;
+  transition: border-color .18s ease, background .18s ease;
+}
+#careerList .career-option:hover,
+#careerList .career-option:focus-visible {
+  border-color: var(--vic-azul);
+  background: rgba(44,77,157,.14);
+  outline: none;
+}
+#careerList .career-option::after { content: '→'; color: rgba(255,255,255,.5); margin-left: 12px; }
+
+/* Caja de fecha tentativa: se ve que hay horario, aunque esté por confirmar.
+   El strike en la fecha y el renglón "por confirmar" dejan claro que es
+   placeholder — así nadie llega pensando que es definitivo. */
+.platica-fecha {
+  display: inline-flex; flex-direction: column; gap: 2px;
+  padding: 14px 18px;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 12px;
+  background: rgba(255,255,255,.04);
+  max-width: 100%;
+}
+.platica-fecha__eyebrow {
+  font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+  color: rgba(255,255,255,.55); font-family: var(--vic-font-mono, monospace);
+}
+.platica-fecha__dia {
+  font-size: 17px; font-weight: 600; color: #fff; line-height: 1.3;
+}
+.platica-fecha__dia s { color: rgba(255,255,255,.45); text-decoration-thickness: 1px; }
+.platica-fecha__hora { color: rgba(255,255,255,.75); font-weight: 500; }
+.platica-fecha__nota { font-size: 12px; color: rgba(255,255,255,.55); margin-top: 2px; }
+
+/* Carrusel genérico: scroll-snap horizontal. Se usa para paquetes y
+   testimonios: ambos antes ocupaban una pantalla cada uno en móvil, lo que
+   empujaba el registro muy abajo. Con el carrusel, cada bloque mide una
+   tarjeta de alto en vez de todas apiladas. */
+.platica-rail-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 16px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.platica-rail-nav { display: flex; gap: 8px; }
+.platica-rail-nav button {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.2);
+  background: rgba(255,255,255,.06);
+  color: #fff; font-size: 18px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: background .18s ease, border-color .18s ease, opacity .18s ease;
+}
+.platica-rail-nav button:hover,
+.platica-rail-nav button:focus-visible { background: rgba(44,77,157,.3); border-color: var(--vic-azul); outline: none; }
+.platica-rail-nav button:disabled { opacity: .35; cursor: default; }
+.vic-section--blanco .platica-rail-nav button {
+  color: var(--vic-azul-profundo);
+  border-color: rgba(44,77,157,.3); background: rgba(44,77,157,.05);
+}
+.vic-section--blanco .platica-rail-nav button:hover,
+.vic-section--blanco .platica-rail-nav button:focus-visible { background: rgba(44,77,157,.12); }
+.platica-rail {
+  display: flex; gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding: 4px 2px 14px;
+  scroll-padding-inline: 2px;
+  /* `safe center` deja las tarjetas centradas cuando caben todas en el ancho
+     visible, pero se alinea a la izquierda si hay overflow — así el scroll
+     empieza desde el principio y no corta la primera tarjeta. */
+  justify-content: safe center;
+}
+.platica-rail::-webkit-scrollbar { display: none; }
+.platica-rail > * { scroll-snap-align: center; flex: 0 0 auto; }
+
+/* Tarjeta de paquete compacta: sin la portada grande, solo lo esencial. En
+   desktop caben dos y pico a la vista; en móvil cada una ocupa casi la
+   pantalla, igual que la de testimonios. */
+.platica-paq {
+  width: min(100%, 340px);
+  background: #fff; color: var(--vic-text-body);
+  border: 1px solid rgba(44,77,157,.14);
+  border-radius: 16px; padding: 24px 22px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.platica-paq--destacado { border-color: var(--vic-azul); box-shadow: 0 1px 0 rgba(44,77,157,.14); }
+.platica-paq h3 { font-size: 20px; margin: 0; color: var(--vic-azul-profundo); line-height: 1.25; }
+.platica-paq__desc { font-size: 14px; line-height: 1.55; margin: 0; color: var(--vic-text-body); }
+.platica-paq__list { margin: 0 !important; flex: 1; font-size: 14px; }
+.platica-paq__list li { line-height: 1.5; color: var(--vic-text-body); }
+/* Las tarjetas de paquete están sobre vic-section--impacto (fondo noche) pero
+   son blancas: hay que forzar el color de texto y del check para que no herede
+   el blanco de la sección oscura (si no, ✓ blanco + texto blanco = tarjeta
+   vacía como pasó en móvil). */
+.vic-section--impacto .platica-paq,
+.vic-section--impacto .platica-paq .platica-paq__list li { color: var(--vic-text-body); }
+.vic-section--impacto .platica-paq .vic-lista-check li::before { color: var(--vic-success); }
+.platica-paq .vic-btn { margin-top: auto; }
+.platica-paq .vic-badge { align-self: flex-start; }
+
+/* Tarjeta de fundador: foto redonda arriba, nombre y bio corta. Mismo ancho
+   que paquete para que los carruseles rimen visualmente. */
+.platica-profe {
+  width: min(100%, 300px);
+  background: #fff; color: var(--vic-text-body);
+  border: 1px solid rgba(44,77,157,.14);
+  border-radius: 16px; padding: 24px 22px;
+  display: flex; flex-direction: column; gap: 12px;
+  text-align: center; align-items: center;
+}
+.platica-profe img {
+  width: 110px; height: 110px; border-radius: 50%;
+  object-fit: cover; display: block;
+}
+.platica-profe h3 { font-size: 17px; margin: 0; color: var(--vic-azul-profundo); }
+.platica-profe p { font-size: 14px; color: var(--vic-text-muted); line-height: 1.55; margin: 0; }
+
+/* Tarjeta de testimonio: compacta, cita primero, atribución al pie. */
+.platica-testim {
+  width: min(100%, 320px);
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 14px; padding: 20px 20px 18px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.platica-testim__cita {
+  margin: 0; font-size: 14px; line-height: 1.55; color: rgba(255,255,255,.9);
+}
+.platica-testim__pie {
+  display: flex; align-items: center; gap: 10px;
+  padding-top: 12px; border-top: 1px solid rgba(255,255,255,.08);
+}
+.platica-testim__ini {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(44,77,157,.35); color: #fff;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; letter-spacing: .02em; flex: none;
+}
+.platica-testim__quien { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.platica-testim__nom { font-size: 13px; font-weight: 600; color: #fff; }
+.platica-testim__det { font-size: 11px; color: rgba(255,255,255,.6); line-height: 1.3; }
+.platica-testim--anon .platica-testim__ini { display: none; }
+
+/* --- Móvil: la mayoría llega desde el teléfono --------------------------- */
+@media (max-width: 720px) {
+  .vic-section--impacto { padding-top: 48px !important; padding-bottom: 48px !important; }
+  .vic-hero-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+  .vic-grid--2 { gap: 28px !important; }
+  .vic-grid--3 { gap: 20px !important; }
+  .vic-container { padding-left: 16px; padding-right: 16px; }
+  .vic-glass { padding: 20px !important; }
+  .platica-chrome { padding: 14px 0; }
+  .platica-chrome__logo img { height: 28px; }
+  .platica-chrome__nota { font-size: 11px; }
+  .vic-btn--xl, .vic-btn--lg { width: 100%; }
+  .platica-fecha { width: 100%; }
+  /* El panel "Qué vas a llevarte" ocupa mucho hero en móvil; lo ocultamos
+     porque los mismos puntos ya salen abajo en secciones completas. */
+  #top .vic-glass { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header de marca. `data-cta="ninguno"` porque esta página es el destino del
+     CTA del sitio: repetirlo arriba mandaría a la gente a donde ya está. -->
+<header data-vic-header data-cta="ninguno"></header>
+
+<!-- ================= HERO ================= -->
+<section id="top" class="vic-section--impacto vic-blueprint" style="padding-top:72px;padding-bottom:72px">
+  <div class="vic-container">
+    <div class="vic-hero-grid" style="grid-template-columns:1.1fr .9fr;gap:48px;align-items:center">
+      <div>
+        <div class="vic-pill" style="margin-bottom:22px"><span class="vic-dot"></span>Plática gratuita · 1 hora · Por Zoom</div>
+        <h1 style="font-size:clamp(32px,4.6vw,58px);line-height:1.05;letter-spacing:-.02em;margin:0 0 22px">
+          Antes de tu examen del IPN, escucha a quien ya lo pasó.
+        </h1>
+        <p style="font-size:clamp(17px,1.5vw,20px);line-height:1.55;margin:0 0 28px;max-width:52ch">
+          Tres ingenieros del Poli te cuentan qué esperar el día del examen, qué errores evitar y cómo organizarte en las últimas semanas. En vivo, con tiempo para preguntas.
+        </p>
+
+        <ul class="vic-lista-check" style="margin-bottom:30px;max-width:52ch">
+          <li>Qué viene y qué no en el examen</li>
+          <li>Cómo armar un plan realista de estudio</li>
+          <li>Preguntas en vivo con los profes</li>
+        </ul>
+
+        <div class="platica-fecha" aria-label="Fecha tentativa de la plática">
+          <span class="platica-fecha__eyebrow">Próxima plática</span>
+          <span class="platica-fecha__dia"><s>Sábado 25 de octubre</s> · <span class="platica-fecha__hora">7:00 pm CDMX</span></span>
+          <span class="platica-fecha__nota">Fecha por confirmar · te avisamos por correo cuando se agende</span>
+        </div>
+
+        <div class="vic-row vic-row--cta" style="margin:14px 0 0">
+          <a class="vic-btn vic-btn--primary vic-btn--xl" href="#registro" data-metrica="platica_clic" data-metrica-lugar="hero">Apartar mi lugar gratis</a>
+        </div>
+      </div>
+
+      <!-- Panel breve: lo que vas a ver, para quien no quiere leer el hero. -->
+      <div class="vic-glass" style="border-radius:20px;padding:26px">
+        <div class="vic-mono" style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:14px">Qué vas a llevarte</div>
+        <div class="vic-stack" style="gap:16px">
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <span style="flex:none;width:28px;height:28px;border-radius:50%;background:rgba(44,77,157,.25);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:13px">1</span>
+            <div>
+              <div style="font-weight:700;color:#fff;font-size:15px;line-height:1.3">Estructura real del examen</div>
+              <div style="font-size:13px;color:rgba(255,255,255,.7);line-height:1.5;margin-top:2px">Cuántas preguntas, cuánto tiempo, qué materias pesan más.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <span style="flex:none;width:28px;height:28px;border-radius:50%;background:rgba(44,77,157,.25);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:13px">2</span>
+            <div>
+              <div style="font-weight:700;color:#fff;font-size:15px;line-height:1.3">Errores que reprueban al 60%</div>
+              <div style="font-size:13px;color:rgba(255,255,255,.7);line-height:1.5;margin-top:2px">Los tropiezos más comunes y cómo esquivarlos el día del examen.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <span style="flex:none;width:28px;height:28px;border-radius:50%;background:rgba(44,77,157,.25);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:13px">3</span>
+            <div>
+              <div style="font-weight:700;color:#fff;font-size:15px;line-height:1.3">Plan de las últimas semanas</div>
+              <div style="font-size:13px;color:rgba(255,255,255,.7);line-height:1.5;margin-top:2px">Qué estudiar primero, cuánto tiempo dedicarle y cuándo parar.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= QUIÉNES ESTÁN DETRÁS =================
+     Mismo trío en el orden Óscar → Brando → Emiliano. Sin el rótulo de "rol
+     dentro del curso" (contenido/plataforma/matemáticas): aquí lo que vende es
+     que son profesionistas EN ACTIVO ayudando, no quién lleva cada materia.
+     Esos detalles los oyen dentro de la plática.
+
+     Carrusel con el mismo patrón que paquetes y testimonios: en desktop
+     caben los tres a la vista; en móvil, uno a la vez con swipe, para no
+     empujar el registro más abajo. -->
+<section class="vic-section vic-section--blanco">
+  <div class="vic-container">
+    <div class="platica-rail-head">
+      <div>
+        <div class="vic-eyebrow">Quién imparte la plática</div>
+        <h2 class="vic-h2" style="margin:4px 0 10px;max-width:28ch">Profesionistas del IPN que decidimos ayudarte a entrar.</h2>
+        <p class="vic-lead" style="margin:0;max-width:60ch;font-size:16px">No somos coaches ni academia franquicia: los tres trabajamos de ingenieros todos los días y damos el curso en paralelo porque sabemos lo que cuesta el examen.</p>
+      </div>
+      <div class="platica-rail-nav" data-rail-nav="profes" aria-label="Navegar entre fundadores">
+        <button type="button" data-ir="-1" aria-label="Fundador anterior">←</button>
+        <button type="button" data-ir="1" aria-label="Siguiente fundador">→</button>
+      </div>
+    </div>
+
+    <div class="platica-rail" data-rail="profes" tabindex="0" aria-label="Los tres fundadores">
+
+      <article class="platica-profe">
+        <img src="uploads/oscar.jpeg" alt="Óscar Cruz" loading="lazy">
+        <h3>Ing. Óscar Cruz</h3>
+        <p>Ingeniero aeronáutico del IPN. Demand Forecaster en el Grupo Aeroportuario Mundo Maya. Lleva nueve años preparando aspirantes al examen de admisión en paralelo.</p>
+      </article>
+
+      <article class="platica-profe">
+        <img src="uploads/brando.jpeg" alt="Brando Sánchez" loading="lazy">
+        <h3>Ing. Brando Sánchez</h3>
+        <p>Ingeniero en Sistemas Computacionales por ESCOM-IPN. Software Developer en Oracle México.</p>
+      </article>
+
+      <article class="platica-profe">
+        <img src="uploads/emiliano.jpeg" alt="Emiliano Ricardez" loading="lazy">
+        <h3>Ing. Emiliano Ricardez</h3>
+        <p>Ingeniero aeronáutico del IPN y campeón en concursos de matemáticas. Trabaja en operaciones en el Aeropuerto Internacional de Toluca.</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<div class="section-divider section-divider--papel-noche" aria-hidden="true"></div>
+
+<!-- ================= PAQUETES =================
+     Dos paquetes, SIN precio ni descuentos: el objetivo medible es que lleguen
+     al registro. El CTA es "Ver más", que apunta a #registro para que la
+     plática sea la vía por la que descubren precios y condiciones.
+     Se pintan como carrusel para que el bloque no empuje el formulario de
+     registro más abajo del fold en móvil: la mayoría llega del teléfono. -->
+<section class="vic-section vic-section--impacto vic-blueprint">
+  <div class="vic-container">
+    <div class="platica-rail-head">
+      <div>
+        <div class="vic-eyebrow">Lo que ofrecemos</div>
+        <h2 class="vic-h2" style="margin:4px 0 10px;max-width:28ch">Dos caminos al IPN 2027.</h2>
+        <p class="vic-lead" style="margin:0;max-width:60ch;font-size:16px">En la plática te explicamos cada uno a detalle, con horarios, materiales y precio.</p>
+      </div>
+      <div class="platica-rail-nav" data-rail-nav="paquetes" aria-label="Navegar entre paquetes">
+        <button type="button" data-ir="-1" aria-label="Paquete anterior">←</button>
+        <button type="button" data-ir="1" aria-label="Siguiente paquete">→</button>
+      </div>
+    </div>
+
+    <div class="platica-rail" data-rail="paquetes" tabindex="0" aria-label="Paquetes del ciclo IPN 2027">
+
+      <article class="platica-paq">
+        <div class="vic-row" style="gap:10px">
+          <span class="vic-badge vic-badge--info">Preparación completa</span>
+        </div>
+        <h3>Ruta al Poli</h3>
+        <p class="platica-paq__desc">Programa completo del ciclo 2027: bases de matemáticas + preparación para las cuatro áreas del examen.</p>
+        <ul class="vic-lista-check platica-paq__list">
+          <li>Etapa 1 — Matemáticas <em>From Zero to Hero</em> (oct–dic 2026)</li>
+          <li>Etapa 2 — Preparación Integral IPN (ene–examen 2027)</li>
+          <li>Clases en vivo con grabaciones</li>
+          <li>Asesorías gratuitas entre semana</li>
+          <li>Simulacros completos en la etapa final</li>
+        </ul>
+        <a class="vic-btn vic-btn--primary vic-btn--block" href="#registro" data-metrica="platica_clic" data-metrica-lugar="paquete-ruta">Ver más en la plática</a>
+      </article>
+
+      <article class="platica-paq platica-paq--destacado">
+        <div class="vic-row" style="gap:10px">
+          <span class="vic-badge vic-badge--warning">Hasta que te quedes</span>
+        </div>
+        <h3>ALV · A La Victoria</h3>
+        <p class="platica-paq__desc">Todo el programa completo y, si no entras, repites ambos cursos en la siguiente convocatoria sin volver a pagar.</p>
+        <ul class="vic-lista-check platica-paq__list">
+          <li>Todo lo de Ruta al Poli (las dos etapas)</li>
+          <li>Garantía <em>Hasta que te quedes</em>: repites sin volver a pagar</li>
+          <li>Vigente en cada convocatoria hasta que te asignen aspirante</li>
+          <li>Mismas asesorías y apoyo con Vico</li>
+        </ul>
+        <a class="vic-btn vic-btn--primary vic-btn--block" href="#registro" data-metrica="platica_clic" data-metrica-lugar="paquete-alv">Ver más en la plática</a>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= TESTIMONIOS =================
+     Prueba social antes del formulario. Las citas se pintan desde
+     CONFIG.testimonios (config.js) — la MISMA lista real y autorizada que ya
+     se muestra en index.html. Si la lista está vacía, el bloque se oculta
+     entero (regla .vic-hidden): es preferible una página sin testimonios a
+     una con testimonios inventados. -->
+<section id="testimoniosBloque" class="vic-section vic-section--impacto vic-blueprint vic-hidden">
+  <div class="vic-container">
+    <div class="platica-rail-head">
+      <div>
+        <div class="vic-eyebrow">Referencias</div>
+        <h2 class="vic-h2" style="margin:4px 0 10px;max-width:28ch">Lo que dicen sus alumnos.</h2>
+        <p class="vic-lead" style="margin:0;max-width:60ch;font-size:16px">Reseñas públicas de los cursos de Óscar y mensajes del grupo que Emiliano da ahorita para la segunda vuelta.</p>
+      </div>
+      <div class="platica-rail-nav" data-rail-nav="testimonios" aria-label="Navegar entre testimonios">
+        <button type="button" data-ir="-1" aria-label="Testimonio anterior">←</button>
+        <button type="button" data-ir="1" aria-label="Siguiente testimonio">→</button>
+      </div>
+    </div>
+    <div class="platica-rail" data-rail="testimonios" tabindex="0" aria-label="Testimonios de alumnos" id="testimoniosRail"></div>
+  </div>
+</section>
+
+<!-- ================= REGISTRO =================
+     Form de dos pasos (carrera → datos). El envío queda como placeholder (TODO
+     cuando la plataforma exponga el endpoint). -->
+<section id="registro" class="vic-section vic-section--impacto vic-blueprint">
+  <div class="vic-container">
+    <div class="vic-grid vic-grid--2" style="gap:48px;align-items:start">
+
+      <div>
+        <div class="vic-eyebrow">Aparta tu lugar</div>
+        <h2 class="vic-h2" style="margin:0 0 18px;max-width:22ch">Es gratis. Y puede cambiar tu examen.</h2>
+        <p style="font-size:17px;line-height:1.65;margin:0 0 24px;max-width:52ch">
+          Solo necesitamos saber a qué carrera aspiras para preparar los tips más relevantes para ti.
+        </p>
+        <ul class="vic-lista-check" style="max-width:52ch">
+          <li>Plática en vivo con los tres fundadores</li>
+          <li>Material de apoyo al registrarte</li>
+          <li>Sin tarjeta, sin compromiso de compra</li>
+        </ul>
+      </div>
+
+      <div class="vic-glass" style="border-radius:20px;padding:28px">
+        <div style="display:flex;gap:8px;margin-bottom:20px">
+          <span id="prog1" style="flex:1;height:4px;border-radius:2px;background:var(--vic-azul)"></span>
+          <span id="prog2" style="flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.14)"></span>
+        </div>
+
+        <div id="step1">
+          <h3 style="font-size:19px;margin:0 0 16px;color:#fff">¿A qué carrera quieres entrar?</h3>
+          <input id="careerSearch" type="text" placeholder="Buscar carrera…" class="vic-input" style="margin-bottom:14px;background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16);color:#fff">
+          <div id="careerList" class="vic-stack" style="gap:8px">
+            <button type="button" class="career-option" data-career="Ingeniería en Sistemas Computacionales">Ingeniería en Sistemas Computacionales</button>
+            <button type="button" class="career-option" data-career="Ingeniería Mecatrónica">Ingeniería Mecatrónica</button>
+            <button type="button" class="career-option" data-career="Ingeniería en Comunicaciones y Electrónica">Ingeniería en Comunicaciones y Electrónica</button>
+            <button type="button" class="career-option" data-career="Ingeniería Civil">Ingeniería Civil</button>
+            <button type="button" class="career-option" data-career="Ingeniero Arquitecto">Ingeniero Arquitecto</button>
+            <button type="button" class="career-option" data-career="Ingeniería en Inteligencia Artificial">Ingeniería en Inteligencia Artificial</button>
+            <button type="button" class="career-option" data-career="Contador Público">Contador Público</button>
+            <button type="button" class="career-option" data-career="Otra carrera del IPN">Otra carrera del IPN</button>
+          </div>
+        </div>
+
+        <div id="step2" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;margin-bottom:20px;background:rgba(44,77,157,.18);border:1px solid rgba(44,77,157,.4);border-radius:10px;color:#fff;font-size:14px">
+            <span id="careerDisplay">—</span>
+            <button type="button" id="changeCareer" style="background:none;border:none;color:rgba(255,255,255,.75);font-size:13px;font-weight:600;cursor:pointer;text-decoration:underline">Cambiar</button>
+          </div>
+
+          <h3 style="font-size:19px;margin:0 0 16px;color:#fff">¿A dónde te mandamos el enlace?</h3>
+
+          <form id="regForm" class="vic-stack" style="gap:16px" novalidate>
+            <input type="hidden" name="carrera" id="carreraInput">
+            <label class="vic-field">
+              <span class="vic-label" style="color:rgba(255,255,255,.85)">Nombre completo</span>
+              <input class="vic-input" type="text" name="nombre" placeholder="Tu nombre" required style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16);color:#fff">
+            </label>
+            <label class="vic-field">
+              <span class="vic-label" style="color:rgba(255,255,255,.85)">Correo</span>
+              <input class="vic-input" type="email" name="correo" placeholder="tu@correo.com" required style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16);color:#fff">
+            </label>
+            <label class="vic-field">
+              <span class="vic-label" style="color:rgba(255,255,255,.85)">WhatsApp</span>
+              <input class="vic-input" type="tel" name="whatsapp" placeholder="55 1234 5678" required style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16);color:#fff">
+            </label>
+            <button type="submit" class="vic-btn vic-btn--primary vic-btn--lg vic-btn--block">Apartar mi lugar gratis</button>
+            <p style="font-size:12px;color:rgba(255,255,255,.6);margin:0;text-align:center">
+              Solo usamos tus datos para enviarte el acceso.
+            </p>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ MÍNIMO =================
+     Sin preguntas sobre precio, reserva o descuentos. Son dudas de compra y
+     esta página NO vende; esas se contestan dentro de la plática. -->
+<section class="vic-section vic-section--blanco">
+  <div class="vic-container vic-container--narrow">
+    <div class="vic-eyebrow">Preguntas frecuentes</div>
+    <h2 class="vic-h2" style="margin:0 0 32px">Antes de registrarte.</h2>
+    <div class="vic-stack" style="gap:12px">
+      <details class="vic-faq"><summary>¿Realmente es gratis?</summary><p>Sí. Es por Zoom y no te pedimos tarjeta. Te mandamos el enlace al correo con el que te registres.</p></details>
+      <details class="vic-faq"><summary>¿Qué pasa si no puedo asistir en vivo?</summary><p>Te mandamos la grabación por correo. En vivo puedes hacer preguntas, así que vale más estar; pero si no se puede, llegas por grabación.</p></details>
+      <details class="vic-faq"><summary>¿Me van a tratar de vender algo?</summary><p>Al final de la plática te contamos de los cursos que damos para quien se está preparando este ciclo. Si no te interesa, aprendiste la ruta y listo.</p></details>
+      <details class="vic-faq"><summary>¿Es solo para quien ya está estudiando?</summary><p>No. Es para que llegues al examen sabiendo qué esperar. Si ya empezaste, mejor — vas a saber cómo enfocar tu esfuerzo.</p></details>
+      <details class="vic-faq"><summary>¿Es la plática del IPN?</summary><p>No. Victoria EDU es una plataforma educativa independiente y no forma parte del Instituto Politécnico Nacional.</p></details>
+    </div>
+  </div>
+</section>
+
+<footer data-vic-footer></footer>
+
+<script src="assets/js/config.js?v=26"></script>
+<script src="assets/js/api.js?v=26"></script>
+<script src="assets/js/ui.js?v=26"></script>
+<script src="assets/js/iconos.js?v=26"></script>
+<script src="assets/js/metricas.js?v=26"></script>
+<script>
+/* El pie de la versión suelta trae su propio <span id="year">; el footer de
+   marca no. Por eso el guard: en el sitio este nodo no existe. */
+var elAnio = document.getElementById('year');
+if (elAnio) elAnio.textContent = new Date().getFullYear();
+
+/* --- Testimonios --------------------------------------------------------
+   Lista INLINE, no se jala de assets/js/config.js: esta landing se envía
+   suelta y debe funcionar por sí sola. Si en el sitio completo se actualiza
+   el array de config.js, hay que reflejar el cambio aquí a mano.
+
+   REGLA DURA: aquí solo van citas REALES, de alumnos REALES, con permiso por
+   escrito. Un testimonio falso en una página de educación es fraude.
+
+   Dos orígenes, no se mezclan:
+     1. Óscar Cruz · reseñas PÚBLICAS de Facebook de los cursos que dio en
+        Oriéntate MX — llevan nombre.
+     2. Emiliano Ricardez · mensajes PRIVADOS (WhatsApp y DM) del grupo de
+        matemáticas de segunda vuelta IPN, agosto 2026 — van anónimos. */
+var TESTIMONIOS_PLATICA = [
+  {
+    cita: 'Ojalá hubieran más profesores como Óscar, clases únicas y amenas. Aprendí a disfrutar las matemáticas.',
+    nombre: 'Regina García',
+    detalle: 'Alumna de Óscar Cruz · agosto 2024',
+    iniciales: 'RG',
+  },
+  {
+    cita: 'El curso de Matemáticas con el profe Oscar fue lo mejor que he visto de matemáticas. Muy fácil de comprender; temas tan complejos que los hace más dinámicos y fáciles de aprender… Sin duda lo volvería a tomar las veces que fueran.',
+    nombre: 'Alejandro Romero',
+    detalle: 'Alumno de Óscar Cruz · curso de matemáticas, agosto 2022',
+    iniciales: 'AR',
+  },
+  {
+    cita: 'El curso de Matemáticas con el profe Oscar es muy divertido y fácil de digerir porque enseña de una manera muy entretenida. Además, siempre te da consejos motivacionales para echarle ganas a la carrera. Lo recomiendo mucho.',
+    nombre: 'Cristian Sánchez',
+    detalle: 'Alumno de Óscar Cruz · curso de matemáticas, agosto 2022',
+    iniciales: 'CS',
+  },
+  {
+    cita: 'De los mejores cursos que puedes tomar para prepararse para los exámenes de admisión a las universidades, es bastante completo… no solo aprendes sino que también te diviertes cotorreando con el grupo y los maestros. 10/10.',
+    nombre: 'Joel Mata Pecina',
+    detalle: 'Alumno de Óscar Cruz · abril 2024',
+    iniciales: 'JM',
+  },
+  {
+    cita: '[El curso de matemáticas] con el profe Oscar fue lo mejor, sin duda es un curso accesible y con muy buen material. Lista para el curso de enero.',
+    nombre: 'Ainara López J.',
+    detalle: 'Alumna de Óscar Cruz · abril 2024',
+    iniciales: 'AL',
+  },
+  {
+    cita: 'Una vez que entré a sus grupos de estudio me di cuenta [de] la facilidad con la que explica y, sobre todo, que nos facilita mucho la comprensión… En poco más de 1 mes que llevamos siento que he avanzado bastante.',
+    nombre: 'Estudiante del curso de matemáticas',
+    detalle: 'Grupo de Emiliano Ricardez · segunda vuelta IPN, agosto 2026',
+    anonimo: true,
+  },
+  {
+    cita: 'Estoy viendo las clases grabadas y qué chulada de enseñanza.',
+    nombre: 'Estudiante del curso de matemáticas',
+    detalle: 'Grupo de Emiliano Ricardez · segunda vuelta IPN, agosto 2026',
+    anonimo: true,
+  },
+  {
+    cita: 'Todavía no manejo bien la plataforma, pero aprendí. Muchas gracias, es muy bueno como profesor, estoy muy feliz.',
+    nombre: 'Estudiante del curso de matemáticas',
+    detalle: 'Grupo de Emiliano Ricardez · segunda vuelta IPN, agosto 2026',
+    anonimo: true,
+  },
+  {
+    cita: 'Excelente manera de explicar los temas. En poco tiempo pude dominar temas que se me hacían difíciles.',
+    nombre: 'Alumno del curso de Cálculo',
+    detalle: '2023',
+    anonimo: true,
+  },
+  {
+    cita: 'Es como si hubiera tenido una venda en los ojos durante muchísimo tiempo que yo trataba de quitar pero no podía, y de repente me la quitan y ahora veo todo de una manera muy diferente… No quiero que se acabe el curso.',
+    nombre: 'Alumna de Ingeniería Química',
+    detalle: 'Curso de Cálculo, 2023',
+    anonimo: true,
+  },
+];
+
+(function() {
+  var esc = function (s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  };
+  var inic = function (t) {
+    if (t.iniciales) return t.iniciales;
+    return String(t.nombre || '?').split(/\s+/).slice(0, 2).map(function (p) {
+      return p.charAt(0).toUpperCase();
+    }).join('');
+  };
+  var bloque = document.getElementById('testimoniosBloque');
+  var rail = document.getElementById('testimoniosRail');
+  var lista = TESTIMONIOS_PLATICA.filter(function (t) { return t && t.cita; });
+  if (!bloque || !rail || !lista.length) return;
+
+  rail.innerHTML = lista.map(function (t) {
+    var mono = t.anonimo ? ''
+      : '<span class="platica-testim__ini" aria-hidden="true">' + esc(inic(t)) + '</span>';
+    return '<figure class="platica-testim' + (t.anonimo ? ' platica-testim--anon' : '') + '">' +
+      '<blockquote class="platica-testim__cita">«' + esc(t.cita) + '»</blockquote>' +
+      '<figcaption class="platica-testim__pie">' + mono +
+        '<span class="platica-testim__quien">' +
+          '<span class="platica-testim__nom">' + esc(t.nombre) + '</span>' +
+          '<span class="platica-testim__det">' + esc(t.detalle) + '</span>' +
+        '</span>' +
+      '</figcaption>' +
+    '</figure>';
+  }).join('');
+  bloque.classList.remove('vic-hidden');
+})();
+
+/* --- Carrusel: paquetes y testimonios -----------------------------------
+   Scroll-snap horizontal nativo. Los botones solo desplazan por el ancho de
+   la primera tarjeta visible; en móvil, el swipe es lo que manda. Se
+   habilitan/deshabilitan según posición. */
+(function() {
+  document.querySelectorAll('[data-rail-nav]').forEach(function (nav) {
+    var id = nav.getAttribute('data-rail-nav');
+    var rail = document.querySelector('[data-rail="' + id + '"]');
+    if (!rail) return;
+    var btns = nav.querySelectorAll('button[data-ir]');
+
+    function paso() {
+      var card = rail.querySelector(':scope > *');
+      if (!card) return 320;
+      var gap = parseInt(getComputedStyle(rail).columnGap || getComputedStyle(rail).gap || '16', 10) || 16;
+      return card.getBoundingClientRect().width + gap;
+    }
+    function sync() {
+      var max = rail.scrollWidth - rail.clientWidth - 2;
+      btns.forEach(function (b) {
+        var dir = parseInt(b.getAttribute('data-ir'), 10);
+        b.disabled = (dir < 0 && rail.scrollLeft <= 2) || (dir > 0 && rail.scrollLeft >= max);
+      });
+      // Si no hay overflow, el nav entero no sirve: lo ocultamos.
+      nav.style.display = rail.scrollWidth > rail.clientWidth + 2 ? '' : 'none';
+    }
+    btns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        rail.scrollBy({ left: paso() * parseInt(b.getAttribute('data-ir'), 10), behavior: 'smooth' });
+      });
+    });
+    rail.addEventListener('scroll', sync, { passive: true });
+    window.addEventListener('resize', sync);
+    sync();
+  });
+})();
+
+/* Form de dos pasos. El envío queda como placeholder hasta que la plataforma
+   exponga el endpoint. */
+(function() {
+  var step1 = document.getElementById('step1');
+  var step2 = document.getElementById('step2');
+  var prog2 = document.getElementById('prog2');
+  var careerDisplay = document.getElementById('careerDisplay');
+  var carreraInput = document.getElementById('carreraInput');
+  var changeBtn = document.getElementById('changeCareer');
+  var searchInput = document.getElementById('careerSearch');
+  var opts = document.querySelectorAll('.career-option');
+
+  opts.forEach(function(el) {
+    el.addEventListener('click', function() {
+      var val = el.getAttribute('data-career');
+      careerDisplay.textContent = val;
+      carreraInput.value = val;
+      step1.style.display = 'none';
+      step2.style.display = 'block';
+      prog2.style.background = 'var(--vic-azul)';
+    });
+  });
+
+  changeBtn.addEventListener('click', function() {
+    step2.style.display = 'none';
+    step1.style.display = 'block';
+    prog2.style.background = 'rgba(255,255,255,.14)';
+  });
+
+  searchInput.addEventListener('input', function() {
+    var q = this.value.toLowerCase();
+    opts.forEach(function(el) {
+      el.style.display = el.textContent.toLowerCase().includes(q) ? 'flex' : 'none';
+    });
+  });
+
+  document.getElementById('regForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    /* TODO: conectar con el endpoint de registro de la plática. */
+    alert('¡Lugar apartado! Te mandamos el enlace de Zoom por correo y WhatsApp.');
+  });
+})();
+</script>
+
+</body>
+</html>

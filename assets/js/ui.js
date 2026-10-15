@@ -28,10 +28,11 @@
         { titulo: 'Guía del examen IPN', href: 'ipn.html', desc: 'Estructura, materias, calificación y calendario' },
         { titulo: 'Aciertos por carrera', href: 'aciertos-ipn.html', desc: 'Cortes históricos de 105 carreras, en gráfica' },
         { titulo: 'Convocatoria segunda vuelta', href: 'convocatoria-ipn-segunda-vuelta.html', desc: 'Fechas, registro y requisitos' },
+        { titulo: 'Blog: los temas del examen', href: 'blog.html', desc: 'Física, matemáticas y química, tema por tema' },
       ],
     },
+    { titulo: 'Plática gratis', href: 'platica.html' },
     { titulo: 'Método', href: 'index.html#metodo' },
-    { titulo: 'Equipo', href: 'index.html#equipo' },
   ];
 
   function paginaActual() {
@@ -39,8 +40,12 @@
     return p === '' ? 'index.html' : p;
   }
 
-  /* Páginas que "pertenecen" a Programas, para marcar el rótulo como activo. */
-  var PAGINAS_PROGRAMAS = ['tienda.html', 'simulacro-ipn-2026.html', 'checkout.html', 'pago.html', 'confirmacion.html'];
+  /* Páginas que "pertenecen" a Programas, para marcar el rótulo como activo.
+     `platica.html` es el embudo único del ciclo IPN 2027: todas las tarjetas
+     del catálogo y todos los CTAs del sitio mandan ahí. `simulacro-ipn-2026`
+     sigue en la lista para no romper enlaces viejos; ya no vende, solo mide y
+     manda a la plática. */
+  var PAGINAS_PROGRAMAS = ['tienda.html', 'platica.html', 'simulacro-ipn-2026.html', 'checkout.html', 'pago.html', 'confirmacion.html'];
 
   var CHEVRON = '<svg class="vic-nav-item__chev" viewBox="0 0 24 24" width="14" height="14" fill="none" ' +
     'stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
@@ -69,8 +74,8 @@
     return '<div class="vic-mega">' +
       '<div class="vic-mega__grid">' + tarjetas + '</div>' +
       '<div class="vic-mega__pie">' +
-        '<a href="tienda.html">Ver todos los programas y cómo comprar →</a>' +
-        '<span>Hoy solo el simulacro está a la venta. Los cursos abren por generación.</span>' +
+        '<a href="platica.html">Ver la plática del ciclo IPN 2027 →</a>' +
+        '<span>Todo se aparta en la plática gratuita por Zoom.</span>' +
       '</div>' +
     '</div>';
   }
@@ -102,7 +107,12 @@
 
       var id = 'vicPanel' + i;
       var hijos = n.mega ? PAGINAS_PROGRAMAS : n.hijos.map(function (h) { return h.href; });
-      var ramaActiva = hijos.indexOf(actual) !== -1;
+      /* Los artículos del blog se llaman `blog-<slug>.html` y no están en el
+         árbol —son demasiados y crecen—, pero pertenecen a la rama que
+         contiene `blog.html`. Sin esto, leer un artículo apaga el rótulo del
+         menú y el visitante pierde de vista dónde está parado. */
+      var ramaActiva = hijos.indexOf(actual) !== -1 ||
+        (/^blog-.+\.html$/.test(actual) && hijos.indexOf('blog.html') !== -1);
 
       var panel = n.mega ? panelProgramas() : panelLista(n.hijos, actual);
 
@@ -114,24 +124,26 @@
       '</div>';
     }).join('');
 
-    /* El CTA del navbar es "examen gratis", no "comprar": pedir dinero antes de
-       demostrar algo es lo que estamos corrigiendo. `comprar` sigue existiendo
-       para la página del producto, que es donde el alumno ya viene decidido. */
+    /* TODO el sitio vende el curso del ciclo IPN 2027, y la única puerta de
+       venta es la plática gratuita por Zoom: ahí se explican los paquetes y se
+       aparta la reserva. Por eso `platica` es el CTA por defecto del navbar en
+       todas las páginas.
+
+       `examen` sigue existiendo pero ya NO es CTA de barra: el examen gratis
+       bajó a entrada suave dentro del cuerpo de las páginas, para quien no
+       está listo para una sesión en vivo. Se conserva la clave por si alguna
+       página necesita volver a ponerlo arriba. */
     /* Con `data-plataforma` en vez del href a mano: el header se pinta antes
        que `activarEnlacesPlataforma()`, así que este CTA pasa por la misma
        puerta que los del HTML y respeta el cierre del ambiente. */
     var botones = {
+      platica:  '<a class="vic-btn vic-btn--primary vic-btn--md vic-navbar__cta" href="platica.html" data-metrica="platica_clic" data-metrica-lugar="navbar">Aparta tu lugar gratis</a>',
+      comprar:  '<a class="vic-btn vic-btn--primary vic-btn--md vic-navbar__cta" href="platica.html" data-metrica="platica_clic" data-metrica-lugar="navbar">Aparta tu lugar gratis</a>',
       examen:   '<a class="vic-btn vic-btn--primary vic-btn--md vic-navbar__cta" data-plataforma="examen" data-metrica="examen_gratis_clic" data-metrica-lugar="navbar">Haz el examen gratis</a>',
-      /* Misma puerta que `examen`, otra etiqueta. La landing del simulacro
-         recibe tráfico pagado y su promesa es concreta —diez reactivos, sin
-         pagar—; el genérico "Haz el examen gratis" del resto del sitio no
-         dice cuánto cuesta en tiempo y ahí sí importa. */
-      examen10: '<a class="vic-btn vic-btn--primary vic-btn--md vic-navbar__cta" data-plataforma="examen" data-metrica="examen_gratis_clic" data-metrica-lugar="navbar">Probar 10 reactivos gratis</a>',
-      comprar:  '<a class="vic-btn vic-btn--primary vic-btn--md vic-navbar__cta" data-plataforma="comprar" data-metrica="comprar_clic" data-metrica-lugar="navbar">2 exámenes por ' + precioCorto('simulacro-ipn-2026') + '</a>',
       programas:'<a class="vic-btn vic-btn--secondary vic-btn--md vic-navbar__cta" href="tienda.html">Ver programas</a>',
       ninguno:  '',
     };
-    var boton = botones[cta] !== undefined ? botones[cta] : botones.examen;
+    var boton = botones[cta] !== undefined ? botones[cta] : botones.platica;
 
     host.className = 'vic-navbar';
     host.innerHTML =
@@ -265,10 +277,12 @@
             '<div class="vic-footer__title">Programas</div>' +
             '<div class="vic-footer__links">' +
               '<a href="tienda.html">Todos los programas</a>' +
-              '<a href="simulacro-ipn-2026.html">Simulacro IPN 2026</a>' +
-              '<a href="tienda.html#curso-matematicas-ipn-2027">Curso de Matemáticas 2027</a>' +
+              '<a href="platica.html">Plática IPN 2027</a>' +
+              '<a href="tienda.html#ruta-al-poli-2027">Ruta al Poli</a>' +
+              '<a href="tienda.html#solo-matematicas-2026">Matemáticas From Zero to Hero</a>' +
               '<a href="aciertos-ipn.html">Aciertos para entrar al IPN</a>' +
               '<a href="convocatoria-ipn-segunda-vuelta.html">Convocatoria segunda vuelta</a>' +
+              '<a href="blog.html">Blog: los temas del examen</a>' +
             '</div>' +
           '</div>' +
           '<div>' +
